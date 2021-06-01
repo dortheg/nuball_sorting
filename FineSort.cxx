@@ -45,8 +45,8 @@
 using namespace std;
 
 unsigned int bsize=4000000000;
-UShort_t *TheEvents_1 = new UShort_t[bsize];
-UInt_t *tpointer_array_1 = new UInt_t[2];
+UShort_t *TheEvents = new UShort_t[bsize];
+UInt_t *tpointer_array = new UInt_t[2];
 
 void check_energy_singlegate_true(double energy_isomer, double energy, double time, TH1D *h1);
 void check_energy_singlegate_bg(double energy_isomer, double energy, double time, TH1D *h1);
@@ -67,16 +67,16 @@ int main(int argc, char **argv){
 
 	#include "SpecDefs_FineSort.cxx"
 
-	//Read TheEvents_1 from file
-	ifstream infile_edata("edata.txt", ios::in | ios::binary);
-	infile_edata.read((char *) TheEvents_1, bsize*sizeof(UShort_t));
+	//Read TheEvents from file
+	ifstream infile_edata("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/edata_31may2021.txt", ios::in | ios::binary);
+	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
 	infile_edata.close();
 
 	//Read tpointer_array from file
-	ifstream tpointer_infile("tpointer.txt", ios::out | ios::binary);
-	tpointer_infile.read((char *) tpointer_array_1, 2*sizeof(UInt_t));
+	ifstream tpointer_infile("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/tpointer_31may2021.txt", ios::out | ios::binary);
+	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
 	tpointer_infile.close();
-	std::cout << "tpointer_1: " << tpointer_array_1[0] << std::endl;
+	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
 
 
 	//////////////////////////////////////////
@@ -91,57 +91,56 @@ int main(int argc, char **argv){
 	/// 		  Create spectra	       ///
 	//////////////////////////////////////////
 
-	int aval_1, mult_1;
-	double tot_mult_1 = 0;
+	int aval, mult;
+	double tot_mult = 0;
 
 	int i_count = 0;
-	while(i_count<tpointer_array_1[0]){
+	while(i_count<tpointer_array[0]){
 
-		aval_1=TheEvents_1[i_count++];
-		mult_1=TheEvents_1[i_count++];
+		aval=TheEvents[i_count++];
+		mult=TheEvents[i_count++];
 
-		tot_mult_1 += mult_1;
+		tot_mult += mult;
 
-		double energy_1[mult_1];
-		double time_1[mult_1];
+		double energy[mult];
+		double time[mult];
 
-		for (int k=0; k < mult_1; k++){
-			energy_1[k] = TheEvents_1[i_count++];
-			time_1[k] = TheEvents_1[i_count++];
+		for (int k=0; k < mult; k++){
+			energy[k] = TheEvents[i_count++];
+			time[k] = TheEvents[i_count++];
 
-			single_gamma->Fill(energy_1[k]);
+			single_gamma->Fill(energy[k]);
 
 			//134Te
-			check_energy_singlegate_true(isomer_energy_1_134Te, energy_1[k], time_1[k], time_isomer_gate_134Te);
-			check_energy_singlegate_bg(isomer_energy_1_134Te, energy_1[k], time_1[k], time_isomer_gate_bg_134Te);
-			check_energy_singlegate_all(isomer_energy_1_134Te, energy_1[k], time_1[k], time_isomer_gate_all_134Te);
+			check_energy_singlegate_true(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_134Te);
+			check_energy_singlegate_bg(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_bg_134Te);
+			check_energy_singlegate_all(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_all_134Te);
 		}
 
 		int test_both_isomer_value = 0;
 		//Loop over all pairs of gammas
-		if(mult_1>1){
-			for(int m=0; m < mult_1-1; m++){
-				for(int n=m+1; n < mult_1; n++ ){
-					double_gamma->Fill(energy_1[m], energy_1[n]);
+		if(mult>1){
+			for(int m=0; m < mult-1; m++){
+				for(int n=m+1; n < mult; n++ ){
+					double_gamma->Fill(energy[m], energy[n]);
 
-					check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy_1[m], energy_1[n], time_1[m], time_1[n], time_isomer_doublegate_134Te);
-					check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy_1[m], energy_1[n], time_1[m], time_1[n], time_isomer_doublegate_bg_134Te);
-					check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy_1[m], energy_1[n], time_1[m], time_1[n], time_isomer_doublegate_all_134Te);
+					check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_134Te);
+					check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_bg_134Te);
+					check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_all_134Te);
 				
-					test_both_isomer_value += test_both_isomer(isomer_energy_1_134Te, isomer_energy_2_134Te, energy_1[m], energy_1[n]);
-
+					test_both_isomer_value += test_both_isomer(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n]);
 				}
 			}
 		}
 
 		if(test_both_isomer_value>0){
-			for(int j=0;j<mult_1;j++){
-				all_gammas_doublegated_134Te->Fill(energy_1[j]);
+			for(int j=0;j<mult;j++){
+				coincident_gammas_doublegated_134Te->Fill(energy[j]);
 			}
 		}
 	}
 
-	std::cout << "tot mult after writing: " << tot_mult_1 << std::endl;
+	std::cout << "tot mult after writing: " << tot_mult << std::endl;
 	std::cout << "\n" << std::endl;
 
 
@@ -163,9 +162,10 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_134Te->Write();
 	time_isomer_doublegate_all_134Te->Write();
 
+	coincident_gammas_doublegated_134Te->Write();
+
 	outputspectrafile->cd();
 	outputspectrafile->Close();
-
 
 }
 
@@ -349,3 +349,4 @@ int test_both_isomer(double energy_isomer_A, double energy_isomer_B, double ener
 
 
 //g++ -g -o FineSort FineSort.cxx ` root-config --cflags` `root-config --glibs`
+
