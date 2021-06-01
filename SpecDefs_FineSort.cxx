@@ -35,7 +35,7 @@ time_isomer_doublegate_all_134Te->GetXaxis()->SetTitle("Time [ns]");
 time_isomer_doublegate_all_134Te->GetYaxis()->SetTitle("Counts");
 
 //Energy spectrum in coincidence with both 134Te lines
-TH1D *coincident_gammas_doublegated_134Te = new TH1D("coincident_gammas_doublegated_134Te","coincident_gammas_doublegated_134Te",4000,0,4000);
-coincident_gammas_doublegated_134Te->GetXaxis()->SetTitle("Energy [keV]");
-coincident_gammas_doublegated_134Te->GetYaxis()->SetTitle("Counts");
+TH1D *coincident_gammas_doublegated_all_134Te = new TH1D("coincident_gammas_doublegated_all_134Te","coincident_gammas_doublegated_all_134Te",4000,0,4000);
+coincident_gammas_doublegated_all_134Te->GetXaxis()->SetTitle("Energy [keV]");
+coincident_gammas_doublegated_all_134Te->GetYaxis()->SetTitle("Counts");
 

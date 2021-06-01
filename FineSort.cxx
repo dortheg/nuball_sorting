@@ -56,8 +56,7 @@ void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B
 void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 
-int test_both_isomer(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2);
-
+void coincident_gammas_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1);
 
 int main(int argc, char **argv){
 
@@ -105,6 +104,7 @@ int main(int argc, char **argv){
 		double energy[mult];
 		double time[mult];
 
+		//Loop over single gammas
 		for (int k=0; k < mult; k++){
 			energy[k] = TheEvents[i_count++];
 			time[k] = TheEvents[i_count++];
@@ -117,7 +117,6 @@ int main(int argc, char **argv){
 			check_energy_singlegate_all(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_all_134Te);
 		}
 
-		int test_both_isomer_value = 0;
 		//Loop over all pairs of gammas
 		if(mult>1){
 			for(int m=0; m < mult-1; m++){
@@ -127,18 +126,13 @@ int main(int argc, char **argv){
 					check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_134Te);
 					check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_bg_134Te);
 					check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_all_134Te);
-				
-					test_both_isomer_value += test_both_isomer(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n]);
 				}
 			}
 		}
 
-		if(test_both_isomer_value>0){
-			for(int j=0;j<mult;j++){
-				coincident_gammas_doublegated_134Te->Fill(energy[j]);
-			}
-		}
+		coincident_gammas_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy, mult, coincident_gammas_doublegated_all_134Te);
 	}
+
 
 	std::cout << "tot mult after writing: " << tot_mult << std::endl;
 	std::cout << "\n" << std::endl;
@@ -162,14 +156,22 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_134Te->Write();
 	time_isomer_doublegate_all_134Te->Write();
 
-	coincident_gammas_doublegated_134Te->Write();
+	coincident_gammas_doublegated_all_134Te->Write();
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();
 
+
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+///									Function definitions 								  ///
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void check_energy_singlegate_true(double energy_isomer, double energy, double time, TH1D *h1){
+	//"""Single gated isomer time spectrum """
+
 	//BG, smaller than energy_isomer, subtract
 	if( (energy>=energy_isomer-5.0) && (energy<energy_isomer-2.5) ){
 		h1->Fill(time,-1);
@@ -185,6 +187,8 @@ void check_energy_singlegate_true(double energy_isomer, double energy, double ti
 }
 
 void check_energy_singlegate_bg(double energy_isomer, double energy, double time, TH1D *h1){
+	//"""Single gated isomer time spectrum, background """
+
 	//BG, smaller than energy_isomer, add
 	if( (energy>=energy_isomer-5.0) && (energy<energy_isomer-2.5) ){
 		h1->Fill(time);
@@ -196,6 +200,8 @@ void check_energy_singlegate_bg(double energy_isomer, double energy, double time
 }
 
 void check_energy_singlegate_all(double energy_isomer, double energy, double time, TH1D *h1){
+	//"""Single gated isomer time spectrum, before bg-sub """
+
 	//True, inside energy gate, add
 	if( (energy>=energy_isomer-2.5) && (energy<energy_isomer+2.5) ){
 		h1->Fill(time);
@@ -204,7 +210,8 @@ void check_energy_singlegate_all(double energy_isomer, double energy, double tim
 
 
 void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
-	
+	//"""Create doublegated time spectrum, bg-subtracted"""
+
 	//////////////////////////////////////////////////////////////
 	//Check first if isomer_A: energy_1 and isomer_B: energy_2
 	//////////////////////////////////////////////////////////////
@@ -257,6 +264,7 @@ void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B
 }
 
 void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
+	//"""Doublegated time spectrum BG subtraction"""
 
 	//////////////////////////////////////////////////////////////
 	//Check first if isomer_A: energy_1 and isomer_B: energy_2
@@ -303,6 +311,8 @@ void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, 
 
 
 void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
+	//"""Create doublegated time spectrum, before bg-sub"""
+
 	//////////////////////////////////////////////////////////////
 	//Check first if isomer_A: energy_1 and isomer_B: energy_2
 	//////////////////////////////////////////////////////////////
@@ -323,30 +333,74 @@ void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B,
 }
 
 
-int test_both_isomer(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2){
-	//////////////////////////////////////////////////////////////
-	//Check first if isomer_A: energy_1 and isomer_B: energy_2
-	//////////////////////////////////////////////////////////////
+/*void coincident_gammas_doublegate_all(double energy_isomer_A, double energy_isomer_B, double *energy[], int mult, TH1D *h1){
+	//"""Doublegated energy spectrum, before bg-sub """
 
-	//True: energy_1 in isomer_A and energy_2 in isomer_B
-	if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
-		return 1;
+	bool isomer_A = false;
+	bool isomer_B = false;
+
+	bool isomer_A_lowbg = false;
+	bool isomer_B_lowbg = false;
+
+	bool isomer_A_highbg = false;
+	bool isomer_B_highbg = false;
+
+	double energy_value;
+
+	for(int i=0; i<mult;i++){
+
+		energy_value = *energy[i];
+
+		//If find isomer_A
+		if((energy_value>=energy_isomer_A-2.5) && (energy_value<energy_isomer_A+2.5)){
+			isomer_A = true;
+		}
+		//If find isomer_B
+		if((energy_value>=energy_isomer_B-2.5) && (energy_value<energy_isomer_B+2.5)){
+			isomer_B = true;
+		}
 	}
 
-	//////////////////////////////////////////////////////////////
-	//Then check opposite: isomer_A: energy_2 and isomer_B: energy_1
-	//////////////////////////////////////////////////////////////
+	if(isomer_A==true && isomer_B==true){
+		for(int j=0; j<mult; j++){
 
-	//True: energy_1 in isomer_B and energy_2 in isomer_A
-	if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
-		return 1;
+			energy_value = *energy[j];
+
+			h1->Fill(energy_value);
+		}
+	}
+}*/
+
+void coincident_gammas_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1){
+	//"""Doublegated energy spectrum, before bg-sub """
+
+	bool isomer_A = false;
+	bool isomer_B = false;
+
+	bool isomer_A_lowbg = false;
+	bool isomer_B_lowbg = false;
+
+	bool isomer_A_highbg = false;
+	bool isomer_B_highbg = false;
+
+	for(int i=0; i<mult;i++){
+
+		//If find isomer_A
+		if((energy[i]>=energy_isomer_A-2.5) && (energy[i]<energy_isomer_A+2.5)){
+			isomer_A = true;
+		}
+		//If find isomer_B
+		if((energy[i]>=energy_isomer_B-2.5) && (energy[i]<energy_isomer_B+2.5)){
+			isomer_B = true;
+		}
 	}
 
-	else{
-		return 0;
+	if(isomer_A==true && isomer_B==true){
+		for(int j=0; j<mult; j++){
+			h1->Fill(energy[j]);
+		}
 	}
 }
-
 
 //g++ -g -o FineSort FineSort.cxx ` root-config --cflags` `root-config --glibs`
 
