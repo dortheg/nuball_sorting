@@ -52,10 +52,14 @@ void check_energy_singlegate_true(double energy_isomer, double energy, double ti
 void check_energy_singlegate_bg(double energy_isomer, double energy, double time, TH1D *h1);
 void check_energy_singlegate_all(double energy_isomer, double energy, double time, TH1D *h1);
 
+void aval_prompt_delayed(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time, double aval, TH1D *h1, TH1D *h2);
+
 void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 
+void coincident_gammas_doublegate(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1);
+void coincident_gammas_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1);
 void coincident_gammas_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1);
 
 int main(int argc, char **argv){
@@ -66,6 +70,8 @@ int main(int argc, char **argv){
 
 	#include "SpecDefs_FineSort.cxx"
 
+
+	std::cout << "Reading data from file " << std::endl;
 	//Read TheEvents from file
 	ifstream infile_edata("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/edata_31may2021.txt", ios::in | ios::binary);
 	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
@@ -76,6 +82,8 @@ int main(int argc, char **argv){
 	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
 	tpointer_infile.close();
 	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
+
+	std::cout << "Sorting data " << std::endl;
 
 
 	//////////////////////////////////////////
@@ -115,6 +123,8 @@ int main(int argc, char **argv){
 			check_energy_singlegate_true(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_134Te);
 			check_energy_singlegate_bg(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_bg_134Te);
 			check_energy_singlegate_all(isomer_energy_1_134Te, energy[k], time[k], time_isomer_gate_all_134Te);
+
+			check_energy_singlegate_true(isomer_energy_2_134Te, energy[k], time[k], time_isomer_gate_2_134Te);
 		}
 
 		//Loop over all pairs of gammas
@@ -126,10 +136,14 @@ int main(int argc, char **argv){
 					check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_134Te);
 					check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_bg_134Te);
 					check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_doublegate_all_134Te);
+				
+					aval_prompt_delayed(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], aval, aval_prompt_134Te, aval_delayed_134Te);
 				}
 			}
 		}
 
+		//coincident_gammas_doublegate(isomer_energy_1_134Te, isomer_energy_2_134Te, energy, mult, coincident_gammas_doublegated_134Te);
+		//coincident_gammas_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy, mult, coincident_gammas_doublegated_bg_134Te);
 		coincident_gammas_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy, mult, coincident_gammas_doublegated_all_134Te);
 	}
 
@@ -149,6 +163,7 @@ int main(int argc, char **argv){
 	double_gamma->Write();
 
 	time_isomer_gate_134Te->Write();
+	time_isomer_gate_2_134Te->Write();
 	time_isomer_gate_bg_134Te->Write();
 	time_isomer_gate_all_134Te->Write(); 
 
@@ -156,11 +171,15 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_134Te->Write();
 	time_isomer_doublegate_all_134Te->Write();
 
+	coincident_gammas_doublegated_134Te->Write();
+	coincident_gammas_doublegated_bg_134Te->Write();
 	coincident_gammas_doublegated_all_134Te->Write();
+
+	aval_prompt_134Te->Write();
+	aval_delayed_134Te->Write();
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();
-
 
 }
 
@@ -206,6 +225,49 @@ void check_energy_singlegate_all(double energy_isomer, double energy, double tim
 	if( (energy>=energy_isomer-2.5) && (energy<energy_isomer+2.5) ){
 		h1->Fill(time);
 	}
+
+}
+
+void aval_prompt_delayed(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time, double aval, TH1D *h1, TH1D *h2){
+
+	//////////////////////////////////////////////////////////////
+	//Check first if isomer_A: energy_1 and isomer_B: energy_2
+	//////////////////////////////////////////////////////////////
+	//True: energy_1 in isomer_A and energy_2 in isomer_B
+	if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		//Take bigger peaks, 500ns 950-1040 is prompt
+		if(time>=970 && time<1000){
+			h1->Fill(aval);
+		}
+		//Delayed
+		if(time>=1020 && time<1050){
+			h2->Fill(aval);
+		}
+	}
+
+	//////////////////////////////////////////////////////////////
+	//Then check opposite: isomer_A: energy_2 and isomer_B: energy_1
+	//////////////////////////////////////////////////////////////
+	//True: energy_1 in isomer_B and energy_2 in isomer_A
+	if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		if(time>=970 && time<1000){
+			h1->Fill(aval);
+		}
+		//Delayed
+		if(time>=1020 && time<1050){
+			h2->Fill(aval);
+		}
+	}
+/*	if( (energy>=energy_isomer-2.5) && (energy<energy_isomer+2.5) ){
+		//Prompt
+		if(time>=970 && time<1005){
+			h1->Fill(aval);
+		}
+		//Delayed
+		if(time>=1005 && time<1040){
+			h2->Fill(aval);
+		}
+	}*/
 }
 
 
@@ -332,9 +394,8 @@ void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B,
 	}
 }
 
-
-/*void coincident_gammas_doublegate_all(double energy_isomer_A, double energy_isomer_B, double *energy[], int mult, TH1D *h1){
-	//"""Doublegated energy spectrum, before bg-sub """
+void coincident_gammas_doublegate(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1){
+	//"""Doublegated energy spectrum, true """
 
 	bool isomer_A = false;
 	bool isomer_B = false;
@@ -345,31 +406,135 @@ void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B,
 	bool isomer_A_highbg = false;
 	bool isomer_B_highbg = false;
 
-	double energy_value;
-
 	for(int i=0; i<mult;i++){
 
-		energy_value = *energy[i];
-
 		//If find isomer_A
-		if((energy_value>=energy_isomer_A-2.5) && (energy_value<energy_isomer_A+2.5)){
+		if((energy[i]>=energy_isomer_A-2.5) && (energy[i]<energy_isomer_A+2.5)){
 			isomer_A = true;
 		}
 		//If find isomer_B
-		if((energy_value>=energy_isomer_B-2.5) && (energy_value<energy_isomer_B+2.5)){
+		if((energy[i]>=energy_isomer_B-2.5) && (energy[i]<energy_isomer_B+2.5)){
 			isomer_B = true;
 		}
-	}
 
-	if(isomer_A==true && isomer_B==true){
-		for(int j=0; j<mult; j++){
+		//Low bg isomer_A
+		if((energy[i]>=energy_isomer_A-5.0) && (energy[i]<energy_isomer_A-2.5)){
+			isomer_A_lowbg = true;
+		}
 
-			energy_value = *energy[j];
+		//Low bg isomer_B
+		if((energy[i]>=energy_isomer_B-5.0) && (energy[i]<energy_isomer_B-2.5)){
+			isomer_B_lowbg = true;
+		}
 
-			h1->Fill(energy_value);
+		//High bg isomer_A
+		if((energy[i]>=energy_isomer_A+2.5) && (energy[i]<energy_isomer_A+5.0)){
+			isomer_A_highbg = true;
+		}
+
+		//High bg isomer_B
+		if((energy[i]>=energy_isomer_B+2.5) && (energy[i]<energy_isomer_B+5.0)){
+			isomer_B_highbg = true;
 		}
 	}
-}*/
+
+	int j;
+	if(isomer_A==true && isomer_B==true){
+		for(int j=0; j<mult; j++){
+			h1->Fill(energy[j]);
+		}
+	}
+	if(isomer_A==true && isomer_B_lowbg==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j], -0.25);
+		}
+	}
+	if(isomer_A==true && isomer_B_highbg==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j], -0.25);
+		}
+	}
+	if(isomer_A==isomer_A_lowbg && isomer_B==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j], -0.25);
+		}
+	}
+	if(isomer_A_highbg==true && isomer_B==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j], -0.25);
+		}
+	}
+}
+
+
+void coincident_gammas_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1){
+	//"""Doublegated energy spectrum, the subtracted bg """
+
+	bool isomer_A = false;
+	bool isomer_B = false;
+
+	bool isomer_A_lowbg = false;
+	bool isomer_B_lowbg = false;
+
+	bool isomer_A_highbg = false;
+	bool isomer_B_highbg = false;
+
+	for(int i=0; i<mult;i++){
+
+		//If find isomer_A
+		if((energy[i]>=energy_isomer_A-2.5) && (energy[i]<energy_isomer_A+2.5)){
+			isomer_A = true;
+		}
+		//If find isomer_B
+		if((energy[i]>=energy_isomer_B-2.5) && (energy[i]<energy_isomer_B+2.5)){
+			isomer_B = true;
+		}
+
+		//Low bg isomer_A
+		if((energy[i]>=energy_isomer_A-5.0) && (energy[i]<energy_isomer_A-2.5)){
+			isomer_A_lowbg = true;
+		}
+
+		//Low bg isomer_B
+		if((energy[i]>=energy_isomer_B-5.0) && (energy[i]<energy_isomer_B-2.5)){
+			isomer_B_lowbg = true;
+		}
+
+		//High bg isomer_A
+		if((energy[i]>=energy_isomer_A+2.5) && (energy[i]<energy_isomer_A+5.0)){
+			isomer_A_highbg = true;
+		}
+
+		//High bg isomer_B
+		if((energy[i]>=energy_isomer_B+2.5) && (energy[i]<energy_isomer_B+5.0)){
+			isomer_B_highbg = true;
+		}
+
+	}
+
+	int j;
+	if(isomer_A==true && isomer_B_lowbg==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j]);
+		}
+	}
+	if(isomer_A==true && isomer_B_highbg==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j]);
+		}
+	}
+	if(isomer_A==isomer_A_lowbg && isomer_B==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j]);
+		}
+	}
+	if(isomer_A_highbg==true && isomer_B==true){
+		for(j=0; j<mult; j++){
+			h1->Fill(energy[j]);
+		}
+	}
+}
+
 
 void coincident_gammas_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy[], int mult, TH1D *h1){
 	//"""Doublegated energy spectrum, before bg-sub """
