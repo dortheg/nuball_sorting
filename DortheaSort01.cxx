@@ -68,6 +68,8 @@ UInt_t *tpointer_array = new UInt_t[2];
 UInt_t *tpointer_array_1 = new UInt_t[2];
 UInt_t tpointer=0;
 double tot_mult = 0;
+double tot_mult_char = 0;
+double tot_mult_char_out = 0;
 
 
 int NCHANS=4096;
@@ -597,7 +599,7 @@ for(ULong64_t i = 0; i < entries; i++){
 	double isomer_energy_1_134Te = 297.0;
 	double isomer_energy_2_134Te = 1279.0;
 	double time_diff;
-	int clean_multiplicity = 0;
+	UShort_t clean_multiplicity = 0;
 
 	for(int k = 1; k <= 34; k++){ //loop through the Ge modules in event
 		
@@ -656,11 +658,30 @@ for(ULong64_t i = 0; i < entries; i++){
 	///////////////////////////////////////////////////////
 
 	//Jon's way of writing to file
-	TheEvents[tpointer++]=aval; //anode pulse height; NB I changed order
-	TheEvents[tpointer++]=clean_multiplicity; //Clean Ge multiplicity
+
+	//Compress aval and mult into one UShort
+	UShort_t new_aval = aval/10;
+	char aval_char, mult_char;
+
+	if (new_aval < 254){aval_char = new_aval;}
+	else {aval_char = 253;}
+
+	if (clean_multiplicity < 254){mult_char = clean_multiplicity;}
+	else {mult_char = 253;}
+
+	UShort_t avalmult = (mult_char << 8) | aval_char;
+	TheEvents[tpointer++] = avalmult;
+
+	char aval_char_out, mult_char_out;
+	aval_char_out = avalmult & 0xFF;
+	mult_char_out = avalmult >> 8;
+
+	//TheEvents[tpointer++]=aval; //anode pulse height; NB I changed order
+	//TheEvents[tpointer++]=clean_multiplicity; //Clean Ge multiplicity
 	
 	tot_mult += clean_multiplicity;
-
+	tot_mult_char += mult_char;
+	tot_mult_char_out += mult_char_out;
 
 	for (int k=0; k <=34; k++){ //For all Ge modules
 		if ((aEsum[k] > 5) && aspat[k]==0 && (agpat[k] >= 1)){ //aspat[k]==0 no BGO fired, agpat: ge-mult larger than 1
@@ -668,7 +689,7 @@ for(ULong64_t i = 0; i < entries; i++){
 			TheEvents[tpointer++]=aEsum[k];
 
 			if (agpat[k] > 1) {time_diff = aTsum[k]/double(agpat[k]);} //Clover average time
-            else {time_diff = aTsum[k];}
+     	else {time_diff = aTsum[k];}
 		
 			TheEvents[tpointer++]=time_diff;
 		}
@@ -934,43 +955,54 @@ cout << nla << "/20 LaBr3 (" << 100*nla/20.0 <<"%) crystals working" << endl;
 /// 			Write output file 				///
 ///////////////////////////////////////////////////
 
+
+
 tpointer_array[0] = tpointer;
 tpointer_array[1] = tpointer;
 
 //Write tpointer_array value to file
-ofstream tpointer_outfile("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/tpointer.txt", ios::out | ios::binary);
+ofstream tpointer_outfile("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/tpointer.txt", ios::out | ios::binary);
 tpointer_outfile.write((char *) tpointer_array, 2*sizeof(UInt_t));
 tpointer_outfile.close();
 
 std::cout << "\n" << std::endl;
 std::cout << "tot mult before writing: " << tot_mult << std::endl;
+std::cout << "tot mult char: " << tot_mult_char << std::endl;
+std::cout << "tot mult char out: " << tot_mult_char_out << std::endl;
 std::cout << "tpointer: " << tpointer << std::endl;
 
 //Write TheEvents to file
-ofstream ofile_edata("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/edata.txt", ios::out | ios::binary);
+ofstream ofile_edata("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/edata.txt", ios::out | ios::binary);
 ofile_edata.write((char *) TheEvents, bsize*sizeof(UShort_t)); //TheEvents array have all info stored; two bytes per entry. 
 ofile_edata.close();
 
 
 //Read TheEvents_1 from file
-ifstream infile_edata("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/edata.txt", ios::in | ios::binary);
+ifstream infile_edata("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/edata.txt", ios::in | ios::binary);
 infile_edata.read((char *) TheEvents_1, bsize*sizeof(UShort_t));
 infile_edata.close();
 
 //Read tpointer_array from file
-ifstream tpointer_infile("/Volumes/240Pu_d_p/nuball/252Cf/Sorted/tpointer.txt", ios::out | ios::binary);
+ifstream tpointer_infile("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/tpointer.txt", ios::out | ios::binary);
 tpointer_infile.read((char *) tpointer_array_1, 2*sizeof(UInt_t));
 tpointer_infile.close();
 std::cout << "tpointer_1: " << tpointer_array_1[0] << std::endl;
 
-int aval_1, mult_1;
+int aval_1;
+UShort_t avalmult_1;
+char new_aval_1, mult_1;
 double tot_mult_1 = 0;
 
 int i_count = 0;
 while(i_count<tpointer_array_1[0]){
 
-	aval_1=TheEvents_1[i_count++];
-	mult_1=TheEvents_1[i_count++];
+	//aval_1=TheEvents_1[i_count++];
+	//mult_1=TheEvents_1[i_count++];
+	avalmult_1 = TheEvents_1[i_count++];
+
+	new_aval_1 = avalmult_1 & 0xFF;
+	mult_1 = avalmult_1 >> 8;
+
 
 	tot_mult_1 += mult_1;
 
@@ -986,8 +1018,26 @@ while(i_count<tpointer_array_1[0]){
 std::cout << "tot mult after writing: " << tot_mult_1 << std::endl;
 std::cout << "\n" << std::endl;
 
-std::cout << "bsize: " << bsize << std::endl;
 
+
+
+///////////////////////////////////
+///   Bitshifting to compress   ///
+///////////////////////////////////
+
+
+unsigned short MyShort;
+char Char1 = 127; // lower byte
+char Char2 = 128; // upper byte
+
+// merge two char into short
+MyShort = (Char2 << 8) | Char1;
+char Char1_out, Char2_out;
+
+// Split short into two char
+Char1_out = MyShort & 0xFF;
+Char2_out = MyShort >> 8;
+std::cout << "Char1_out, Char2_out: " << +Char1_out << " " << +Char2_out <<  std::endl;
 
 }
 /*
