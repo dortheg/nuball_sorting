@@ -663,11 +663,11 @@ for(ULong64_t i = 0; i < entries; i++){
 	UShort_t new_aval = aval/10;
 	char aval_char, mult_char;
 
-	if (new_aval < 254){aval_char = new_aval;}
-	else {aval_char = 253;}
+	if (new_aval < 127){aval_char = new_aval;}
+	else {aval_char = 127;}
 
-	if (clean_multiplicity < 254){mult_char = clean_multiplicity;}
-	else {mult_char = 253;}
+	if (clean_multiplicity < 127){mult_char = clean_multiplicity;}
+	else {mult_char = 127;}
 
 	UShort_t avalmult = (mult_char << 8) | aval_char;
 	TheEvents[tpointer++] = avalmult;
