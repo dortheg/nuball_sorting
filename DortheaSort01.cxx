@@ -660,19 +660,19 @@ for(ULong64_t i = 0; i < entries; i++){
 	//Jon's way of writing to file
 
 	//Compress aval and mult into one UShort
-	UShort_t new_aval = aval/10;
-	char aval_char, mult_char;
+	UShort_t new_aval = aval/5;
+	unsigned char aval_char, mult_char;
 
-	if (new_aval < 127){aval_char = new_aval;}
-	else {aval_char = 127;}
+	if (new_aval < 254){aval_char = new_aval;}
+	else {aval_char = 254;}
 
-	if (clean_multiplicity < 127){mult_char = clean_multiplicity;}
-	else {mult_char = 127;}
+	if (clean_multiplicity < 254){mult_char = clean_multiplicity;}
+	else {mult_char = 254;}
 
 	UShort_t avalmult = (mult_char << 8) | aval_char;
 	TheEvents[tpointer++] = avalmult;
 
-	char aval_char_out, mult_char_out;
+	unsigned char aval_char_out, mult_char_out;
 	aval_char_out = avalmult & 0xFF;
 	mult_char_out = avalmult >> 8;
 
@@ -990,7 +990,7 @@ std::cout << "tpointer_1: " << tpointer_array_1[0] << std::endl;
 
 int aval_1;
 UShort_t avalmult_1;
-char new_aval_1, mult_1;
+unsigned char new_aval_1, mult_1;
 double tot_mult_1 = 0;
 
 int i_count = 0;
@@ -1026,18 +1026,18 @@ std::cout << "\n" << std::endl;
 ///////////////////////////////////
 
 
-unsigned short MyShort;
-char Char1 = 127; // lower byte
-char Char2 = 128; // upper byte
+// unsigned short MyShort;
+// unsigned char Char1 = 127; // lower byte
+// unsigned char Char2 = 128; // upper byte
 
-// merge two char into short
-MyShort = (Char2 << 8) | Char1;
-char Char1_out, Char2_out;
+// // merge two char into short
+// MyShort = (Char2 << 8) | Char1;
+// unsigned char Char1_out, Char2_out;
 
-// Split short into two char
-Char1_out = MyShort & 0xFF;
-Char2_out = MyShort >> 8;
-std::cout << "Char1_out, Char2_out: " << +Char1_out << " " << +Char2_out <<  std::endl;
+// // Split short into two char
+// Char1_out = MyShort & 0xFF;
+// Char2_out = MyShort >> 8;
+// std::cout << "Char1_out, Char2_out: " << +Char1_out << " " << +Char2_out <<  std::endl;
 
 }
 /*
