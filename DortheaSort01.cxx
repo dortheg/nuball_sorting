@@ -57,7 +57,7 @@ double tshifts[256][200]; //detector number, file number
 // THE INPUT FILE
 string FileList="runlist_allfiles.dat"; //The list of Event-built files to process
 //string OutputDirectory="/Applications/nuball_sorting/252Cf/";
-string OutputDirectory="/Users/dortheagjestvang/Documents/Author_articles/IYR/Data/";
+string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
 string InputDirectory="/Volumes/240Pu_d_p/nuball_data/252Cf/252Cf/";
 
 
@@ -963,7 +963,7 @@ tpointer_array[1] = tpointer;
 
 //Write tpointer_array value to file
 //ofstream tpointer_outfile("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/tpointer.txt", ios::out | ios::binary);
-ofstream tpointer_outfile("/Users/dortheagjestvang/Documents/Author_articles/IYR/Data/tpointer.txt", ios::out | ios::binary);
+ofstream tpointer_outfile("/Applications/nuball_sorting/IYR_Data/tpointer.txt", ios::out | ios::binary);
 tpointer_outfile.write((char *) tpointer_array, 2*sizeof(UInt_t));
 tpointer_outfile.close();
 
@@ -975,20 +975,20 @@ std::cout << "tpointer: " << tpointer << std::endl;
 
 //Write TheEvents to file
 //ofstream ofile_edata("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/edata.txt", ios::out | ios::binary);
-ofstream ofile_edata("/Users/dortheagjestvang/Documents/Author_articles/IYR/Data/edata.txt", ios::out | ios::binary);
+ofstream ofile_edata("/Applications/nuball_sorting/IYR_Data/edata.txt", ios::out | ios::binary);
 ofile_edata.write((char *) TheEvents, bsize*sizeof(UShort_t)); //TheEvents array have all info stored; two bytes per entry. 
 ofile_edata.close();
 
 
 //Read TheEvents_1 from file
 //ifstream infile_edata("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/edata.txt", ios::in | ios::binary);
-ifstream infile_edata("/Users/dortheagjestvang/Documents/Author_articles/IYR/Data/edata.txt", ios::in | ios::binary);
+ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata.txt", ios::in | ios::binary);
 infile_edata.read((char *) TheEvents_1, bsize*sizeof(UShort_t));
 infile_edata.close();
 
 //Read tpointer_array from file
 //ifstream tpointer_infile("/Volumes/240Pu_d_p/nuball_data/252Cf/Sorted/tpointer.txt", ios::out | ios::binary);
-ifstream tpointer_infile("/Users/dortheagjestvang/Documents/Author_articles/IYR/Data/tpointer.txt", ios::out | ios::binary);
+ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer.txt", ios::out | ios::binary);
 tpointer_infile.read((char *) tpointer_array_1, 2*sizeof(UInt_t));
 tpointer_infile.close();
 std::cout << "tpointer_1: " << tpointer_array_1[0] << std::endl;
