@@ -54,6 +54,10 @@ void check_energy_singlegate_true(double energy_isomer, double energy, double ti
 void check_energy_singlegate_bg(double energy_isomer, double energy, double time, TH1D *h1);
 void check_energy_singlegate_all(double energy_isomer, double energy, double time, TH1D *h1);
 
+void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
+void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
+void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
+
 
 int main(int argc, char **argv){
 
@@ -65,18 +69,18 @@ int main(int argc, char **argv){
 
 	auto start_program = high_resolution_clock::now();
 
-	//Read TheEvents from file
+	// //Read TheEvents from file
 	string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
-	std::cout << "Reading data from file " << std::endl;
-	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
-	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
-	infile_edata.close();
+	// std::cout << "Reading data from file " << std::endl;
+	// ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
+	// infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
+	// infile_edata.close();
 
-	//Read tpointer_array from file
-	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
-	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
-	tpointer_infile.close();
-	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
+	// //Read tpointer_array from file
+	// ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
+	// tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
+	// tpointer_infile.close();
+	// std::cout << "tpointer: " << tpointer_array[0] << std::endl;
 	std::cout << "Sorting data " << std::endl;
 
 
@@ -134,25 +138,52 @@ int main(int argc, char **argv){
 
 	auto start_sorting = high_resolution_clock::now();
 
+	//dummy multiplicity data
+	//single 1 true: 2
+	//single 1 all: 2
+	//single 1 bg: 1
+
+	//sigle 2 true: 2
+	//single 2 all: 2
+	//single 2 bg: 0
+	int dummy_data[23] = {3, 150, 1000, 1100, 1000, 297, 1000, 2, 298, 1000, 1280, 1000, 5, 600, 1000, 400, 1000, 294, 1000, 100, 1000, 1279, 1000};
+
 	int i_count = 0;
-	while(i_count<tpointer_array[0]){
+	//while(i_count<tpointer_array[0]){
+	while(i_count<23){
 
 		//Decompress aval and mult
-		avalmult = TheEvents[i_count++];
-		new_aval = avalmult & 0xFF;
-		mult = avalmult >> 8;
-		tot_mult += mult;
-		aval = new_aval*5; //Because divided aval by 5
+		// avalmult = TheEvents[i_count++];
+		// new_aval = avalmult & 0xFF;
+		// mult = avalmult >> 8;
+		// tot_mult += mult;
+		// aval = new_aval*5; //Because divided aval by 5
+
+		mult = dummy_data[i_count++];
 
 		int energy[mult];
 		int time[mult];
 
 		//Loop over single gammas
 		for (int k=0; k < mult; k++){
-			energy[k] = TheEvents[i_count++];
-			time[k] = TheEvents[i_count++];
+			//energy[k] = TheEvents[i_count++];
+			//time[k] = TheEvents[i_count++];
+
+			energy[k] = dummy_data[i_count++];
+			time[k] = dummy_data[i_count++];
 
 			single_gamma->Fill(energy[k]);
+
+			//134Te, iftest isomer 1
+			check_energy_singlegate_true(isomer_energy_1_134Te, energy[k], time[k], time_isomer_1_iftest_gate_134Te);
+			check_energy_singlegate_bg(isomer_energy_1_134Te, energy[k], time[k], time_isomer_1_iftest_gate_bg_134Te);
+			check_energy_singlegate_all(isomer_energy_1_134Te, energy[k], time[k], time_isomer_1_iftest_gate_all_134Te);
+			
+			//134Te, iftest isomer 2
+			check_energy_singlegate_true(isomer_energy_2_134Te, energy[k], time[k], time_isomer_2_iftest_gate_134Te);
+			check_energy_singlegate_bg(isomer_energy_2_134Te, energy[k], time[k], time_isomer_2_iftest_gate_bg_134Te);
+			check_energy_singlegate_all(isomer_energy_2_134Te, energy[k], time[k], time_isomer_2_iftest_gate_all_134Te);
+			
 
 			//134Te, isomer_1
 			if(lookup_134Te_isomer_1[energy[k]]==2){
@@ -173,23 +204,18 @@ int main(int argc, char **argv){
 				time_isomer_2_gate_134Te->Fill(time[k],-1);
 				time_isomer_2_gate_bg_134Te->Fill(time[k]);
 			}
-
-			//Compare to iftests
-			check_energy_singlegate_true(isomer_energy_1_134Te, energy[k], time[k], time_isomer_1_iftest_gate_134Te);
-			check_energy_singlegate_bg(isomer_energy_1_134Te, energy[k], time[k], time_isomer_1_iftest_gate_bg_134Te);
-			check_energy_singlegate_all(isomer_energy_1_134Te, energy[k], time[k], time_isomer_1_iftest_gate_all_134Te);
-		
-
 		}
+
+		std::cout << "Mult: " << mult << std::endl; 
 
 		//Loop over all pairs of gammas
 		if(mult>1){
-			for(int m=0; m < mult-1; m++){
-				for(int n=0; n < mult-1; n++){
+			for(int m=0; m < mult; m++){
+				for(int n=0; n < mult; n++){
 					if(m!=n){
 
 						double_gamma->Fill(energy[m], energy[n]);
-
+						std::cout << "m,n: " << m << ", " << n << std::endl;  
 						//123Te doublegate
 						if(lookup_134Te_isomer_1[energy[n]]==2 && lookup_134Te_isomer_2[energy[m]]==2){
 							time_isomer_doublegate_134Te->Fill(time[n]);
@@ -206,6 +232,18 @@ int main(int argc, char **argv){
 							time_isomer_doublegate_bg_134Te->Fill(time[n]);
 						}
 					}
+				}
+			}
+		}
+
+		if(mult>1){
+			for(int m=0; m < mult-1; m++){
+				for(int n=m+1; n < mult; n++ ){
+					//double_gamma->Fill(energy[m], energy[n]);
+
+					check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_134Te);
+					check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_bg_134Te);
+					check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_all_134Te);
 				}
 			}
 		}
@@ -242,13 +280,17 @@ int main(int argc, char **argv){
 	time_isomer_2_gate_bg_134Te->Write();
 	time_isomer_2_gate_all_134Te->Write();
 
+	time_isomer_2_iftest_gate_134Te->Write();
+	time_isomer_2_iftest_gate_bg_134Te->Write();
+	time_isomer_2_iftest_gate_all_134Te->Write();
+
 	time_isomer_doublegate_134Te->Write();
 	time_isomer_doublegate_bg_134Te->Write();
 	time_isomer_doublegate_all_134Te->Write();
 
-	coincident_gammas_doublegated_134Te->Write();
-	coincident_gammas_doublegated_bg_134Te->Write();
-	coincident_gammas_doublegated_all_134Te->Write();
+	time_isomer_iftest_doublegate_134Te->Write();
+	time_isomer_iftest_doublegate_bg_134Te->Write();
+	time_isomer_iftest_doublegate_all_134Te->Write();
 
 	aval_prompt_134Te->Write();
 	aval_delayed_134Te->Write();
@@ -302,6 +344,132 @@ void check_energy_singlegate_all(double energy_isomer, double energy, double tim
 	}
 
 }
+
+
+void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
+	//"""Create doublegated time spectrum, bg-subtracted"""
+
+	//////////////////////////////////////////////////////////////
+	//Check first if isomer_A: energy_1 and isomer_B: energy_2
+	//////////////////////////////////////////////////////////////
+	
+	//True: energy_1 in isomer_A and energy_2 in isomer_B
+	if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		h1->Fill(time_1);
+	}
+	//BG 1: energy_1 in bg below isomer_A, energy_2 in isomer_B 
+	else if( (energy_1>=energy_isomer_A-5.0) && (energy_1<energy_isomer_A-2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		h1->Fill(time_1, -0.25);
+	}
+	//BG 2: energy_1 in bg above isomer_A, energy_2 in isomer_B 
+	else if( (energy_1>=energy_isomer_A+2.5) && (energy_1<energy_isomer_A+5.0) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		h1->Fill(time_1, -0.25);
+	}
+	//BG 3: energy_1 in isomer_A and energy_2 in bg below isomer_B
+	else if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-5.0) && (energy_2<energy_isomer_B-2.5)){
+		h1->Fill(time_1, -0.25);
+	}
+	//BG 4: energy_1 in isomer_A and energy_2 in bg above isomer_B
+	else if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B+2.5) && (energy_2<energy_isomer_B+5.0)){
+		h1->Fill(time_1, -0.25);
+	}
+
+	//////////////////////////////////////////////////////////////
+	//Then check opposite: isomer_A: energy_2 and isomer_B: energy_1
+	//////////////////////////////////////////////////////////////
+
+	//True: energy_1 in isomer_B and energy_2 in isomer_A
+	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		h1->Fill(time_1);
+	}
+	//BG 1: energy_1 in bg below isomer_B, energy_2 in isomer_A 
+	else if( (energy_1>=energy_isomer_B-5.0) && (energy_1<energy_isomer_B-2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		h1->Fill(time_1, -0.25);
+	}
+	//BG 2: energy_1 in bg above isomer_B, energy_2 in isomer_A
+	else if( (energy_1>=energy_isomer_B+2.5) && (energy_1<energy_isomer_B+5.0) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		h1->Fill(time_1, -0.25);
+	}
+	//BG 3: energy_1 in isomer_B and energy_2 in bg below isomer_A
+	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-5.0) && (energy_2<energy_isomer_A-2.5)){
+		h1->Fill(time_1, -0.25);
+	}
+	//BG 4: energy_1 in isomer_B and energy_2 in bg above isomer_A
+	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A+2.5) && (energy_2<energy_isomer_A+5.0)){
+		h1->Fill(time_1, -0.25);
+	}
+}
+
+void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
+	//"""Doublegated time spectrum BG subtraction"""
+
+	//////////////////////////////////////////////////////////////
+	//Check first if isomer_A: energy_1 and isomer_B: energy_2
+	//////////////////////////////////////////////////////////////
+
+	//BG 1: energy_1 in bg below isomer_A, energy_2 in isomer_B 
+	if( (energy_1>=energy_isomer_A-5.0) && (energy_1<energy_isomer_A-2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		h1->Fill(time_1, 0.25);
+	}
+	//BG 2: energy_1 in bg above isomer_A, energy_2 in isomer_B 
+	else if( (energy_1>=energy_isomer_A+2.5) && (energy_1<energy_isomer_A+5.0) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		h1->Fill(time_1, 0.25);
+	}
+	//BG 3: energy_1 in isomer_A and energy_2 in bg below isomer_B
+	else if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-5.0) && (energy_2<energy_isomer_B-2.5)){
+		h1->Fill(time_1, 0.25);
+	}
+	//BG 4: energy_1 in isomer_A and energy_2 in bg above isomer_B
+	else if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B+2.5) && (energy_2<energy_isomer_B+5.0)){
+		h1->Fill(time_1, 0.25);
+	}
+
+	//////////////////////////////////////////////////////////////
+	//Then check opposite: isomer_A: energy_2 and isomer_B: energy_1
+	//////////////////////////////////////////////////////////////
+
+	//BG 1: energy_1 in bg below isomer_B, energy_2 in isomer_A 
+	else if( (energy_1>=energy_isomer_B-5.0) && (energy_1<energy_isomer_B-2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		h1->Fill(time_1, 0.25);
+	}
+	//BG 2: energy_1 in bg above isomer_B, energy_2 in isomer_A
+	else if( (energy_1>=energy_isomer_B+2.5) && (energy_1<energy_isomer_B+5.0) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		h1->Fill(time_1, 0.25);
+	}
+	//BG 3: energy_1 in isomer_B and energy_2 in bg below isomer_A
+	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-5.0) && (energy_2<energy_isomer_A-2.5)){
+		h1->Fill(time_1, 0.25);
+	}
+	//BG 4: energy_1 in isomer_B and energy_2 in bg above isomer_A
+	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A+2.5) && (energy_2<energy_isomer_A+5.0)){
+		h1->Fill(time_1, 0.25);
+	}
+}
+
+
+void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
+	//"""Create doublegated time spectrum, before bg-sub"""
+
+	//////////////////////////////////////////////////////////////
+	//Check first if isomer_A: energy_1 and isomer_B: energy_2
+	//////////////////////////////////////////////////////////////
+	
+	//True: energy_1 in isomer_A and energy_2 in isomer_B
+	if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+		h1->Fill(time_1);
+	}
+
+	//////////////////////////////////////////////////////////////
+	//Then check opposite: isomer_A: energy_2 and isomer_B: energy_1
+	//////////////////////////////////////////////////////////////
+
+	//True: energy_1 in isomer_B and energy_2 in isomer_A
+	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+		h1->Fill(time_1);
+	}
+}
+
+
 
 
 
