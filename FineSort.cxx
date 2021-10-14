@@ -71,16 +71,16 @@ int main(int argc, char **argv){
 
 	// //Read TheEvents from file
 	string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
-	// std::cout << "Reading data from file " << std::endl;
-	// ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
-	// infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
-	// infile_edata.close();
+	std::cout << "Reading data from file " << std::endl;
+	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
+	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
+	infile_edata.close();
 
-	// //Read tpointer_array from file
-	// ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
-	// tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
-	// tpointer_infile.close();
-	// std::cout << "tpointer: " << tpointer_array[0] << std::endl;
+	//Read tpointer_array from file
+	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
+	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
+	tpointer_infile.close();
+	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
 	std::cout << "Sorting data " << std::endl;
 
 
@@ -146,31 +146,31 @@ int main(int argc, char **argv){
 	//sigle 2 true: 2
 	//single 2 all: 2
 	//single 2 bg: 0
-	int dummy_data[23] = {3, 150, 1000, 1100, 1000, 297, 1000, 2, 298, 1000, 1280, 1000, 5, 600, 1000, 400, 1000, 294, 1000, 100, 1000, 1279, 1000};
+	//int dummy_data[23] = {3, 150, 1000, 1100, 1000, 297, 1000, 2, 298, 1000, 1280, 1000, 5, 600, 1000, 400, 1000, 294, 1000, 100, 1000, 1279, 1000};
 
 	int i_count = 0;
-	//while(i_count<tpointer_array[0]){
-	while(i_count<23){
+	while(i_count<tpointer_array[0]){
+	//while(i_count<23){
 
 		//Decompress aval and mult
-		// avalmult = TheEvents[i_count++];
-		// new_aval = avalmult & 0xFF;
-		// mult = avalmult >> 8;
-		// tot_mult += mult;
-		// aval = new_aval*5; //Because divided aval by 5
+		avalmult = TheEvents[i_count++];
+		new_aval = avalmult & 0xFF;
+		mult = avalmult >> 8;
+		tot_mult += mult;
+		aval = new_aval*5; //Because divided aval by 5
 
-		mult = dummy_data[i_count++];
+		//mult = dummy_data[i_count++];
 
 		int energy[mult];
 		int time[mult];
 
 		//Loop over single gammas
 		for (int k=0; k < mult; k++){
-			//energy[k] = TheEvents[i_count++];
-			//time[k] = TheEvents[i_count++];
+			energy[k] = TheEvents[i_count++];
+			time[k] = TheEvents[i_count++];
 
-			energy[k] = dummy_data[i_count++];
-			time[k] = dummy_data[i_count++];
+			//energy[k] = dummy_data[i_count++];
+			//time[k] = dummy_data[i_count++];
 
 			single_gamma->Fill(energy[k]);
 
@@ -206,8 +206,6 @@ int main(int argc, char **argv){
 			}
 		}
 
-		std::cout << "Mult: " << mult << std::endl; 
-
 		//Loop over all pairs of gammas
 		if(mult>1){
 			for(int m=0; m < mult; m++){
@@ -215,7 +213,7 @@ int main(int argc, char **argv){
 					if(m!=n){
 
 						double_gamma->Fill(energy[m], energy[n]);
-						std::cout << "m,n: " << m << ", " << n << std::endl;  
+
 						//123Te doublegate
 						if(lookup_134Te_isomer_1[energy[n]]==2 && lookup_134Te_isomer_2[energy[m]]==2){
 							time_isomer_doublegate_134Te->Fill(time[n]);
