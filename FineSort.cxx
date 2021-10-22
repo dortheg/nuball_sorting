@@ -56,8 +56,9 @@ void check_energy_singlegate_all(double energy_isomer, double energy, double tim
 
 void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
-void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
+void check_energy_doublegate_all(int energy_isomer_A, int energy_isomer_B, int energy_1, int energy_2, int time_1, int time_2, TH1D *h1);
 
+//Hei
 
 int main(int argc, char **argv){
 
@@ -215,19 +216,19 @@ int main(int argc, char **argv){
 						double_gamma->Fill(energy[m], energy[n]);
 
 						//123Te doublegate
-						if(lookup_134Te_isomer_1[energy[n]]==2 && lookup_134Te_isomer_2[energy[m]]==2){
-							time_isomer_doublegate_134Te->Fill(time[n]);
-							time_isomer_doublegate_all_134Te->Fill(time[n]);
+						if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==2){
+							time_isomer_doublegate_134Te->Fill(time[m]);
+							time_isomer_doublegate_all_134Te->Fill(time[m]);
 						}
 
-						else if(lookup_134Te_isomer_1[energy[n]]==2 && lookup_134Te_isomer_2[energy[m]]==1){
-							time_isomer_doublegate_134Te->Fill(time[n], -0.25);
-							time_isomer_doublegate_bg_134Te->Fill(time[n]);
+						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==1){
+							time_isomer_doublegate_134Te->Fill(time[m], -0.25);
+							time_isomer_doublegate_bg_134Te->Fill(time[m]);
 						}
 
-						else if(lookup_134Te_isomer_1[energy[n]]==1 && lookup_134Te_isomer_2[energy[m]]==2){
-							time_isomer_doublegate_134Te->Fill(time[n], -0.25);
-							time_isomer_doublegate_bg_134Te->Fill(time[n]);
+						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==2){
+							time_isomer_doublegate_134Te->Fill(time[m], -0.25);
+							time_isomer_doublegate_bg_134Te->Fill(time[m]);
 						}
 					}
 				}
@@ -445,7 +446,7 @@ void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, 
 }
 
 
-void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1){
+void check_energy_doublegate_all(int energy_isomer_A, int energy_isomer_B, int energy_1, int energy_2, int time_1, int time_2, TH1D *h1){
 	//"""Create doublegated time spectrum, before bg-sub"""
 
 	//////////////////////////////////////////////////////////////
@@ -453,7 +454,7 @@ void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B,
 	//////////////////////////////////////////////////////////////
 	
 	//True: energy_1 in isomer_A and energy_2 in isomer_B
-	if( (energy_1>=energy_isomer_A-2.5) && (energy_1<energy_isomer_A+2.5) && (energy_2>=energy_isomer_B-2.5) && (energy_2<energy_isomer_B+2.5)){
+	if( (energy_1>=energy_isomer_A-2) && (energy_1<=energy_isomer_A+2) && (energy_2>=energy_isomer_B-2) && (energy_2<=energy_isomer_B+2)){
 		h1->Fill(time_1);
 	}
 
@@ -462,7 +463,7 @@ void check_energy_doublegate_all(double energy_isomer_A, double energy_isomer_B,
 	//////////////////////////////////////////////////////////////
 
 	//True: energy_1 in isomer_B and energy_2 in isomer_A
-	else if( (energy_1>=energy_isomer_B-2.5) && (energy_1<energy_isomer_B+2.5) && (energy_2>=energy_isomer_A-2.5) && (energy_2<energy_isomer_A+2.5)){
+	else if( (energy_1>=energy_isomer_B-2) && (energy_1<=energy_isomer_B+2) && (energy_2>=energy_isomer_A-2) && (energy_2<=energy_isomer_A+2)){
 		h1->Fill(time_1);
 	}
 }
