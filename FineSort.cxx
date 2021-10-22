@@ -58,7 +58,6 @@ void check_energy_doublegate_true(double energy_isomer_A, double energy_isomer_B
 void check_energy_doublegate_bg(double energy_isomer_A, double energy_isomer_B, double energy_1, double energy_2, double time_1, double time_2, TH1D *h1);
 void check_energy_doublegate_all(int energy_isomer_A, int energy_isomer_B, int energy_1, int energy_2, int time_1, int time_2, TH1D *h1);
 
-//Hei
 
 int main(int argc, char **argv){
 
