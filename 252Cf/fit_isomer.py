@@ -1,4 +1,5 @@
 import numpy as np
+import ROOT 
 from mama_to_python import read_mama_1D, read_mama_2D
 import matplotlib.pyplot as plt 
 from scipy.optimize import curve_fit
@@ -8,8 +9,24 @@ from scipy.ndimage import gaussian_filter1d
 import time
 
 
-#M_gate_double, C_gate_double, x_gate_double = read_mama_1D("252Cf_time_isomer_gate_double_134Te_18may2021.m")
+file = ROOT.TFile.Open("252Cf_22nov2021.root"," READ ")
+h = file.Get('time_isomer_doublegate_134Te')
+
+x_bins = h.GetNbinsX()
+
+x_array = np.zeros(x_bins)
+y_array = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_array[i] = h.GetBinCenter(i+1)
+    y_array[i] = h.GetBinContent(i+1)
+
+#M_gate_double = y_array
+#x_gate_double = x_array
+
+M_gate_double, C_gate_double, x_gate_double = read_mama_1D("252Cf_time_isomer_gate_double_134Te_18may2021.m")
 #M_spec, C_spec, x_spec = read_mama_1D("252Cf_time_isomer_gate_double_20may2021.m")
+
 
 #For 134Te
 tau = 164.1/np.log(2)
