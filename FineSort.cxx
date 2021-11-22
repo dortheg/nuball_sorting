@@ -71,17 +71,17 @@ int main(int argc, char **argv){
 
 	// //Read TheEvents from file
 	string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
-	std::cout << "Reading data from file " << std::endl;
-	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
-	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
-	infile_edata.close();
+	// std::cout << "Reading data from file " << std::endl;
+	// ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
+	// infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
+	// infile_edata.close();
 
-	//Read tpointer_array from file
-	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
-	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
-	tpointer_infile.close();
-	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
-	std::cout << "Sorting data " << std::endl;
+	// //Read tpointer_array from file
+	// ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
+	// tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
+	// tpointer_infile.close();
+	// std::cout << "tpointer: " << tpointer_array[0] << std::endl;
+	// std::cout << "Sorting data " << std::endl;
 
 
 	//////////////////////////////////////////
@@ -146,31 +146,38 @@ int main(int argc, char **argv){
 	//sigle 2 true: 2
 	//single 2 all: 2
 	//single 2 bg: 0
-	//int dummy_data[23] = {3, 150, 1000, 1100, 1000, 297, 1000, 2, 298, 1000, 1280, 1000, 5, 600, 1000, 400, 1000, 294, 1000, 100, 1000, 1279, 1000};
+	int N_dummy = 40;
+	// int dummy_data[40] = {3, 150, 1000, 1100, 1000, 297, 1000, 
+	// 	2, 297, 1000, 1279, 1000, 
+	// 	5, 600, 1000, 400, 1000, 297, 1000, 100, 1000, 1279, 1000, 
+	// 	2, 297, 1000, 1279, 1000,
+	// 	2, 294, 1000, 1279, 1000,
+	// 	3, 293, 1000, 1276, 1000, 450, 1000};
+	int dummy_data[7] = {3, 150, 1000, 1100, 1000, 297, 1000};
 
 	int i_count = 0;
-	while(i_count<tpointer_array[0]){
-	//while(i_count<23){
+	//while(i_count<tpointer_array[0]){
+	while(i_count<N_dummy){
 
 		//Decompress aval and mult
-		avalmult = TheEvents[i_count++];
-		new_aval = avalmult & 0xFF;
-		mult = avalmult >> 8;
-		tot_mult += mult;
-		aval = new_aval*5; //Because divided aval by 5
+		// avalmult = TheEvents[i_count++];
+		// new_aval = avalmult & 0xFF;
+		// mult = avalmult >> 8;
+		// tot_mult += mult;
+		// aval = new_aval*5; //Because divided aval by 5
 
-		//mult = dummy_data[i_count++];
+		mult = dummy_data[i_count++];
 
 		int energy[mult];
 		int time[mult];
 
 		//Loop over single gammas
 		for (int k=0; k < mult; k++){
-			energy[k] = TheEvents[i_count++];
-			time[k] = TheEvents[i_count++];
+			// energy[k] = TheEvents[i_count++];
+			// time[k] = TheEvents[i_count++];
 
-			//energy[k] = dummy_data[i_count++];
-			//time[k] = dummy_data[i_count++];
+			energy[k] = dummy_data[i_count++];
+			time[k] = dummy_data[i_count++];
 
 			single_gamma->Fill(energy[k]);
 
@@ -185,7 +192,7 @@ int main(int argc, char **argv){
 			check_energy_singlegate_all(isomer_energy_2_134Te, energy[k], time[k], time_isomer_2_iftest_gate_all_134Te);
 			
 
-			//134Te, isomer_1
+			//134Te, lookup isomer_1
 			if(lookup_134Te_isomer_1[energy[k]]==2){
 				time_isomer_1_gate_134Te->Fill(time[k]);
 				time_isomer_1_gate_all_134Te->Fill(time[k]);
@@ -195,7 +202,7 @@ int main(int argc, char **argv){
 				time_isomer_1_gate_bg_134Te->Fill(time[k]);
 			}
 
-			//134Te, isomer_2
+			//134Te, lookup isomer_2
 			if(lookup_134Te_isomer_2[energy[k]]==2){
 				time_isomer_2_gate_134Te->Fill(time[k]);
 				time_isomer_2_gate_all_134Te->Fill(time[k]);
@@ -206,11 +213,13 @@ int main(int argc, char **argv){
 			}
 		}
 
+		//Lookup doublegate
 		//Loop over all pairs of gammas
 		if(mult>1){
 			for(int m=0; m < mult; m++){
 				for(int n=0; n < mult; n++){
 					if(m!=n){
+						std::cout << m << " " << n << std::endl;
 
 						double_gamma->Fill(energy[m], energy[n]);
 
@@ -234,17 +243,29 @@ int main(int argc, char **argv){
 			}
 		}
 
-		if(mult>1){
-			for(int m=0; m < mult-1; m++){
-				for(int n=m+1; n < mult; n++ ){
-					//double_gamma->Fill(energy[m], energy[n]);
+		//Iftest doublegate
+		// if(mult>1){
+		// 	for(int m=0; m < mult-1; m++){
+		// 		for(int n=m+1; n < mult; n++ ){
+		// 			//double_gamma->Fill(energy[m], energy[n]);
 
-					check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_134Te);
-					check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_bg_134Te);
-					check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_all_134Te);
+		// 			check_energy_doublegate_true(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_134Te);
+		// 			check_energy_doublegate_bg(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_bg_134Te);
+		// 			check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_all_134Te);
+		// 		}
+		// 	}
+		// }
+
+		if(mult>1){
+			for(int m=0; m < mult; m++){
+				for(int n=0; n < mult; n++){
+					if(m!=n){
+						check_energy_doublegate_all(isomer_energy_1_134Te, isomer_energy_2_134Te, energy[m], energy[n], time[m], time[n], time_isomer_iftest_doublegate_all_134Te);	
+					}
 				}
 			}
 		}
+
 	}
 
 	auto stop_sorting = high_resolution_clock::now();
@@ -462,9 +483,9 @@ void check_energy_doublegate_all(int energy_isomer_A, int energy_isomer_B, int e
 	//////////////////////////////////////////////////////////////
 
 	//True: energy_1 in isomer_B and energy_2 in isomer_A
-	else if( (energy_1>=energy_isomer_B-2) && (energy_1<=energy_isomer_B+2) && (energy_2>=energy_isomer_A-2) && (energy_2<=energy_isomer_A+2)){
-		h1->Fill(time_1);
-	}
+	// else if( (energy_1>=energy_isomer_B-2) && (energy_1<=energy_isomer_B+2) && (energy_2>=energy_isomer_A-2) && (energy_2<=energy_isomer_A+2)){
+	// 	h1->Fill(time_1);
+	// }
 }
 
 
