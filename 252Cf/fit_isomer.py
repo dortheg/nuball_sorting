@@ -62,39 +62,6 @@ M_gate_double, C_gate_double, x_gate_double = read_mama_1D("252Cf_time_isomer_ga
 #For 134Te
 tau = 164.1/np.log(2)
 
-def expgaussian_plus_gauss_plus_smeared_exp(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
-    """
-    exponentially modified Gaussian (prompt production and isomeric decay) 
-    + Gaussian component (prompt production and prompt decay)
-    + Smeared exp decay from second fragment
-    """
-    dx = mean-x
-    
-    return amplitude_conv*np.exp(dx/tau)*erfc(dx/(np.sqrt(2)*sigma))+amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2)) + gaussian_filter1d(np.piecewise(x, [x < mean + 6, x >= mean + 6], [lambda x:0, lambda x:amplitude_exp*np.exp((mean-x)/tau)]),sigma)
-
-
-def expgaussian_plus_gauss_plus_exp(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
-    """
-    exponentially modified Gaussian (prompt production and isomeric decay) 
-    + Gaussian component (prompt production and prompt decay) 
-    + Exp decay from second fragment
-    """
-    dx = mean-x
-    
-    return amplitude_conv*np.exp(dx/tau)*erfc(dx/(np.sqrt(2)*sigma))+amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2)) + np.piecewise(x, [x < mean + 6, x >= mean + 6], [lambda x:0, lambda x:amplitude_exp*np.exp((mean-x)/tau)])
-
-def expgaussian_plus_gauss(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
-    """exponentially modified Gaussian (prompt production and isomeric decay) 
-    + Gaussian component (prompt production and prompt decay)
-    """
-    dx = mean-x
-    return amplitude_conv*np.exp(dx/tau)*erfc(dx/(np.sqrt(2)*sigma))+amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2))
-
-def expgaussian(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
-    """exponentially modified Gaussian (prompt production and isomeric decay)"""
-    dx = mean-x
-    return amplitude_conv*np.exp(dx/tau)*erfc(dx/(np.sqrt(2)*sigma))
-
 def gauss(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
     """Gaussian component (prompt production and prompt decay)"""
     dx = mean-x
@@ -113,7 +80,8 @@ def smeared_exp(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amp
 def sum_smeared_exp_gauss(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
 	""" Sum of exponential decay and gaussian """
 	dx = mean-x
-	return amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2)) + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp*np.exp((mean-x)/tau)]),sigma)
+	return amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2)) + gaussian_filter1d(np.piecewise(x, [x < mean + 6, x >= mean + 6], [lambda x:0, lambda x:amplitude_exp*np.exp((mean-x)/tau)]),sigma)
+
 
 def sum_two_smeared_exp_gauss(x, amplitude_conv=1, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp=1.0, amplitude_exp2=1.0):
 	""" Sum of exponential decay and gaussian """
@@ -213,6 +181,7 @@ plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color
 plt.plot(x_arr, func(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="true fit, total", color="orange")
 plt.plot(x_arr, gauss(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="true gaussian", color="green")
 plt.plot(x_arr, smeared_exp(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="true smeared exp from in-flight fragment", color="red")
+plt.plot(x_arr, gauss(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]) + smeared_exp(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="sum gauss + smeared exp", color="purple")
 
 # plt.plot(x_arr, func(x_arr, P_all[0], P_all[1], P_all[2], P_all[3], P_all[4], P_all[5]), label="all fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_all[0], P_all[1], P_all[2], P_all[3], P_all[4], P_all[5]), label="all gaussian", color="green")
