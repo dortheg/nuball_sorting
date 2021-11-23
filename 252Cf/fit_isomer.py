@@ -9,24 +9,55 @@ from scipy.ndimage import gaussian_filter1d
 import time
 
 
-file = ROOT.TFile.Open("252Cf_22nov2021.root"," READ ")
-h = file.Get('time_isomer_doublegate_134Te')
+##########################
+##     Read in data     ## 
+##########################
 
-x_bins = h.GetNbinsX()
+file = ROOT.TFile.Open("252Cf_23nov2021.root"," READ ")
 
-x_array = np.zeros(x_bins)
-y_array = np.zeros(x_bins)
+#####  134Te #####
+
+#Doublegate
+hist_doublegate_134Te = file.Get('time_isomer_doublegate_134Te')
+x_bins = hist_doublegate_134Te.GetNbinsX()
+
+x_doublegate_134Te = np.zeros(x_bins)
+y_doublegate_134Te = np.zeros(x_bins)
     
 for i in range(x_bins):
-    x_array[i] = h.GetBinCenter(i+1)
-    y_array[i] = h.GetBinContent(i+1)
+    x_doublegate_134Te[i] = hist_doublegate_134Te.GetBinCenter(i+1)
+    y_doublegate_134Te[i] = hist_doublegate_134Te.GetBinContent(i+1)
 
-#M_gate_double = y_array
-#x_gate_double = x_array
+#Doublegate all
+hist_doublegate_all_134Te = file.Get('time_isomer_doublegate_all_134Te')
+x_bins = hist_doublegate_all_134Te.GetNbinsX()
+
+x_doublegate_all_134Te = np.zeros(x_bins)
+y_doublegate_all_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_all_134Te[i] = hist_doublegate_all_134Te.GetBinCenter(i+1)
+    y_doublegate_all_134Te[i] = hist_doublegate_all_134Te.GetBinContent(i+1)
+
+#Doublegate bg
+hist_doublegate_bg_134Te = file.Get('time_isomer_doublegate_bg_134Te')
+x_bins = hist_doublegate_bg_134Te.GetNbinsX()
+
+x_doublegate_bg_134Te = np.zeros(x_bins)
+y_doublegate_bg_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_bg_134Te[i] = hist_doublegate_bg_134Te.GetBinCenter(i+1)
+    y_doublegate_bg_134Te[i] = hist_doublegate_bg_134Te.GetBinContent(i+1)
+
+##############
 
 M_gate_double, C_gate_double, x_gate_double = read_mama_1D("252Cf_time_isomer_gate_double_134Te_18may2021.m")
-#M_spec, C_spec, x_spec = read_mama_1D("252Cf_time_isomer_gate_double_20may2021.m")
 
+
+###################################
+##      Define fitting func      ## 
+###################################
 
 #For 134Te
 tau = 164.1/np.log(2)
@@ -100,15 +131,38 @@ print(str(func))
 
 #Remember: will need some help to find correct fit parameters
 #amplitude_conv, mean, sigma, amplitude_gauss, amplitude_exp, amplitude_exp2
-P, cov = curve_fit(func, x_gate_double, M_gate_double, bounds=([0,970,5,20,10,0],[100,1100,20,100,50,50]))
+#P, cov = curve_fit(func, x_gate_double, M_gate_double, bounds=([0,970,5,20,10,0],[100,1100,20,100,50,50]))
 
+P, cov = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50]))
 print("\n")
+print(" *****  True spectrum fit ***** \n")
 print("amplitude_conv: %.4f" % P[0])
 print("mean: %.4f" % P[1])
 print("sigma: %.4f" % P[2])
 print("amplitude_gauss: %.4f" % P[3])
 print("amplitude_exp: %.4f" % P[4])
 print("amplitude_exp2: %.4f" % P[5])
+
+# P_all, cov_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50]))
+# print("\n")
+# print(" *****  All spectrum fit ***** \n")
+# print("amplitude_conv: %.4f" % P_all[0])
+# print("mean: %.4f" % P_all[1])
+# print("sigma: %.4f" % P_all[2])
+# print("amplitude_gauss: %.4f" % P_all[3])
+# print("amplitude_exp: %.4f" % P_all[4])
+# print("amplitude_exp2: %.4f" % P_all[5])
+
+
+# P_bg, cov_bg = curve_fit(func, x_doublegate_bg_134Te, y_doublegate_bg_134Te, bounds=([0,950,0,0,0,0],[1000,1100,40,40,40,50]))
+# print("\n")
+# print(" *****  BG spectrum fit ***** \n")
+# print("amplitude_conv: %.4f" % P_bg[0])
+# print("mean: %.4f" % P_bg[1])
+# print("sigma: %.4f" % P_bg[2])
+# print("amplitude_gauss: %.4f" % P_bg[3])
+# print("amplitude_exp: %.4f" % P_bg[4])
+# print("amplitude_exp2: %.4f" % P_bg[5])
 
 ##########################
 ## 		Chi squared 	## 
@@ -129,31 +183,50 @@ degrees of freedom = (#rows-1)*(#colums-1) = (len(M_gate_double[1990:2300])-1)*1
 ## 		Find IYR 		## 
 ##########################
 
-x_arr = np.linspace(0,3000,3000)
+x_arr = np.linspace(900,4000,4000)
 
 area_tot = np.trapz(func(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), x_arr)
+area_gauss = np.trapz(gauss(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), x_arr)
 area_exp = np.trapz(smeared_exp(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), x_arr)
-IYR = (area_exp/2.0)/area_tot
+
+IYR = (area_exp)/(2*area_gauss + area_exp)
 print("\n")
-print("total area of fit: %.6f" % area_tot)
-print("exp area of fit: %.6f" % area_exp)
+print("*************** \n")
+print("total area of true fit: %.6f" % area_tot)
+print("gauss area of true fit: %.6f" % area_gauss)
+print("exp area of true fit: %.6f" % area_exp)
 print("IYR: %.6f " % IYR)
+print("\n")
+
+diff = area_tot - area_gauss - area_exp
+print("Difference between area_tot and area_gauss+area_exp: %.4f" % diff)
 print("\n")
 
 ##########################
 ## 			Plot 		## 
 ##########################
 
-plt.plot(x_gate_double, M_gate_double, label="time_isomer_gate_double")
+plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="blue")
+#plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
+#plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
+
+plt.plot(x_arr, func(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="true fit, total", color="orange")
+plt.plot(x_arr, gauss(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="true gaussian", color="green")
+plt.plot(x_arr, smeared_exp(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="true smeared exp from in-flight fragment", color="red")
+
+# plt.plot(x_arr, func(x_arr, P_all[0], P_all[1], P_all[2], P_all[3], P_all[4], P_all[5]), label="all fit, total", color="orange")
+# plt.plot(x_arr, gauss(x_arr, P_all[0], P_all[1], P_all[2], P_all[3], P_all[4], P_all[5]), label="all gaussian", color="green")
+# plt.plot(x_arr, smeared_exp(x_arr, P_all[0], P_all[1], P_all[2], P_all[3], P_all[4], P_all[5]), label="all smeared exp from in-flight fragment", color="red")
+
+# plt.plot(x_arr, func(x_arr, P_bg[0], P_bg[1], P_bg[2], P_bg[3], P_bg[4], P_bg[5]), label="bg fit, total", color="orange")
+# plt.plot(x_arr, gauss(x_arr, P_bg[0], P_bg[1], P_bg[2], P_bg[3], P_bg[4], P_bg[5]), label="bg gaussian", color="green")
+# plt.plot(x_arr, smeared_exp(x_arr, P_bg[0], P_bg[1], P_bg[2], P_bg[3], P_bg[4], P_bg[5]), label="bg smeared exp from in-flight fragment", color="red")
+
+
 plt.xlabel("Time [ns]", fontsize=14)
 plt.ylabel("Counts", fontsize=14)
 plt.title(str(func))
-plt.plot(x_arr, func(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="fit, total")
-#plt.plot(x_arr, expgaussian(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="convolution")
-plt.plot(x_arr, gauss(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="gaussian")
-plt.plot(x_arr, smeared_exp(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="smeared exp from in-flight fragment")
-#plt.plot(x_arr, exp(x_arr, P[0], P[1], P[2], P[3], P[4], P[5]), label="exp from in-flight fragment")
-plt.axis([800,2000,-10,150])
+plt.axis([800,2000,-10,250])
 plt.legend(fontsize=14)
 plt.grid()
 plt.show()
