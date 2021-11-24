@@ -100,14 +100,13 @@ int main(int argc, char **argv){
 	lookup_134Te_isomer_1[isomer_energy_1_134Te-3] = 1;
 	lookup_134Te_isomer_1[isomer_energy_1_134Te-4] = 1;
 	lookup_134Te_isomer_1[isomer_energy_1_134Te-5] = 1;
+	lookup_134Te_isomer_1[isomer_energy_1_134Te-6] = 1;
+	lookup_134Te_isomer_1[isomer_energy_1_134Te-7] = 1;
 	lookup_134Te_isomer_1[isomer_energy_1_134Te+3] = 1;
 	lookup_134Te_isomer_1[isomer_energy_1_134Te+4] = 1;
-	//new bg-gate
-	lookup_134Te_isomer_1[isomer_energy_1_134Te-6] = 3;
-	lookup_134Te_isomer_1[isomer_energy_1_134Te-7] = 3;
-	lookup_134Te_isomer_1[isomer_energy_1_134Te+5] = 3;
-	lookup_134Te_isomer_1[isomer_energy_1_134Te+6] = 3;
-	lookup_134Te_isomer_1[isomer_energy_1_134Te+7] = 3;
+	lookup_134Te_isomer_1[isomer_energy_1_134Te+5] = 1;
+	lookup_134Te_isomer_1[isomer_energy_1_134Te+6] = 1;
+	lookup_134Te_isomer_1[isomer_energy_1_134Te+7] = 1;
 
 
 
@@ -123,14 +122,13 @@ int main(int argc, char **argv){
 	lookup_134Te_isomer_2[isomer_energy_2_134Te-3] = 1;
 	lookup_134Te_isomer_2[isomer_energy_2_134Te-4] = 1;
 	lookup_134Te_isomer_2[isomer_energy_2_134Te-5] = 1;
+	lookup_134Te_isomer_2[isomer_energy_2_134Te-6] = 1;
+	lookup_134Te_isomer_2[isomer_energy_2_134Te-7] = 1;
 	lookup_134Te_isomer_2[isomer_energy_2_134Te+3] = 1;
 	lookup_134Te_isomer_2[isomer_energy_2_134Te+4] = 1;
-	//new bg-gate
-	lookup_134Te_isomer_2[isomer_energy_2_134Te-6] = 3;
-	lookup_134Te_isomer_2[isomer_energy_2_134Te-7] = 3;
-	lookup_134Te_isomer_2[isomer_energy_2_134Te+5] = 3;
-	lookup_134Te_isomer_2[isomer_energy_2_134Te+6] = 3;
-	lookup_134Te_isomer_2[isomer_energy_2_134Te+7] = 3;
+	lookup_134Te_isomer_2[isomer_energy_2_134Te+5] = 1;
+	lookup_134Te_isomer_2[isomer_energy_2_134Te+6] = 1;
+	lookup_134Te_isomer_2[isomer_energy_2_134Te+7] = 1;
 
 	//////////////////////////////////////////
 	/// 		  	 Sorting	     	   ///
@@ -192,14 +190,9 @@ int main(int argc, char **argv){
 				time_isomer_1_gate_all_134Te->Fill(time[k]);
 			}
 			else if(lookup_134Te_isomer_1[energy[k]]==1){
-				time_isomer_1_gate_134Te->Fill(time[k],-1);
-				time_isomer_1_gate_bg_134Te->Fill(time[k]);
-				time_isomer_1_gate_bg_new_134Te->Fill(time[k],0.5);
+				time_isomer_1_gate_134Te->Fill(time[k],-0.5);
+				time_isomer_1_gate_bg_134Te->Fill(time[k],0.5);
 			}
-			else if(lookup_134Te_isomer_1[energy[k]]==3){
-				time_isomer_1_gate_bg_new_134Te->Fill(time[k],0.5);
-			}
-
 
 			//134Te, lookup isomer_2
 			if(lookup_134Te_isomer_2[energy[k]]==2){
@@ -207,12 +200,8 @@ int main(int argc, char **argv){
 				time_isomer_2_gate_all_134Te->Fill(time[k]);
 			}
 			else if(lookup_134Te_isomer_2[energy[k]]==1){
-				time_isomer_2_gate_134Te->Fill(time[k],-1);
-				time_isomer_2_gate_bg_134Te->Fill(time[k]);
-				time_isomer_2_gate_bg_new_134Te->Fill(time[k],0.5);
-			}
-			else if(lookup_134Te_isomer_2[energy[k]]==3){
-				time_isomer_2_gate_bg_new_134Te->Fill(time[k],0.5);
+				time_isomer_2_gate_134Te->Fill(time[k],-0.5);
+				time_isomer_2_gate_bg_134Te->Fill(time[k],0.5);
 			}
 		}
 
@@ -231,23 +220,13 @@ int main(int argc, char **argv){
 						}
 
 						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==1){
-							time_isomer_doublegate_134Te->Fill(time[m], -0.25);
-							time_isomer_doublegate_bg_134Te->Fill(time[m], 0.25);
-							time_isomer_doublegate_bg_new_134Te->Fill(time[m], 0.125);
+							time_isomer_doublegate_134Te->Fill(time[m], -0.125);
+							time_isomer_doublegate_bg_134Te->Fill(time[m], 0.125);
 						}
 
 						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==2){
-							time_isomer_doublegate_134Te->Fill(time[m], -0.25);
-							time_isomer_doublegate_bg_134Te->Fill(time[m], 0.25);
-							time_isomer_doublegate_bg_new_134Te->Fill(time[m], 0.125);
-						}
-
-						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==3){
-							time_isomer_doublegate_bg_new_134Te->Fill(time[m], 0.125);
-						}
-
-						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==3){
-							time_isomer_doublegate_bg_new_134Te->Fill(time[m], 0.125);
+							time_isomer_doublegate_134Te->Fill(time[m], -0.125);
+							time_isomer_doublegate_bg_134Te->Fill(time[m], 0.125);
 						}
 					}
 				}
