@@ -150,15 +150,16 @@ P_isomer_1, cov_isomer_1 = curve_fit(func, x_isomer_1_gate_134Te, y_isomer_1_gat
 # print("amplitude_exp: %.4f" % P_isomer_1[4])
 # print("amplitude_exp2: %.4f" % P_isomer_1[5])
 
-P_isomer_1_all, cov_isomer_1_all = curve_fit(func, x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, bounds=([0,950,0,80000,0,0],[1000,1020,30,170000,60000,50]))
-# print("\n")
-# print(" *****  All spectrum fit ***** \n")
-# print("amplitude_conv: %.4f" % P_isomer_1_all[0])
-# print("mean: %.4f" % P_isomer_1_all[1])
-# print("sigma: %.4f" % P_isomer_1_all[2])
-# print("amplitude_gauss: %.4f" % P_isomer_1_all[3])
-# print("amplitude_exp: %.4f" % P_isomer_1_all[4])
-# print("amplitude_exp2: %.4f" % P_isomer_1_all[5])
+#, bounds=([0,950,0,80000,0,0],[1000,1020,30,170000,60000,50])
+P_isomer_1_all, cov_isomer_1_all = curve_fit(func, x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, bounds=([0,990,0,140000,0,0],[1000,1000,30,170000,18000,50]))
+print("\n")
+print(" *****  All spectrum fit ***** \n")
+print("amplitude_conv: %.4f" % P_isomer_1_all[0])
+print("mean: %.4f" % P_isomer_1_all[1])
+print("sigma: %.4f" % P_isomer_1_all[2])
+print("amplitude_gauss: %.4f" % P_isomer_1_all[3])
+print("amplitude_exp: %.4f" % P_isomer_1_all[4])
+print("amplitude_exp2: %.4f" % P_isomer_1_all[5])
 
 ######################
 #134Te doublegate fits
@@ -274,17 +275,17 @@ print("\n")
 
 
 #Isomer 1 gated
-plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
-#plt.plot(x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, label="isomer_1_gate_all_134Te", color="black")
+#plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
+plt.plot(x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, label="isomer_1_gate_all_134Te", color="black")
 #plt.plot(x_isomer_1_gate_bg_134Te, y_isomer_1_gate_bg_134Te, label="isomer_1_gate_bg_134Te", color="pink")
 
-plt.plot(x_arr, func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true fit, total", color="orange")
-plt.plot(x_arr, gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true gaussian", color="green")
-plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true smeared exp", color="red")
+# plt.plot(x_arr, func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true fit, total", color="orange")
+# plt.plot(x_arr, gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true gaussian", color="green")
+# plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true smeared exp", color="red")
 
-# plt.plot(x_arr, func(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true fit, total", color="orange")
-# plt.plot(x_arr, gauss(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true gaussian", color="green")
-# plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true smeared exp", color="red")
+plt.plot(x_arr, func(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true fit, total", color="orange")
+plt.plot(x_arr, gauss(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true gaussian", color="green")
+plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true smeared exp", color="red")
 
 plt.xlabel("Time [ns]", fontsize=14)
 plt.ylabel("Counts", fontsize=14)
