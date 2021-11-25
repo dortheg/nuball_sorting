@@ -192,6 +192,7 @@ P_isomer_1, cov_isomer_1 = curve_fit(func, x_isomer_1_gate_134Te, y_isomer_1_gat
 # print("amplitude_exp: %.4f" % P_isomer_1[4])
 # print("amplitude_exp2: %.4f" % P_isomer_1[5])
 
+
 P_isomer_1_all, cov_isomer_1_all = curve_fit(func, x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, bounds=([0,990,0,140000,0,0],[1000,1000,30,170000,18000,50]))
 # print("\n")
 # print(" *****  Isomer_1 all spectrum fit ***** \n")
@@ -285,7 +286,7 @@ P_double_bg, cov_double_bg = curve_fit(func, x_doublegate_bg_134Te, y_doublegate
 ## 		 Find IYR + uncertainty 	## 
 ######################################
 
-x_arr = np.linspace(0,3000,3000)
+x_arr = np.linspace(-1000,3000,3000)
 
 
 #Isomer_1_gate
@@ -304,6 +305,14 @@ area_isomer_1_gate_bg_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1_bg[0], P_
 IYR_isomer_1_gate = IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed)
 sigma_IYR_isomer_1_gate = sigma_IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed, all_prompt=area_isomer_1_gate_all_prompt, all_delayed=area_isomer_1_gate_all_delayed, bg_prompt=area_isomer_1_gate_bg_prompt, bg_delayed=area_isomer_1_gate_bg_delayed)
 
+print("\n")
+print("Area isomer_1 true tot: %.3f" % area_isomer_1_gate_true)
+print("Area isomer_1 true prompt: %.3f" % area_isomer_1_gate_true_prompt)
+print("Area isomer_1 true delayed: %.3f" % area_isomer_1_gate_true_delayed)
+area_isomer_1_data_true = np.trapz(y_isomer_1_gate_134Te, x_isomer_1_gate_134Te)
+print("Area isomer_1 true tot data: %.3f" % area_isomer_1_data_true)
+rel_fit_isomer_1 = abs(area_isomer_1_data_true-area_isomer_1_gate_true)/(area_isomer_1_data_true)*100
+print("Percent difference between data and fit: %.3f percent" % rel_fit_isomer_1)
 
 #Isomer_2_gate
 area_isomer_2_gate_true = np.trapz(func(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3], P_isomer_2[4], P_isomer_2[5]), x_arr)
@@ -320,6 +329,16 @@ area_isomer_2_gate_bg_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2_bg[0], P_
 
 IYR_isomer_2_gate = IYR(prompt=area_isomer_2_gate_true_prompt, delayed=area_isomer_2_gate_true_delayed)
 sigma_IYR_isomer_2_gate = sigma_IYR(prompt=area_isomer_2_gate_true_prompt, delayed=area_isomer_2_gate_true_delayed, all_prompt=area_isomer_2_gate_all_prompt, all_delayed=area_isomer_2_gate_all_delayed, bg_prompt=area_isomer_2_gate_bg_prompt, bg_delayed=area_isomer_2_gate_bg_delayed)
+
+print("\n")
+print("Area isomer_2 true tot: %.3f" % area_isomer_2_gate_true)
+print("Area isomer_2 true prompt: %.3f" % area_isomer_2_gate_true_prompt)
+print("Area isomer_2 true delayed: %.3f" % area_isomer_2_gate_true_delayed)
+area_isomer_2_data_true = np.trapz(y_isomer_2_gate_134Te, x_isomer_2_gate_134Te)
+print("Area isomer_2 true tot data: %.3f" % area_isomer_2_data_true)
+rel_fit_isomer_2 = abs(area_isomer_2_data_true-area_isomer_2_gate_true)/(area_isomer_2_data_true)*100
+print("Percent difference between data and fit: %.3f percent" % rel_fit_isomer_2)
+
 
 
 #Doublegated
@@ -338,6 +357,15 @@ area_double_bg_delayed = np.trapz(smeared_exp(x_arr, P_double_bg[0], P_double_bg
 IYR_double = IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed)
 sigma_IYR_double = sigma_IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed, all_prompt=area_double_all_prompt, all_delayed=area_double_all_delayed, bg_prompt=area_double_bg_prompt, bg_delayed=area_double_bg_delayed) #Make this into a function
 
+print("\n")
+print("Area double true tot: %.3f" % area_double_true)
+print("Area double true prompt: %.3f" % area_double_true_prompt)
+print("Area double true delayed: %.3f" % area_double_true_delayed)
+area_double_data_true = np.trapz(y_doublegate_134Te, x_doublegate_134Te)
+print("Area isomer_1 true tot data: %.3f" % area_double_data_true)
+rel_fit_double = abs(area_double_data_true-area_double_true)/(area_double_data_true)*100
+print("Percent difference between data and fit: %.3f percent" % rel_fit_double)
+
 
 print("\n")
 print(" ***** Isomeric Yield Ratios ****")
@@ -352,13 +380,13 @@ print("\n")
 ##########################
 
 #Isomer 1 gated
-#plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
+plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
 #plt.plot(x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, label="isomer_1_gate_all_134Te", color="black")
 #plt.plot(x_isomer_1_gate_bg_134Te, y_isomer_1_gate_bg_134Te, label="isomer_1_gate_bg_134Te", color="pink")
 
-# plt.plot(x_arr, func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true fit, total", color="orange")
-# plt.plot(x_arr, gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true gaussian", color="green")
-# plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true smeared exp", color="red")
+plt.plot(x_arr, func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true fit, total", color="orange")
+plt.plot(x_arr, gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true gaussian", color="green")
+plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true smeared exp", color="red")
 
 # plt.plot(x_arr, func(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true gaussian", color="green")
@@ -368,11 +396,11 @@ print("\n")
 # plt.plot(x_arr, gauss(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4], P_isomer_1_bg[5]), label="true gaussian", color="green")
 # plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4], P_isomer_1_bg[5]), label="true smeared exp", color="red")
 
-# plt.xlabel("Time [ns]", fontsize=14)
-# plt.ylabel("Counts", fontsize=14)
-# plt.legend(fontsize=14)
-# plt.grid()
-# plt.show()
+plt.xlabel("Time [ns]", fontsize=14)
+plt.ylabel("Counts", fontsize=14)
+plt.legend(fontsize=14)
+plt.grid()
+plt.show()
 
 #Isomer 2 gated
 #plt.plot(x_isomer_2_gate_134Te, y_isomer_2_gate_134Te, label="isomer_2_gate_134Te", color="royalblue")
@@ -404,9 +432,9 @@ print("\n")
 #plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
 #plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
 
-# plt.plot(x_arr, func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), label="true fit, total", color="orange")
-# plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), label="true gaussian", color="green")
-# plt.plot(x_arr, smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), label="true smeared exp", color="red")
+#plt.plot(x_arr, func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), label="true fit, total", color="orange")
+#plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), label="true gaussian", color="green")
+#plt.plot(x_arr, smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), label="true smeared exp", color="red")
 
 # plt.plot(x_arr, func(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4], P_double_all[5]), label="all fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4], P_double_all[5]), label="all gaussian", color="green")
@@ -416,11 +444,11 @@ print("\n")
 # plt.plot(x_arr, gauss(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4], P_double_bg[5]), label="bg gaussian", color="green")
 # plt.plot(x_arr, smeared_exp(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4], P_double_bg[5]), label="bg smeared exp", color="red")
 
-# plt.xlabel("Time [ns]", fontsize=14)
-# plt.ylabel("Counts", fontsize=14)
-# plt.title(str(func))
-# plt.axis([800,2000,-10,250])
-# plt.legend(fontsize=14)
-# plt.grid()
-# plt.show()
+#plt.xlabel("Time [ns]", fontsize=14)
+#plt.ylabel("Counts", fontsize=14)
+#plt.title(str(func))
+#plt.axis([800,2000,-10,250])
+#plt.legend(fontsize=14)
+#plt.grid()
+#plt.show()
 
