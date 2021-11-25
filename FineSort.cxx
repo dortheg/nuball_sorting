@@ -207,24 +207,26 @@ int main(int argc, char **argv){
 
 		//Lookup doublegate
 		//Loop over all pairs of gammas
+		int dt;
 		if(mult>1){
 			for(int m=0; m < mult; m++){
 				for(int n=0; n < mult; n++){
 					if(m!=n){
 						double_gamma->Fill(energy[m], energy[n]);
+						dt = abs(time[m] - time[n]);
 
 						//123Te doublegate
-						if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==2){
+						if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==2 && dt<=70){
 							time_isomer_doublegate_134Te->Fill(time[m]);
 							time_isomer_doublegate_all_134Te->Fill(time[m]);
 						}
 
-						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==1){
+						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==1 && dt<=70){
 							time_isomer_doublegate_134Te->Fill(time[m], -0.125);
 							time_isomer_doublegate_bg_134Te->Fill(time[m], 0.125);
 						}
 
-						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==2){
+						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==2 && dt<=70){
 							time_isomer_doublegate_134Te->Fill(time[m], -0.125);
 							time_isomer_doublegate_bg_134Te->Fill(time[m], 0.125);
 						}
