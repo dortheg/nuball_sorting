@@ -162,8 +162,11 @@ def IYR(prompt, delayed):
     return (delayed)/(2*prompt + delayed)
 
 def sigma_IYR(prompt, delayed, all_prompt, all_delayed, bg_prompt, bg_delayed):
-    sigma_prompt = np.sqrt(all_prompt + bg_prompt)
-    sigma_delayed = np.sqrt(all_delayed + bg_delayed)
+
+    sigma_prompt = np.sqrt(all_prompt + bg_prompt + (0.05*bg_prompt)**2)
+    sigma_delayed = np.sqrt(all_delayed + bg_delayed + (0.05*bg_delayed)**2)
+    #sigma_prompt = np.sqrt(all_prompt + bg_prompt)
+    #sigma_delayed = np.sqrt(all_delayed + bg_delayed)
     return np.sqrt( ((2*prompt/(2*prompt+delayed)**2)*sigma_delayed)**2 + ((-2*delayed/(2*prompt+delayed)**2)*sigma_prompt)**2 )
 
 ####################################################
@@ -304,13 +307,13 @@ IYR_isomer_1_gate = IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isom
 sigma_IYR_isomer_1_gate = sigma_IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed, all_prompt=area_isomer_1_gate_all_prompt, all_delayed=area_isomer_1_gate_all_delayed, bg_prompt=area_isomer_1_gate_bg_prompt, bg_delayed=area_isomer_1_gate_bg_delayed)
 
 # print("\n")
-print("Area isomer_1 true tot: %.3f" % area_isomer_1_gate_true)
-print("Area isomer_1 true prompt: %.3f" % area_isomer_1_gate_true_prompt)
-print("Area isomer_1 true delayed: %.3f" % area_isomer_1_gate_true_delayed)
-area_isomer_1_data_true = np.trapz(y_isomer_1_gate_134Te, x_isomer_1_gate_134Te)
+#print("Area isomer_1 true tot: %.3f" % area_isomer_1_gate_true)
+#print("Area isomer_1 true prompt: %.3f" % area_isomer_1_gate_true_prompt)
+#print("Area isomer_1 true delayed: %.3f" % area_isomer_1_gate_true_delayed)
+#area_isomer_1_data_true = np.trapz(y_isomer_1_gate_134Te, x_isomer_1_gate_134Te)
 # print("Area isomer_1 true tot data: %.3f" % area_isomer_1_data_true)
-rel_fit_isomer_1 = abs(area_isomer_1_data_true-area_isomer_1_gate_true)/(area_isomer_1_data_true)*100
-print("Percent difference between data and fit: %.3f percent" % rel_fit_isomer_1)
+#rel_fit_isomer_1 = abs(area_isomer_1_data_true-area_isomer_1_gate_true)/(area_isomer_1_data_true)*100
+#print("Percent difference between data and fit: %.3f percent" % rel_fit_isomer_1)
 
 #Isomer_2_gate
 area_isomer_2_gate_true = np.trapz(func(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3], P_isomer_2[4], P_isomer_2[5]), x_arr)
@@ -377,14 +380,14 @@ print("\n")
 ## 			Plot 		## 
 ##########################
 
-#Isomer 1 gated
-plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
+#Isomer 1 gated, fit
+#plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
 #plt.plot(x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, label="isomer_1_gate_all_134Te", color="black")
 #plt.plot(x_isomer_1_gate_bg_134Te, y_isomer_1_gate_bg_134Te, label="isomer_1_gate_bg_134Te", color="pink")
 
-plt.plot(x_arr, func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true fit, total", color="orange")
-plt.plot(x_arr, gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true gaussian", color="green")
-plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true smeared exp", color="red")
+# plt.plot(x_arr, func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true fit, total", color="orange")
+# plt.plot(x_arr, gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true gaussian", color="green")
+# plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4], P_isomer_1[5]), label="true smeared exp", color="red")
 
 # plt.plot(x_arr, func(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4], P_isomer_1_all[5]), label="true gaussian", color="green")
@@ -394,13 +397,13 @@ plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], 
 # plt.plot(x_arr, gauss(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4], P_isomer_1_bg[5]), label="true gaussian", color="green")
 # plt.plot(x_arr, smeared_exp(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4], P_isomer_1_bg[5]), label="true smeared exp", color="red")
 
-plt.xlabel("Time [ns]", fontsize=14)
-plt.ylabel("Counts", fontsize=14)
-plt.legend(fontsize=14)
-plt.grid()
-plt.show()
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# plt.legend(fontsize=14)
+# plt.grid()
+# plt.show()
 
-#Isomer 2 gated
+#Isomer 2 gated, fit
 #plt.plot(x_isomer_2_gate_134Te, y_isomer_2_gate_134Te, label="isomer_2_gate_134Te", color="royalblue")
 #plt.plot(x_isomer_2_gate_all_134Te, y_isomer_2_gate_all_134Te, label="isomer_2_gate_all_134Te", color="black")
 #plt.plot(x_isomer_2_gate_bg_134Te, y_isomer_2_gate_bg_134Te, label="isomer_2_gate_bg_134Te", color="pink")
@@ -424,7 +427,7 @@ plt.show()
 # plt.show()
 
 
-#Doublegated
+#Doublegated, fit
 #plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=np.sqrt(abs(y_doublegate_134Te)),fmt=".", label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
@@ -449,4 +452,16 @@ plt.show()
 # plt.legend(fontsize=14)
 # plt.grid()
 # plt.show()
+
+#Plot the IYR
+plt.errorbar([1], [IYR_isomer_1_gate], yerr=[sigma_IYR_isomer_1_gate], fmt="ro", label="isomer_1_gate")
+plt.errorbar([2], [IYR_isomer_2_gate], yerr=[sigma_IYR_isomer_2_gate], fmt="bo", label="isomer_2_gate")
+plt.errorbar([3], [IYR_double], yerr=[sigma_IYR_double], fmt="go", label="doublegate")
+plt.axis([0,4,0,1.2])
+plt.xlabel("Case", fontsize=14)
+plt.ylabel("IYR (uncorrected)", fontsize=14)
+plt.legend(fontsize=14)
+plt.grid()
+plt.show()
+
 
