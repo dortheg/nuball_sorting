@@ -19,6 +19,10 @@ file = ROOT.TFile.Open("252Cf_25nov2021.root"," READ ")
 ###     134Te      ##
 #####################
 
+#Define lower and upper fit limit
+x_lower = (1000 + 980)//2
+x_upper = (1000 + 1400)//2
+
 #Isomer_1 gate (297keV) true
 hist_isomer_1_gate_134Te = file.Get('time_isomer_1_gate_134Te')
 x_bins = hist_isomer_1_gate_134Te.GetNbinsX()
@@ -29,6 +33,10 @@ y_isomer_1_gate_134Te = np.zeros(x_bins)
 for i in range(x_bins):
     x_isomer_1_gate_134Te[i] = hist_isomer_1_gate_134Te.GetBinCenter(i+1)
     y_isomer_1_gate_134Te[i] = hist_isomer_1_gate_134Te.GetBinContent(i+1)
+
+#x_isomer_1_gate_134Te = x_isomer_1_gate_134Te[x_lower:x_upper] #Slice to fit limits
+#y_isomer_1_gate_134Te = y_isomer_1_gate_134Te[x_lower:x_upper]
+
 
 #Isomer_1 gate (297keV) all
 hist_isomer_1_gate_all_134Te = file.Get('time_isomer_1_gate_all_134Te')
@@ -41,6 +49,10 @@ for i in range(x_bins):
     x_isomer_1_gate_all_134Te[i] = hist_isomer_1_gate_all_134Te.GetBinCenter(i+1)
     y_isomer_1_gate_all_134Te[i] = hist_isomer_1_gate_all_134Te.GetBinContent(i+1)
 
+#x_isomer_1_gate_all_134Te = x_isomer_1_gate_all_134Te[x_lower:x_upper]
+#y_isomer_1_gate_all_134Te = y_isomer_1_gate_all_134Te[x_lower:x_upper]
+
+
 #Isomer_1 gate (297keV) bg
 hist_isomer_1_gate_bg_134Te = file.Get('time_isomer_1_gate_bg_134Te')
 x_bins = hist_isomer_1_gate_bg_134Te.GetNbinsX()
@@ -51,6 +63,9 @@ y_isomer_1_gate_bg_134Te = np.zeros(x_bins)
 for i in range(x_bins):
     x_isomer_1_gate_bg_134Te[i] = hist_isomer_1_gate_bg_134Te.GetBinCenter(i+1)
     y_isomer_1_gate_bg_134Te[i] = hist_isomer_1_gate_bg_134Te.GetBinContent(i+1)
+
+#x_isomer_1_gate_bg_134Te = x_isomer_1_gate_bg_134Te[x_lower:x_upper]
+#y_isomer_1_gate_bg_134Te = y_isomer_1_gate_bg_134Te[x_lower:x_upper]
 
 #######################
 
@@ -100,6 +115,10 @@ for i in range(x_bins):
     x_doublegate_134Te[i] = hist_doublegate_134Te.GetBinCenter(i+1)
     y_doublegate_134Te[i] = hist_doublegate_134Te.GetBinContent(i+1)
 
+#x_doublegate_134Te = x_doublegate_134Te[x_lower:x_upper]
+#y_doublegate_134Te = y_doublegate_134Te[x_lower:x_upper]
+
+
 #Doublegate all
 hist_doublegate_all_134Te = file.Get('time_isomer_doublegate_all_134Te')
 x_bins = hist_doublegate_all_134Te.GetNbinsX()
@@ -111,6 +130,10 @@ for i in range(x_bins):
     x_doublegate_all_134Te[i] = hist_doublegate_all_134Te.GetBinCenter(i+1)
     y_doublegate_all_134Te[i] = hist_doublegate_all_134Te.GetBinContent(i+1)
 
+# x_doublegate_all_134Te = x_doublegate_all_134Te[x_lower:x_upper]
+# y_doublegate_all_134Te = y_doublegate_all_134Te[x_lower:x_upper]
+
+
 #Doublegate bg
 hist_doublegate_bg_134Te = file.Get('time_isomer_doublegate_bg_134Te')
 x_bins = hist_doublegate_bg_134Te.GetNbinsX()
@@ -121,6 +144,9 @@ y_doublegate_bg_134Te = np.zeros(x_bins)
 for i in range(x_bins):
     x_doublegate_bg_134Te[i] = hist_doublegate_bg_134Te.GetBinCenter(i+1)
     y_doublegate_bg_134Te[i] = hist_doublegate_bg_134Te.GetBinContent(i+1)
+
+# x_doublegate_bg_134Te = x_doublegate_bg_134Te[x_lower:x_upper]
+# y_doublegate_bg_134Te = y_doublegate_bg_134Te[x_lower:x_upper]
 
 
 ###################################
@@ -170,6 +196,9 @@ def sigma_IYR(prompt, delayed, all_prompt, all_delayed, bg_prompt, bg_delayed):
     #sigma_prompt = np.sqrt(all_prompt + bg_prompt)
     #sigma_delayed = np.sqrt(all_delayed + bg_delayed)
     return np.sqrt( ((2*prompt/(2*prompt+delayed)**2)*sigma_delayed)**2 + ((-2*delayed/(2*prompt+delayed)**2)*sigma_prompt)**2 )
+
+def sigma_data(data_all, data_bg):
+    return np.sqrt(data_all + data_bg + (0.05*data_bg)**2)
 
 ####################################################
 ## 		             Fit data 		              ## 
@@ -244,16 +273,16 @@ P_isomer_2_bg, cov_isomer_2_bg = curve_fit(func, x_isomer_2_gate_bg_134Te, y_iso
 ######################
 #134Te doublegate fits
 ######################
-#amplitude_conv, mean, sigma, amplitude_gauss, amplitude_exp, amplitude_exp2
+#amplitude_conv, mean, sigma, amplitude_gauss, amplitude_exp, tau
 #P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50])) #24nov
-P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([950,0,0,0,tau_134Te-2*sigma_tau_134Te],[1100,40,300,100,tau_134Te+2*sigma_tau_134Te])) #25nov
-# print("\n")
-# print(" *****  Doublegated true spectrum fit ***** \n")
-# print("mean: %.4f" % P_double[0])
-# print("sigma: %.4f" % P_double[1])
-# print("amplitude_gauss: %.4f" % P_double[2])
-# print("amplitude_exp: %.4f" % P_double[3])
-# print("tau: %.4f,  in half_life:  %.4f" % (P_double[4],P_double[4]*np.log(2)))
+P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([950,0,0,0,0],[1100,40,3000,1000,1000])) #25nov
+print("\n")
+print(" *****  Doublegated true spectrum fit ***** \n")
+print("mean: %.4f" % P_double[0])
+print("sigma: %.4f" % P_double[1])
+print("amplitude_gauss: %.4f" % P_double[2])
+print("amplitude_exp: %.4f" % P_double[3])
+print("tau: %.4f,  in half_life:  %.4f" % (P_double[4],P_double[4]*np.log(2)))
 
 #P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50])) #24nov
 P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([950,0,20,10,tau_134Te-2*sigma_tau_134Te],[1100,40,300,200,tau_134Te+2*sigma_tau_134Te])) #25nov
@@ -268,13 +297,13 @@ P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doubleg
 
 #P_double_bg, cov_double_bg = curve_fit(func, x_doublegate_bg_134Te, y_doublegate_bg_134Te, bounds=([0,950,0,0,0,0],[1000,1100,40,40,40,50])) #24.nov
 P_double_bg, cov_double_bg = curve_fit(func, x_doublegate_bg_134Te, y_doublegate_bg_134Te, bounds=([950,0,0,0,tau_134Te-2*sigma_tau_134Te],[1100,20,40,40,tau_134Te+2*sigma_tau_134Te])) #25.nov
-print("\n")
-print(" *****  Doublegated BG spectrum fit ***** \n")
-print("mean: %.4f" % P_double_bg[0])
-print("sigma: %.4f" % P_double_bg[1])
-print("amplitude_gauss: %.4f" % P_double_bg[2])
-print("amplitude_exp: %.4f" % P_double_bg[3])
-print("tau: %.4f,  in half_life:  %.4f" % (P_double_bg[4],P_double_bg[4]*np.log(2)))
+# print("\n")
+# print(" *****  Doublegated BG spectrum fit ***** \n")
+# print("mean: %.4f" % P_double_bg[0])
+# print("sigma: %.4f" % P_double_bg[1])
+# print("amplitude_gauss: %.4f" % P_double_bg[2])
+# print("amplitude_exp: %.4f" % P_double_bg[3])
+# print("tau: %.4f,  in half_life:  %.4f" % (P_double_bg[4],P_double_bg[4]*np.log(2)))
 
 
 
@@ -283,48 +312,48 @@ print("tau: %.4f,  in half_life:  %.4f" % (P_double_bg[4],P_double_bg[4]*np.log(
 ######################################
 
 x_arr = np.linspace(-1000,3000,3000)
-
+x_arr_slice = np.linspace(x_isomer_1_gate_all_134Te[x_lower], x_isomer_1_gate_all_134Te[x_upper],2000)
 
 #Isomer_1_gate
-# area_isomer_1_gate_true = np.trapz(func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3]), x_arr)
-# area_isomer_1_gate_true_prompt = np.trapz(gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3]), x_arr)
-# area_isomer_1_gate_true_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3]), x_arr)
+area_isomer_1_gate_true = np.trapz(func(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4]), x_arr)
+area_isomer_1_gate_true_prompt = np.trapz(gauss(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4]), x_arr)
+area_isomer_1_gate_true_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1[0], P_isomer_1[1], P_isomer_1[2], P_isomer_1[3], P_isomer_1[4]), x_arr)
 
-# area_isomer_1_gate_all = np.trapz(func(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3]), x_arr)
-# area_isomer_1_gate_all_prompt = np.trapz(gauss(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3]), x_arr)
-# area_isomer_1_gate_all_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3]), x_arr)
+area_isomer_1_gate_all = np.trapz(func(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4]), x_arr)
+area_isomer_1_gate_all_prompt = np.trapz(gauss(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4]), x_arr)
+area_isomer_1_gate_all_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1_all[0], P_isomer_1_all[1], P_isomer_1_all[2], P_isomer_1_all[3], P_isomer_1_all[4]), x_arr)
 
-# area_isomer_1_gate_bg = np.trapz(func(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3]), x_arr)
-# area_isomer_1_gate_bg_prompt = np.trapz(gauss(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3]), x_arr)
-# area_isomer_1_gate_bg_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3]), x_arr)
+area_isomer_1_gate_bg = np.trapz(func(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4]), x_arr)
+area_isomer_1_gate_bg_prompt = np.trapz(gauss(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4]), x_arr)
+area_isomer_1_gate_bg_delayed = np.trapz(smeared_exp(x_arr, P_isomer_1_bg[0], P_isomer_1_bg[1], P_isomer_1_bg[2], P_isomer_1_bg[3], P_isomer_1_bg[4]), x_arr)
 
-# IYR_isomer_1_gate = IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed)
-# sigma_IYR_isomer_1_gate = sigma_IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed, all_prompt=area_isomer_1_gate_all_prompt, all_delayed=area_isomer_1_gate_all_delayed, bg_prompt=area_isomer_1_gate_bg_prompt, bg_delayed=area_isomer_1_gate_bg_delayed)
+IYR_isomer_1_gate = IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed)
+sigma_IYR_isomer_1_gate = sigma_IYR(prompt=area_isomer_1_gate_true_prompt, delayed=area_isomer_1_gate_true_delayed, all_prompt=area_isomer_1_gate_all_prompt, all_delayed=area_isomer_1_gate_all_delayed, bg_prompt=area_isomer_1_gate_bg_prompt, bg_delayed=area_isomer_1_gate_bg_delayed)
 
 # print("\n")
-#print("Area isomer_1 true tot: %.3f" % area_isomer_1_gate_true)
-#print("Area isomer_1 true prompt: %.3f" % area_isomer_1_gate_true_prompt)
-#print("Area isomer_1 true delayed: %.3f" % area_isomer_1_gate_true_delayed)
-#area_isomer_1_data_true = np.trapz(y_isomer_1_gate_134Te, x_isomer_1_gate_134Te)
+# print("Area isomer_1 true tot: %.3f" % area_isomer_1_gate_true)
+# print("Area isomer_1 true prompt: %.3f" % area_isomer_1_gate_true_prompt)
+# print("Area isomer_1 true delayed: %.3f" % area_isomer_1_gate_true_delayed)
+# area_isomer_1_data_true = np.trapz(y_isomer_1_gate_134Te, x_isomer_1_gate_134Te)
 # print("Area isomer_1 true tot data: %.3f" % area_isomer_1_data_true)
-#rel_fit_isomer_1 = abs(area_isomer_1_data_true-area_isomer_1_gate_true)/(area_isomer_1_data_true)*100
-#print("Percent difference between data and fit: %.3f percent" % rel_fit_isomer_1)
+# rel_fit_isomer_1 = abs(area_isomer_1_data_true-area_isomer_1_gate_true)/(area_isomer_1_data_true)*100
+# print("Percent difference between data and fit: %.3f percent" % rel_fit_isomer_1)
 
 #Isomer_2_gate
-# area_isomer_2_gate_true = np.trapz(func(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3]), x_arr)
-# area_isomer_2_gate_true_prompt = np.trapz(gauss(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3]), x_arr)
-# area_isomer_2_gate_true_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3]), x_arr)
+area_isomer_2_gate_true = np.trapz(func(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3], P_isomer_2[4]), x_arr)
+area_isomer_2_gate_true_prompt = np.trapz(gauss(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3], P_isomer_2[4]), x_arr)
+area_isomer_2_gate_true_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2[0], P_isomer_2[1], P_isomer_2[2], P_isomer_2[3], P_isomer_2[4]), x_arr)
 
-# area_isomer_2_gate_all = np.trapz(func(x_arr, P_isomer_2_all[0], P_isomer_2_all[1], P_isomer_2_all[2], P_isomer_2_all[3]), x_arr)
-# area_isomer_2_gate_all_prompt = np.trapz(gauss(x_arr, P_isomer_2_all[0], P_isomer_2_all[1], P_isomer_2_all[2], P_isomer_2_all[3]), x_arr)
-# area_isomer_2_gate_all_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2_all[0], P_isomer_2_all[1], P_isomer_2_all[2], P_isomer_2_all[3]), x_arr)
+area_isomer_2_gate_all = np.trapz(func(x_arr, P_isomer_2_all[0], P_isomer_2_all[1], P_isomer_2_all[2], P_isomer_2_all[3], P_isomer_2_all[4]), x_arr)
+area_isomer_2_gate_all_prompt = np.trapz(gauss(x_arr, P_isomer_2_all[0], P_isomer_2_all[1], P_isomer_2_all[2], P_isomer_2_all[3], P_isomer_2_all[4]), x_arr)
+area_isomer_2_gate_all_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2_all[0], P_isomer_2_all[1], P_isomer_2_all[2], P_isomer_2_all[3], P_isomer_2_all[4]), x_arr)
 
-# area_isomer_2_gate_bg = np.trapz(func(x_arr, P_isomer_2_bg[0], P_isomer_2_bg[1], P_isomer_2_bg[2], P_isomer_2_bg[3]), x_arr)
-# area_isomer_2_gate_bg_prompt = np.trapz(gauss(x_arr, P_isomer_2_bg[0], P_isomer_2_bg[1], P_isomer_2_bg[2], P_isomer_2_bg[3]), x_arr)
-# area_isomer_2_gate_bg_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2_bg[0], P_isomer_2_bg[1], P_isomer_2_bg[2], P_isomer_2_bg[3]), x_arr)
+area_isomer_2_gate_bg = np.trapz(func(x_arr, P_isomer_2_bg[0], P_isomer_2_bg[1], P_isomer_2_bg[2], P_isomer_2_bg[3], P_isomer_2_bg[4]), x_arr)
+area_isomer_2_gate_bg_prompt = np.trapz(gauss(x_arr, P_isomer_2_bg[0], P_isomer_2_bg[1], P_isomer_2_bg[2], P_isomer_2_bg[3], P_isomer_2_bg[4]), x_arr)
+area_isomer_2_gate_bg_delayed = np.trapz(smeared_exp(x_arr, P_isomer_2_bg[0], P_isomer_2_bg[1], P_isomer_2_bg[2], P_isomer_2_bg[3], P_isomer_2_bg[4]), x_arr)
 
-# IYR_isomer_2_gate = IYR(prompt=area_isomer_2_gate_true_prompt, delayed=area_isomer_2_gate_true_delayed)
-# sigma_IYR_isomer_2_gate = sigma_IYR(prompt=area_isomer_2_gate_true_prompt, delayed=area_isomer_2_gate_true_delayed, all_prompt=area_isomer_2_gate_all_prompt, all_delayed=area_isomer_2_gate_all_delayed, bg_prompt=area_isomer_2_gate_bg_prompt, bg_delayed=area_isomer_2_gate_bg_delayed)
+IYR_isomer_2_gate = IYR(prompt=area_isomer_2_gate_true_prompt, delayed=area_isomer_2_gate_true_delayed)
+sigma_IYR_isomer_2_gate = sigma_IYR(prompt=area_isomer_2_gate_true_prompt, delayed=area_isomer_2_gate_true_delayed, all_prompt=area_isomer_2_gate_all_prompt, all_delayed=area_isomer_2_gate_all_delayed, bg_prompt=area_isomer_2_gate_bg_prompt, bg_delayed=area_isomer_2_gate_bg_delayed)
 
 # print("\n")
 # print("Area isomer_2 true tot: %.3f" % area_isomer_2_gate_true)
@@ -338,37 +367,38 @@ x_arr = np.linspace(-1000,3000,3000)
 
 
 #Doublegated
-# area_double_true = np.trapz(func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3]), x_arr)
-# area_double_true_prompt = np.trapz(gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3]), x_arr)
-# area_double_true_delayed = np.trapz(smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_double[3]), x_arr)
+area_double_true = np.trapz(func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), x_arr)
+area_double_true_prompt = np.trapz(gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), x_arr)
+area_double_true_delayed = np.trapz(smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), x_arr)
 
-# area_double_all = np.trapz(func(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3]), x_arr)
-# area_double_all_prompt = np.trapz(gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3]), x_arr)
-# area_double_all_delayed = np.trapz(smeared_exp(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3]), x_arr)
+area_double_all = np.trapz(func(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), x_arr)
+area_double_all_prompt = np.trapz(gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), x_arr)
+area_double_all_delayed = np.trapz(smeared_exp(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), x_arr)
 
-# area_double_bg = np.trapz(func(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3]), x_arr)
-# area_double_bg_prompt = np.trapz(gauss(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3]), x_arr)
-# area_double_bg_delayed = np.trapz(smeared_exp(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3]), x_arr)
+area_double_bg = np.trapz(func(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), x_arr)
+area_double_bg_prompt = np.trapz(gauss(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), x_arr)
+area_double_bg_delayed = np.trapz(smeared_exp(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), x_arr)
 
-# IYR_double = IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed)
-# sigma_IYR_double = sigma_IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed, all_prompt=area_double_all_prompt, all_delayed=area_double_all_delayed, bg_prompt=area_double_bg_prompt, bg_delayed=area_double_bg_delayed) #Make this into a function
+IYR_double = IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed)
+sigma_IYR_double = sigma_IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed, all_prompt=area_double_all_prompt, all_delayed=area_double_all_delayed, bg_prompt=area_double_bg_prompt, bg_delayed=area_double_bg_delayed) #Make this into a function
 
-# print("\n")
+print("\n")
 # print("Area double true tot: %.3f" % area_double_true)
 # print("Area double true prompt: %.3f" % area_double_true_prompt)
 # print("Area double true delayed: %.3f" % area_double_true_delayed)
-# area_double_data_true = np.trapz(y_doublegate_134Te, x_doublegate_134Te)
-# print("Area isomer_1 true tot data: %.3f" % area_double_data_true)
-# rel_fit_double = abs(area_double_data_true-area_double_true)/(area_double_data_true)*100
-# print("Percent difference between data and fit: %.3f percent" % rel_fit_double)
+area_double_data_true = np.trapz(y_doublegate_134Te, x_doublegate_134Te)
+#print("Area double true tot data: %.3f" % area_double_data_true)
+area_double_true_slice = np.trapz(func(x_arr_slice, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), x_arr_slice)
+rel_fit_double = abs(area_double_data_true-area_double_true_slice)/(area_double_data_true)*100
+print("Percent difference between data and fit: %.3f percent" % rel_fit_double)
 
 
-# print("\n")
-# print(" ***** Isomeric Yield Ratios ****")
-# print("IYR_isomer_1 (297 keV):   %.4f +/- %.4f" % (IYR_isomer_1_gate, sigma_IYR_isomer_1_gate) )
-# print("IYR_isomer_2 (1279 keV):  %.4f +/- %.4f" % (IYR_isomer_2_gate, sigma_IYR_isomer_2_gate) )
-# print("IYR_double:               %.4f +/- %.4f " % (IYR_double, sigma_IYR_double) )
-# print("\n")
+print("\n")
+print(" ***** Isomeric Yield Ratios ****")
+print("IYR_isomer_1 (297 keV):   %.4f +/- %.4f" % (IYR_isomer_1_gate, sigma_IYR_isomer_1_gate) )
+print("IYR_isomer_2 (1279 keV):  %.4f +/- %.4f" % (IYR_isomer_2_gate, sigma_IYR_isomer_2_gate) )
+print("IYR_double:               %.4f +/- %.4f " % (IYR_double, sigma_IYR_double) )
+print("\n")
 
 
 ##########################
@@ -423,8 +453,8 @@ x_arr = np.linspace(-1000,3000,3000)
 
 
 #Doublegated, fit
-#plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=np.sqrt(abs(y_doublegate_134Te)),fmt=".", label="doublegate_134Te", color="royalblue")
-plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
+plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
+#plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
 #plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
 
