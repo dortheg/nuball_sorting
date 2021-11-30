@@ -13,7 +13,8 @@ import time
 ##########################
 
 #file = ROOT.TFile.Open("252Cf_24nov2021.root"," READ ")
-file = ROOT.TFile.Open("252Cf_25nov2021.root"," READ ")
+#file = ROOT.TFile.Open("252Cf_25nov2021.root"," READ ")
+file = ROOT.TFile.Open("252Cf_30nov2021.root"," READ ")
 
 #####################
 ###     134Te      ##
@@ -149,6 +150,45 @@ for i in range(x_bins):
 # y_doublegate_bg_134Te = y_doublegate_bg_134Te[x_lower:x_upper]
 
 
+#####################
+###     140Xe      ##
+#####################
+
+#Doublegate true
+hist_doublegate_140Xe = file.Get('time_gamma_doublegate_140Xe')
+x_bins = hist_doublegate_140Xe.GetNbinsX()
+
+x_doublegate_140Xe = np.zeros(x_bins)
+y_doublegate_140Xe = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_140Xe[i] = hist_doublegate_140Xe.GetBinCenter(i+1)
+    y_doublegate_140Xe[i] = hist_doublegate_140Xe.GetBinContent(i+1)
+
+#Doublegate all
+hist_doublegate_all_140Xe = file.Get('time_gamma_doublegate_all_140Xe')
+x_bins = hist_doublegate_all_140Xe.GetNbinsX()
+
+x_doublegate_all_140Xe = np.zeros(x_bins)
+y_doublegate_all_140Xe = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_all_140Xe[i] = hist_doublegate_all_140Xe.GetBinCenter(i+1)
+    y_doublegate_all_140Xe[i] = hist_doublegate_all_140Xe.GetBinContent(i+1)
+
+#Doublegate bg
+hist_doublegate_bg_140Xe = file.Get('time_gamma_doublegate_bg_140Xe')
+x_bins = hist_doublegate_bg_140Xe.GetNbinsX()
+
+x_doublegate_bg_140Xe = np.zeros(x_bins)
+y_doublegate_bg_140Xe = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_bg_140Xe[i] = hist_doublegate_bg_140Xe.GetBinCenter(i+1)
+    y_doublegate_bg_140Xe[i] = hist_doublegate_bg_140Xe.GetBinContent(i+1)
+
+
+
 ###################################
 ##      Define fitting func      ## 
 ###################################
@@ -207,9 +247,11 @@ def sigma_data(data_all, data_bg):
 #Remember: will need some help to find correct fit parameters
 #amplitude_conv, mean, sigma, amplitude_gauss, amplitude_exp, amplitude_exp2
 
-######################
+##################################################################
+
+#########################
 #134Te isomer_1 gate fits
-######################
+#########################
 P_isomer_1, cov_isomer_1 = curve_fit(func, x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, bounds=([950,0,20,10,tau_134Te-2*sigma_tau_134Te],[1020,20,10000,10000,tau_134Te+2*sigma_tau_134Te]))
 # print("\n")
 # print(" *****  Isomer_1 true spectrum fit ***** \n")
@@ -276,13 +318,13 @@ P_isomer_2_bg, cov_isomer_2_bg = curve_fit(func, x_isomer_2_gate_bg_134Te, y_iso
 #amplitude_conv, mean, sigma, amplitude_gauss, amplitude_exp, tau
 #P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50])) #24nov
 P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([950,0,0,0,tau_134Te-2*sigma_tau_134Te],[1100,40,3000,1000,tau_134Te+2*sigma_tau_134Te])) #25nov
-print("\n")
-print(" *****  Doublegated true spectrum fit ***** \n")
-print("mean: %.4f" % P_double[0])
-print("sigma: %.4f" % P_double[1])
-print("amplitude_gauss: %.4f" % P_double[2])
-print("amplitude_exp: %.4f" % P_double[3])
-print("tau: %.4f,  in half_life:  %.4f" % (P_double[4],P_double[4]*np.log(2)))
+# print("\n")
+# print(" *****  Doublegated true spectrum fit ***** \n")
+# print("mean: %.4f" % P_double[0])
+# print("sigma: %.4f" % P_double[1])
+# print("amplitude_gauss: %.4f" % P_double[2])
+# print("amplitude_exp: %.4f" % P_double[3])
+# print("tau: %.4f,  in half_life:  %.4f" % (P_double[4],P_double[4]*np.log(2)))
 
 #P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50])) #24nov
 P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([950,0,20,10,tau_134Te-2*sigma_tau_134Te],[1100,40,300,200,tau_134Te+2*sigma_tau_134Te])) #25nov
@@ -304,6 +346,22 @@ P_double_bg, cov_double_bg = curve_fit(func, x_doublegate_bg_134Te, y_doublegate
 # print("amplitude_gauss: %.4f" % P_double_bg[2])
 # print("amplitude_exp: %.4f" % P_double_bg[3])
 # print("tau: %.4f,  in half_life:  %.4f" % (P_double_bg[4],P_double_bg[4]*np.log(2)))
+
+########################################################################################
+
+######################
+#140Xe doublegate fits
+######################
+#mean, sigma, amplitude_gauss, amplitude_exp, tau
+P_double_140Xe, cov_double_140Xe = curve_fit(func, x_doublegate_140Xe, y_doublegate_140Xe, bounds=([950,0,0,0,0],[1100,40,3000,1000,1000]))
+print("\n")
+print(" *****  140Xe: Doublegated true spectrum fit ***** \n")
+print("mean: %.4f" % P_double_140Xe[0])
+print("sigma: %.4f" % P_double_140Xe[1])
+print("amplitude_gauss: %.4f" % P_double_140Xe[2])
+print("amplitude_exp: %.4f" % P_double_140Xe[3])
+print("tau: %.4f,  in half_life:  %.4f" % (P_double_140Xe[4],P_double_140Xe[4]*np.log(2)))
+
 
 
 
@@ -389,22 +447,22 @@ area_double_data_true = np.trapz(y_doublegate_134Te, x_doublegate_134Te)
 #print("Area double true tot data: %.3f" % area_double_data_true)
 area_double_true = np.trapz(func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), x_arr)
 rel_fit_double = abs(area_double_data_true-area_double_true)/(area_double_data_true)*100
-print("Percent difference between data and fit: %.3f percent" % rel_fit_double)
+#print("Percent difference between data and fit: %.3f percent" % rel_fit_double)
 
 
-print("\n")
-print(" ***** Isomeric Yield Ratios ****")
-print("IYR_isomer_1 (297 keV):   %.4f +/- %.4f" % (IYR_isomer_1_gate, sigma_IYR_isomer_1_gate) )
-print("IYR_isomer_2 (1279 keV):  %.4f +/- %.4f" % (IYR_isomer_2_gate, sigma_IYR_isomer_2_gate) )
-print("IYR_double:               %.4f +/- %.4f " % (IYR_double, sigma_IYR_double) )
-print("\n")
+# print("\n")
+# print(" ***** Isomeric Yield Ratios ****")
+# print("IYR_isomer_1 (297 keV):   %.4f +/- %.4f" % (IYR_isomer_1_gate, sigma_IYR_isomer_1_gate) )
+# print("IYR_isomer_2 (1279 keV):  %.4f +/- %.4f" % (IYR_isomer_2_gate, sigma_IYR_isomer_2_gate) )
+# print("IYR_double:               %.4f +/- %.4f " % (IYR_double, sigma_IYR_double) )
+# print("\n")
 
 
 ##########################
 ## 			Plot 		## 
 ##########################
 
-#Isomer 1 gated, fit
+#134Te isomer 1 gated, fit
 #plt.plot(x_isomer_1_gate_134Te, y_isomer_1_gate_134Te, label="isomer_1_gate_134Te", color="royalblue")
 #plt.plot(x_isomer_1_gate_all_134Te, y_isomer_1_gate_all_134Te, label="isomer_1_gate_all_134Te", color="black")
 #plt.plot(x_isomer_1_gate_bg_134Te, y_isomer_1_gate_bg_134Te, label="isomer_1_gate_bg_134Te", color="pink")
@@ -427,7 +485,7 @@ print("\n")
 # plt.grid()
 # plt.show()
 
-#Isomer 2 gated, fit
+#134Te isomer 2 gated, fit
 #plt.plot(x_isomer_2_gate_134Te, y_isomer_2_gate_134Te, label="isomer_2_gate_134Te", color="royalblue")
 #plt.plot(x_isomer_2_gate_all_134Te, y_isomer_2_gate_all_134Te, label="isomer_2_gate_all_134Te", color="black")
 #plt.plot(x_isomer_2_gate_bg_134Te, y_isomer_2_gate_bg_134Te, label="isomer_2_gate_bg_134Te", color="pink")
@@ -451,15 +509,15 @@ print("\n")
 # plt.show()
 
 
-#Doublegated, fit
-plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
+#134Te doublegated, fit
+#plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
 #plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
 
-plt.plot(x_arr, func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), label="true fit, total", color="orange")
-plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), label="true gaussian", color="green")
-plt.plot(x_arr, smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), label="true smeared exp", color="red")
+# plt.plot(x_arr, func(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), label="true fit, total", color="orange")
+# plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), label="true gaussian", color="green")
+# plt.plot(x_arr, smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4]), label="true smeared exp", color="red")
 
 # plt.plot(x_arr, func(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), label="all fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), label="all gaussian", color="green")
@@ -469,13 +527,32 @@ plt.plot(x_arr, smeared_exp(x_arr, P_double[0], P_double[1], P_double[2], P_doub
 # plt.plot(x_arr, gauss(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), label="bg gaussian", color="green")
 # plt.plot(x_arr, smeared_exp(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), label="bg smeared exp", color="red")
 
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# plt.title(str(func))
+# plt.axis([800,2000,-10,250])
+# plt.legend(fontsize=14)
+# plt.grid()
+# plt.show()
+
+
+#140Xe doublegated
+plt.plot(x_doublegate_140Xe, y_doublegate_140Xe, label="doublegate_140Xe", color="royalblue")
+#plt.plot(x_doublegate_all_140Xe, y_doublegate_all_140Xe, label="doublegate_all_140Xe", color="black")
+#plt.plot(x_doublegate_bg_140Xe, y_doublegate_bg_140Xe, label="doublegate_bg_140Xe", color="pink")
+
+plt.plot(x_arr, func(x_arr, P_double_140Xe[0], P_double_140Xe[1], P_double_140Xe[2], P_double_140Xe[3], P_double_140Xe[4]), label="true fit, total", color="orange")
+plt.plot(x_arr, gauss(x_arr, P_double_140Xe[0], P_double_140Xe[1], P_double_140Xe[2], P_double_140Xe[3], P_double_140Xe[4]), label="true gaussian", color="green")
+plt.plot(x_arr, smeared_exp(x_arr, P_double_140Xe[0], P_double_140Xe[1], P_double_140Xe[2], P_double_140Xe[3], P_double_140Xe[4]), label="true smeared exp", color="red")
+
 plt.xlabel("Time [ns]", fontsize=14)
 plt.ylabel("Counts", fontsize=14)
 plt.title(str(func))
-plt.axis([800,2000,-10,250])
+plt.axis([800,1600,-10,1500])
 plt.legend(fontsize=14)
 plt.grid()
 plt.show()
+
 
 #Plot the IYR
 # plt.errorbar([1], [IYR_isomer_1_gate], yerr=[sigma_IYR_isomer_1_gate], fmt="ro", label="isomer_1_gate")
