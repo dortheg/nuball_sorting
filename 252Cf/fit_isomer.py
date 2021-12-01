@@ -335,15 +335,15 @@ def sigma_data(data_all, data_bg):
 #P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50])) #24nov
 #P_double, cov_double = curve_fit(func, x_doublegate_134Te, y_doublegate_134Te, bounds=([950,0,0,0,tau_134Te-2*sigma_tau_134Te],[1100,40,3000,1000,tau_134Te+2*sigma_tau_134Te])) #25nov
 P_double, cov_double = curve_fit(sum_two_smeared_exp_gauss, x_doublegate_134Te, y_doublegate_134Te, bounds=([950,0,0,0,0,0,0],[1100,40,3000,1000,40,1000,1000])) #30nov
-print("\n")
-print(" ***** 134Te:  Doublegated true spectrum fit ***** \n")
-print("mean: %.4f" % P_double[0])
-print("sigma: %.4f" % P_double[1])
-print("amplitude_gauss: %.4f" % P_double[2])
-print("amplitude_exp_Ge: %.4f" % P_double[3])
-print("tau_Ge: %.4f" % P_double[4])
-print("amplitude_exp_decay: %.4f" % P_double[5])
-print("tau_decay: %.4f,  in half_life:  %.4f" % (P_double[6],P_double[6]*np.log(2)))
+# print("\n")
+# print(" ***** 134Te:  Doublegated true spectrum fit ***** \n")
+# print("mean: %.4f" % P_double[0])
+# print("sigma: %.4f" % P_double[1])
+# print("amplitude_gauss: %.4f" % P_double[2])
+# print("amplitude_exp_Ge: %.4f" % P_double[3])
+# print("tau_Ge: %.4f" % P_double[4])
+# print("amplitude_exp_decay: %.4f" % P_double[5])
+# print("tau_decay: %.4f,  in half_life:  %.4f" % (P_double[6],P_double[6]*np.log(2)))
 
 #P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([0,950,0,20,10,0],[1000,1100,40,300,200,50])) #24nov
 #P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([950,0,20,10,tau_134Te-2*sigma_tau_134Te],[1100,40,300,200,tau_134Te+2*sigma_tau_134Te])) #25nov
@@ -529,16 +529,16 @@ x_arr = np.linspace(-1000,3000,3000)
 
 
 #134Te doublegated, fit
-plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
+#plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
 #plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
 #plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
 
-plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true fit, total", color="orange")
+#plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true fit, total", color="orange")
 #plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true gaussian", color="green")
 #plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp Ge", color="lime")
-plt.plot(x_arr, smeared_exp_decay(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp decay", color="red")
-plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6])+smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="sum prompt", color="darkolivegreen")
+#plt.plot(x_arr, smeared_exp_decay(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp decay", color="red")
+#plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6])+smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="sum prompt", color="darkolivegreen")
 
 # plt.plot(x_arr, func(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), label="all fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4]), label="all gaussian", color="green")
@@ -548,13 +548,13 @@ plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3],
 # plt.plot(x_arr, gauss(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), label="bg gaussian", color="green")
 # plt.plot(x_arr, smeared_exp(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4]), label="bg smeared exp", color="red")
 
-plt.xlabel("Time [ns]", fontsize=14)
-plt.ylabel("Counts", fontsize=14)
-plt.title(str(func))
-plt.axis([800,2000,-10,250])
-plt.legend(fontsize=14)
-plt.grid()
-plt.show()
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# plt.title(str(func))
+# plt.axis([800,2000,-10,250])
+# plt.legend(fontsize=14)
+# plt.grid()
+# plt.show()
 
 
 #140Xe doublegated
