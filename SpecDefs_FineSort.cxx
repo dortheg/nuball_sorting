@@ -1,5 +1,5 @@
 //All single, clean ge-gammas
-TH1D *single_gamma = new TH1D("single_gamma","single_gamma",4000,0,4000);
+TH1D *single_gamma = new TH1D("single_gamma","single_gamma",5000,0,5000);
 single_gamma->GetXaxis()->SetTitle("Energy [keV]");
 single_gamma->GetYaxis()->SetTitle("Counts");
 
@@ -28,9 +28,6 @@ TH1D *time_isomer_1_gate_bg_134Te = new TH1D("time_isomer_1_gate_bg_134Te","time
 time_isomer_1_gate_bg_134Te->GetXaxis()->SetTitle("Time [ns]");
 time_isomer_1_gate_bg_134Te->GetYaxis()->SetTitle("Counts");
 
-TH1D *time_isomer_1_gate_bg_new_134Te = new TH1D("time_isomer_1_gate_bg_new_134Te","time_isomer_1_gate_bg_new_134Te",2000,-1000,3000);
-time_isomer_1_gate_bg_new_134Te->GetXaxis()->SetTitle("Time [ns]");
-time_isomer_1_gate_bg_new_134Te->GetYaxis()->SetTitle("Counts");
 
 TH1D *time_isomer_1_gate_all_134Te = new TH1D("time_isomer_1_gate_all_134Te","time_isomer_1_gate_all_134Te",2000,-1000,3000);
 time_isomer_1_gate_all_134Te->GetXaxis()->SetTitle("Time [ns]");
@@ -44,10 +41,6 @@ time_isomer_2_gate_134Te->GetYaxis()->SetTitle("Counts");
 TH1D *time_isomer_2_gate_bg_134Te = new TH1D("time_isomer_2_gate_bg_134Te","time_isomer_2_gate_bg_134Te",2000,-1000,3000);
 time_isomer_2_gate_bg_134Te->GetXaxis()->SetTitle("Time [ns]");
 time_isomer_2_gate_bg_134Te->GetYaxis()->SetTitle("Counts");
-
-TH1D *time_isomer_2_gate_bg_new_134Te = new TH1D("time_isomer_2_gate_bg_new_134Te","time_isomer_2_gate_bg_new_134Te",2000,-1000,3000);
-time_isomer_2_gate_bg_new_134Te->GetXaxis()->SetTitle("Time [ns]");
-time_isomer_2_gate_bg_new_134Te->GetYaxis()->SetTitle("Counts");
 
 TH1D *time_isomer_2_gate_all_134Te = new TH1D("time_isomer_2_gate_all_134Te","time_isomer_2_gate_all_134Te",2000,-1000,3000);
 time_isomer_2_gate_all_134Te->GetXaxis()->SetTitle("Time [ns]");
@@ -126,7 +119,28 @@ TH1D *time_gamma_doublegate_bg_random_140Xe = new TH1D("time_gamma_doublegate_bg
 time_gamma_doublegate_bg_random_140Xe->GetXaxis()->SetTitle("Time [ns]");
 time_gamma_doublegate_bg_random_140Xe->GetYaxis()->SetTitle("Counts");
 
+//////////////////////////////////////////////////////////////
+//							 132Sn   						//
+//////////////////////////////////////////////////////////////
+
+TH1D *time_gamma_gate_132Sn = new TH1D("time_gamma_gate_132Sn","time_gamma_gate_132Sn",2000,-1000,3000);
+time_gamma_gate_132Sn->GetXaxis()->SetTitle("Time [ns]");
+time_gamma_gate_132Sn->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_gamma_gate_bg_132Sn = new TH1D("time_gamma_gate_bg_132Sn","time_gamma_gate_bg_132Sn",2000,-1000,3000);
+time_gamma_gate_bg_132Sn->GetXaxis()->SetTitle("Time [ns]");
+time_gamma_gate_bg_132Sn->GetYaxis()->SetTitle("Counts");
+
+
+TH1D *time_gamma_gate_all_132Sn = new TH1D("time_gamma_gate_all_132Sn","time_gamma_gate_all_132Sn",2000,-1000,3000);
+time_gamma_gate_all_132Sn->GetXaxis()->SetTitle("Time [ns]");
+time_gamma_gate_all_132Sn->GetYaxis()->SetTitle("Counts");
+
+
 //////////////////////////////////////////////////////////////////////////
+
+
+
 
 //Anode values for promt and delayed peaks
 TH1D *aval_prompt_134Te = new TH1D("aval_prompt_134Te","aval_prompt_134Te",1000,0,1000);
