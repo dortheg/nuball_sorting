@@ -89,7 +89,7 @@ int main(int argc, char **argv){
 	int gamma_energy_2_140Xe = 377;
 
 	//132Sn
-	int gamma_energy_132Sn = 4041;
+	int gamma_energy_132Sn = 4042;
 
 	//////////////////////////////////////////
 	/// 		   Lookup tables		   ///
@@ -180,22 +180,39 @@ int main(int argc, char **argv){
 	//132Sn
 	int lookup_132Sn_gamma[65535] = {0};
 	//peak gate
-	lookup_132Sn_gamma[gamma_energy_132Sn] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn-7] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn-6] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn-5] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn-4] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn-3] = 2;
 	lookup_132Sn_gamma[gamma_energy_132Sn-1] = 2;
 	lookup_132Sn_gamma[gamma_energy_132Sn-2] = 2;
-	lookup_132Sn_gamma[gamma_energy_132Sn-3] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn] = 2;
 	lookup_132Sn_gamma[gamma_energy_132Sn+1] = 2;
 	lookup_132Sn_gamma[gamma_energy_132Sn+2] = 2;
 	lookup_132Sn_gamma[gamma_energy_132Sn+3] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn+4] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn+5] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn+6] = 2;
+	lookup_132Sn_gamma[gamma_energy_132Sn+7] = 2;
 	//bg gate
-	lookup_132Sn_gamma[gamma_energy_132Sn-4] = 1;
-	lookup_132Sn_gamma[gamma_energy_132Sn-5] = 1;
-	lookup_132Sn_gamma[gamma_energy_132Sn-6] = 1;
-	//lookup_132Sn_gamma[gamma_energy_132Sn-7] = 1;
-	lookup_132Sn_gamma[gamma_energy_132Sn+4] = 1;
-	lookup_132Sn_gamma[gamma_energy_132Sn+5] = 1;
-	lookup_132Sn_gamma[gamma_energy_132Sn+6] = 1;
-	lookup_132Sn_gamma[gamma_energy_132Sn+7] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-8] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-9] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-10] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-11] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-12] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-13] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn-14] = 1;
+
+	lookup_132Sn_gamma[gamma_energy_132Sn+8] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+9] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+10] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+11] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+12] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+13] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+14] = 1;
+	lookup_132Sn_gamma[gamma_energy_132Sn+15] = 1;
+
 
 	//////////////////////////////////////////
 	/// 		  	 Sorting	     	   ///
@@ -308,27 +325,43 @@ int main(int argc, char **argv){
 
 						//e
 						if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==2){
+							//Increment time[m] since m is 297keV line
+							time_isomer_doublegate_1_134Te->Fill(time[m]);
+							time_isomer_doublegate_1_all_134Te->Fill(time[m]);
+
 							//Increment time[n] since n is 1279keV line
-							time_isomer_doublegate_134Te->Fill(time[n]);
-							time_isomer_doublegate_all_134Te->Fill(time[n]);
+							time_isomer_doublegate_2_134Te->Fill(time[n]);
+							time_isomer_doublegate_2_all_134Te->Fill(time[n]);
 						}
 						//b & h, so bg_ridge
 						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==1){
-							time_isomer_doublegate_134Te->Fill(time[n], -bg_param*0.5);
-							time_isomer_doublegate_bg_134Te->Fill(time[n], bg_param*0.5);
-							time_isomer_doublegate_bg_ridge_134Te->Fill(time[n], bg_param);
+							time_isomer_doublegate_1_134Te->Fill(time[m], -bg_param*0.5);
+							time_isomer_doublegate_1_bg_134Te->Fill(time[m], bg_param*0.5);
+							time_isomer_doublegate_1_bg_ridge_134Te->Fill(time[m], bg_param);
+
+							time_isomer_doublegate_2_134Te->Fill(time[n], -bg_param*0.5);
+							time_isomer_doublegate_2_bg_134Te->Fill(time[n], bg_param*0.5);
+							time_isomer_doublegate_2_bg_ridge_134Te->Fill(time[n], bg_param);
 						}
 						// d & f, so bg_ridge
 						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==2){
-							time_isomer_doublegate_134Te->Fill(time[n], -bg_param*0.5);
-							time_isomer_doublegate_bg_134Te->Fill(time[n], bg_param*0.5);
-							time_isomer_doublegate_bg_ridge_134Te->Fill(time[n], bg_param);
+							time_isomer_doublegate_1_134Te->Fill(time[m], -bg_param*0.5);
+							time_isomer_doublegate_1_bg_134Te->Fill(time[m], bg_param*0.5);
+							time_isomer_doublegate_1_bg_ridge_134Te->Fill(time[m], bg_param);
+
+							time_isomer_doublegate_2_134Te->Fill(time[n], -bg_param*0.5);
+							time_isomer_doublegate_2_bg_134Te->Fill(time[n], bg_param*0.5);
+							time_isomer_doublegate_2_bg_ridge_134Te->Fill(time[n], bg_param);
 						}
 						//a + c + g + i, so bg_random
 						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==1){
-							time_isomer_doublegate_134Te->Fill(time[n], bg_param*0.25);
-							time_isomer_doublegate_bg_134Te->Fill(time[n], -bg_param*0.25);
-							time_isomer_doublegate_bg_random_134Te->Fill(time[n], bg_param);
+							time_isomer_doublegate_1_134Te->Fill(time[m], bg_param*0.25);
+							time_isomer_doublegate_1_bg_134Te->Fill(time[m], -bg_param*0.25);
+							time_isomer_doublegate_1_bg_random_134Te->Fill(time[m], bg_param);
+
+							time_isomer_doublegate_2_134Te->Fill(time[n], bg_param*0.25);
+							time_isomer_doublegate_2_bg_134Te->Fill(time[n], -bg_param*0.25);
+							time_isomer_doublegate_2_bg_random_134Te->Fill(time[n], bg_param);
 						}
 
 						/////////////////////
@@ -393,11 +426,17 @@ int main(int argc, char **argv){
 	time_isomer_2_gate_bg_134Te->Write();
 	time_isomer_2_gate_all_134Te->Write();
 
-	time_isomer_doublegate_134Te->Write();
-	time_isomer_doublegate_all_134Te->Write();
-	time_isomer_doublegate_bg_134Te->Write();
-	time_isomer_doublegate_bg_ridge_134Te->Write();
-	time_isomer_doublegate_bg_random_134Te->Write();
+	time_isomer_doublegate_1_134Te->Write();
+	time_isomer_doublegate_1_all_134Te->Write();
+	time_isomer_doublegate_1_bg_134Te->Write();
+	time_isomer_doublegate_1_bg_ridge_134Te->Write();
+	time_isomer_doublegate_1_bg_random_134Te->Write();
+
+	time_isomer_doublegate_2_134Te->Write();
+	time_isomer_doublegate_2_all_134Te->Write();
+	time_isomer_doublegate_2_bg_134Te->Write();
+	time_isomer_doublegate_2_bg_ridge_134Te->Write();
+	time_isomer_doublegate_2_bg_random_134Te->Write();
 
 	time_isomer_doublegate_mult3_134Te->Write();
 	time_isomer_doublegate_bg_mult3_134Te->Write();

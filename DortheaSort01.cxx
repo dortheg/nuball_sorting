@@ -691,7 +691,7 @@ for(ULong64_t i = 0; i < entries; i++){
 			
 			TheEvents[tpointer++]=aEsum[k];
 
-			if (agpat[k] > 1) {time_diff = aTsum[k]/double(agpat[k]);} //Clover average time
+			if (agpat[k] > 1) {time_diff = aTsum[k]/double(agpat[k]);} //Clover average time; cannot use first hit, as is energy-dependent jitter
      	else {time_diff = aTsum[k];}
 		
 			TheEvents[tpointer++]=time_diff;
