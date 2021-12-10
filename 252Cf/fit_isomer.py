@@ -13,7 +13,7 @@ import time
 ##     Read in data     ## 
 ##########################
 
-file = ROOT.TFile.Open("252Cf_2des2021.root"," READ ")
+file = ROOT.TFile.Open("252Cf_8des2021_A.root"," READ ")
 
 #####################
 ###     134Te      ##
@@ -105,7 +105,7 @@ for i in range(x_bins):
 #######################
 
 #Doublegate true
-hist_doublegate_134Te = file.Get('time_isomer_doublegate_134Te')
+hist_doublegate_134Te = file.Get('time_isomer_doublegate_2_134Te')
 x_bins = hist_doublegate_134Te.GetNbinsX()
 
 x_doublegate_134Te = np.zeros(x_bins)
@@ -120,7 +120,7 @@ for i in range(x_bins):
 
 
 #Doublegate all
-hist_doublegate_all_134Te = file.Get('time_isomer_doublegate_all_134Te')
+hist_doublegate_all_134Te = file.Get('time_isomer_doublegate_2_all_134Te')
 x_bins = hist_doublegate_all_134Te.GetNbinsX()
 
 x_doublegate_all_134Te = np.zeros(x_bins)
@@ -135,7 +135,7 @@ for i in range(x_bins):
 
 
 #Doublegate bg
-hist_doublegate_bg_134Te = file.Get('time_isomer_doublegate_bg_134Te')
+hist_doublegate_bg_134Te = file.Get('time_isomer_doublegate_2_bg_134Te')
 x_bins = hist_doublegate_bg_134Te.GetNbinsX()
 
 x_doublegate_bg_134Te = np.zeros(x_bins)
@@ -149,7 +149,7 @@ for i in range(x_bins):
 # y_doublegate_bg_134Te = y_doublegate_bg_134Te[x_lower:x_upper]
 
 #Doublegate bg ridge
-hist_doublegate_bg_ridge_134Te = file.Get('time_isomer_doublegate_bg_ridge_134Te')
+hist_doublegate_bg_ridge_134Te = file.Get('time_isomer_doublegate_2_bg_ridge_134Te')
 x_bins = hist_doublegate_bg_ridge_134Te.GetNbinsX()
 
 x_doublegate_bg_ridge_134Te = np.zeros(x_bins)
@@ -160,7 +160,7 @@ for i in range(x_bins):
     y_doublegate_bg_ridge_134Te[i] = hist_doublegate_bg_ridge_134Te.GetBinContent(i+1)
 
 #Doublegate bg random
-hist_doublegate_bg_random_134Te = file.Get('time_isomer_doublegate_bg_random_134Te')
+hist_doublegate_bg_random_134Te = file.Get('time_isomer_doublegate_2_bg_random_134Te')
 x_bins = hist_doublegate_bg_random_134Te.GetNbinsX()
 
 x_doublegate_bg_random_134Te = np.zeros(x_bins)
@@ -282,6 +282,17 @@ def sum_two_smeared_exp_gauss(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitu
     + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)]),sigma) )
 
 
+def CrystalBall(x, mean=1000, sigma=1, n=3, alpha=1):
+    A = (n/abs(alpha))**n * np.exp(-abs(alpha)**2/2)
+    B = n/abs(alpha) - abs(alpha)
+    C = (n/abs(alpha))*(1/(n-1))*np.exp(-abs(alpha)**2/2)
+    D = np.sqrt(np.pi/2)*(1 + erf(abs(alpha/np.sqrt(2))))
+
+    N = 1/(sigma*(C+D))
+
+    return np.piecewise(x, [(x-mean)/sigma > -alpha, (x-mean)/sigma <= -alpha], [lambda x: N*np.exp(-(x-mean)**2/(2*sigma**2)), lambda x: N*A*(B-(x-mean)/sigma)**(-n)])
+
+
 #func = sum__smeared_exp_gauss
 #print(str(func))
 
@@ -396,28 +407,28 @@ def sigma_fill_0(data_incoming):
 #mean, sigma, amplitude_gauss, amplitude_exp_Ge, tau_Ge, amplitude_exp_decay, tau_decay
 
 P_double_bg_random_gaussexp, cov_double_bg_random_gaussexp = curve_fit(sum_smeared_exp_gauss_Ge, x_doublegate_bg_random_134Te, y_doublegate_bg_random_134Te, sigma=sigma_fill_0(y_doublegate_bg_random_134Te), bounds=([960,0,0,0,0],[1100,40,1000,1000,50]))
-print("\n")
-print(" ***** 134Te: Doublegated BG random spectrum fit ***** ")
-print("          -- GAUSS + SMEARED EXP FIT --   ")
-print("mean: %.4f" % P_double_bg_random_gaussexp[0])
-print("sigma: %.4f" % P_double_bg_random_gaussexp[1])
-print("amplitude_gauss: %.4f" % P_double_bg_random_gaussexp[2])
-print("amplitude_exp_Ge: %.4f" % P_double_bg_random_gaussexp[3])
-print("tau_Ge: %.4f" % P_double_bg_random_gaussexp[4])
+# print("\n")
+# print(" ***** 134Te: Doublegated BG random spectrum fit ***** ")
+# print("          -- GAUSS + SMEARED EXP FIT --   ")
+# print("mean: %.4f" % P_double_bg_random_gaussexp[0])
+# print("sigma: %.4f" % P_double_bg_random_gaussexp[1])
+# print("amplitude_gauss: %.4f" % P_double_bg_random_gaussexp[2])
+# print("amplitude_exp_Ge: %.4f" % P_double_bg_random_gaussexp[3])
+# print("tau_Ge: %.4f" % P_double_bg_random_gaussexp[4])
 
                                                                                 #x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0
 
 P_double, cov_double = curve_fit(sum_two_smeared_exp_gauss, x_doublegate_134Te, y_doublegate_134Te, bounds=([P_double_bg_random_gaussexp[0],P_double_bg_random_gaussexp[1],0,0,P_double_bg_random_gaussexp[4],0,0],[P_double_bg_random_gaussexp[0]+0.00000001,P_double_bg_random_gaussexp[1]+0.00000001,3000,1000,P_double_bg_random_gaussexp[4]+0.00000001,1000,1000])) #30nov
-print("\n")
-print(" ***** 134Te:  Doublegated true spectrum fit ***** ")
-print("          -- GAUSS + TWO SMEARED EXP FIT --   ")
-print("mean: %.4f" % P_double[0])
-print("sigma: %.4f" % P_double[1])
-print("amplitude_gauss: %.4f" % P_double[2])
-print("amplitude_exp_Ge: %.4f" % P_double[3])
-print("tau_Ge: %.4f" % P_double[4])
-print("amplitude_exp_decay: %.4f" % P_double[5])
-print("tau_decay: %.4f,  in half_life:  %.4f" % (P_double[6],P_double[6]*np.log(2)))
+# print("\n")
+# print(" ***** 134Te:  Doublegated true spectrum fit ***** ")
+# print("          -- GAUSS + TWO SMEARED EXP FIT --   ")
+# print("mean: %.4f" % P_double[0])
+# print("sigma: %.4f" % P_double[1])
+# print("amplitude_gauss: %.4f" % P_double[2])
+# print("amplitude_exp_Ge: %.4f" % P_double[3])
+# print("tau_Ge: %.4f" % P_double[4])
+# print("amplitude_exp_decay: %.4f" % P_double[5])
+# print("tau_decay: %.4f,  in half_life:  %.4f" % (P_double[6],P_double[6]*np.log(2)))
 
 #P_double_all, cov_double_all = curve_fit(func, x_doublegate_all_134Te, y_doublegate_all_134Te, bounds=([950,0,20,0,0,10,0],[1100,40,300,200,20,200,1000])) #30nov
 # print("\n")
@@ -448,15 +459,14 @@ print("tau_decay: %.4f,  in half_life:  %.4f" % (P_double[6],P_double[6]*np.log(
 ######################
 #140Xe doublegate fits
 ######################
-#P_double_bg_random_gaussexp_140Xe, cov_double_bg_random_gaussexp_140Xe = curve_fit(sum_smeared_exp_gauss_Ge, x_doublegate_bg_random_140Xe, y_doublegate_bg_random_140Xe, sigma=sigma_fill_0(y_doublegate_bg_random_140Xe), bounds=([960,0,0,0,0],[1100,40,1000,1000,50]))
-# print("\n")
-# print(" *****  140Xe: Doublegated BG random spectrum fit ***** \n")
-# print("          -- GAUSS + SMEARED EXP FIT --   ")
-# print("mean: %.4f" % P_double_bg_random_gaussexp_140Xe[0])
-# print("sigma: %.4f" % P_double_bg_random_gaussexp_140Xe[1])
-# print("amplitude_gauss: %.4f" % P_double_bg_random_gaussexp_140Xe[2])
-# print("amplitude_exp_Ge: %.4f" % P_double_bg_random_gaussexp_140Xe[3])
-# print("tau_Ge: %.4f" % P_double_bg_random_gaussexp_140Xe[4])
+P_double_140Xe, cov_double_140Xe = curve_fit(CrystalBall, x_doublegate_140Xe, y_doublegate_140Xe, sigma=sigma_fill_0(y_doublegate_140Xe))#, bounds=([960,0,0,0,0],[1100,40,1000,1000,50]))
+print("\n")
+print(" *****  140Xe: Doublegated true spectrum fit ***** \n")
+print("          -- GAUSS + SMEARED EXP FIT --   ")
+print("mean: %.4f" % P_double_140Xe[0])
+print("sigma: %.4f" % P_double_140Xe[1])
+print("n: %.4f" % P_double_140Xe[2])
+print("alpha: %.4f" % P_double_140Xe[3])
 
 
 
@@ -618,19 +628,19 @@ x_arr = np.linspace(-1000,3000,3000)
 
 
 #134Te doublegated, fit
-#plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
-plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
-#plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
-#plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
+# #plt.errorbar(x_doublegate_134Te, y_doublegate_134Te, yerr=sigma_data(y_doublegate_all_134Te, y_doublegate_bg_134Te), fmt=".", label="doublegate_134Te", color="royalblue")
+# plt.plot(x_doublegate_134Te, y_doublegate_134Te, label="doublegate_134Te", color="royalblue")
+# #plt.plot(x_doublegate_all_134Te, y_doublegate_all_134Te, label="doublegate_all_134Te", color="black")
+# #plt.plot(x_doublegate_bg_134Te, y_doublegate_bg_134Te, label="doublegate_bg_134Te", color="pink")
 
-#plt.errorbar(x_doublegate_bg_random_134Te, y_doublegate_bg_random_134Te, yerr=np.sqrt(y_doublegate_bg_random_134Te), label="doublegate_bg_random_134Te", color="orange")
-#plt.plot(x_arr, sum_smeared_exp_gauss_Ge(x_arr, P_double_bg_random_gaussexp[0], P_double_bg_random_gaussexp[1], P_double_bg_random_gaussexp[2], P_double_bg_random_gaussexp[3], P_double_bg_random_gaussexp[4]), label="gauss + smeared exp", color="red")
+# #plt.errorbar(x_doublegate_bg_random_134Te, y_doublegate_bg_random_134Te, yerr=np.sqrt(y_doublegate_bg_random_134Te), label="doublegate_bg_random_134Te", color="orange")
+# #plt.plot(x_arr, sum_smeared_exp_gauss_Ge(x_arr, P_double_bg_random_gaussexp[0], P_double_bg_random_gaussexp[1], P_double_bg_random_gaussexp[2], P_double_bg_random_gaussexp[3], P_double_bg_random_gaussexp[4]), label="gauss + smeared exp", color="red")
 
-plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true fit, total", color="orange")
-#plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true gaussian", color="green")
-#plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp Ge", color="lime")
-plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6])+smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="sum prompt", color="darkolivegreen")
-plt.plot(x_arr, smeared_exp_decay(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp decay", color="red")
+# plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true fit, total", color="orange")
+# #plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true gaussian", color="green")
+# #plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp Ge", color="lime")
+# plt.plot(x_arr, gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6])+smeared_exp_Ge(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="sum prompt", color="darkolivegreen")
+# plt.plot(x_arr, smeared_exp_decay(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5], P_double[6]), label="true smeared exp decay", color="red")
 
 # plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4], P_double_all[5], P_double_all[6]), label="true fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_double_all[0], P_double_all[1], P_double_all[2], P_double_all[3], P_double_all[4], P_double_all[5], P_double_all[6]), label="true gaussian", color="green")
@@ -644,32 +654,27 @@ plt.plot(x_arr, smeared_exp_decay(x_arr, P_double[0], P_double[1], P_double[2], 
 # plt.plot(x_arr, gauss(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4], P_double_bg[5], P_double_bg[6])+smeared_exp_Ge(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4], P_double_bg[5], P_double_bg[6]), label="sum prompt", color="darkolivegreen")
 # plt.plot(x_arr, smeared_exp_decay(x_arr, P_double_bg[0], P_double_bg[1], P_double_bg[2], P_double_bg[3], P_double_bg[4], P_double_bg[5], P_double_bg[6]), label="true smeared exp decay", color="red")
 
-plt.xlabel("Time [ns]", fontsize=14)
-plt.ylabel("Counts", fontsize=14)
-plt.axis([800,2000,-10,250])
-plt.legend(fontsize=12)
-plt.grid()
-plt.show()
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# plt.axis([800,2000,-10,250])
+# plt.legend(fontsize=12)
+# plt.grid()
+# plt.show()
 
 
 #140Xe doublegated
 #plt.plot(x_doublegate_140Xe, y_doublegate_140Xe, label="doublegate_140Xe", color="royalblue")
-#plt.plot(x_doublegate_all_140Xe, y_doublegate_all_140Xe, label="doublegate_all_140Xe", color="black")
-#plt.plot(x_doublegate_bg_140Xe, y_doublegate_bg_140Xe, label="doublegate_bg_140Xe", color="pink")
-#plt.errorbar(x_doublegate_bg_random_140Xe, y_doublegate_bg_random_140Xe, yerr=np.sqrt(y_doublegate_bg_random_140Xe), label="doublegate_bg_random_140Xe", color="orange")
-
-#plt.plot(x_arr, sum_smeared_exp_gauss_Ge(x_arr, P_double_bg_random_gaussexp_140Xe[0], P_double_bg_random_gaussexp_140Xe[1], P_double_bg_random_gaussexp_140Xe[2], P_double_bg_random_gaussexp_140Xe[3], P_double_bg_random_gaussexp_140Xe[4]), label="gauss + smeared exp", color="red")
-
+plt.plot(x_arr, CrystalBall(x_arr))
 # plt.plot(x_arr, func(x_arr, P_double_140Xe[0], P_double_140Xe[1], P_double_140Xe[2], P_double_140Xe[3], P_double_140Xe[4]), label="true fit, total", color="orange")
 # plt.plot(x_arr, gauss(x_arr, P_double_140Xe[0], P_double_140Xe[1], P_double_140Xe[2], P_double_140Xe[3], P_double_140Xe[4]), label="true gaussian", color="green")
 # plt.plot(x_arr, smeared_exp(x_arr, P_double_140Xe[0], P_double_140Xe[1], P_double_140Xe[2], P_double_140Xe[3], P_double_140Xe[4]), label="true smeared exp", color="red")
 
-# plt.xlabel("Time [ns]", fontsize=14)
-# plt.ylabel("Counts", fontsize=14)
-# plt.axis([800,1600,-10,1500])
-# plt.legend(fontsize=14)
-# plt.grid()
-# plt.show()
+plt.xlabel("Time [ns]", fontsize=14)
+plt.ylabel("Counts", fontsize=14)
+#plt.axis([800,1600,-10,1500])
+plt.legend(fontsize=14)
+plt.grid()
+plt.show()
 
 
 #Plot the IYR
