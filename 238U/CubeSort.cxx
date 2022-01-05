@@ -149,9 +149,24 @@ int main(int argc, char **argv){
 				//bg_ridge = (b+d+f+h)/2
 				//bg_random = (a+c+g+i)/4
 
+				//e
 				if(lookup[i][j]==2){
-					time_isomer_doublegate_134Te->Fill(k,Cube1->Get(i,j,k));
-					time_isomer_doublegate_all_134Te->Fill(k,Cube1->Get(i,j,k));
+					time_isomer_doublegate_134Te->Fill(k, Cube1->Get(i,j,k));
+					time_isomer_doublegate_all_134Te->Fill(k, Cube1->Get(i,j,k));
+				}
+
+				//b, d, f, h
+				if(lookup[i][j]==1){
+					time_isomer_doublegate_134Te->Fill(k, -0.5*Cube1->Get(i,j,k));
+					time_isomer_doublegate_bg_134Te->Fill(k, 0.5*Cube1->Get(i,j,k));
+					time_isomer_doublegate_bg_ridge_134Te->Fill(k, 0.5*Cube1->Get(i,j,k));
+				}
+
+				//a, c, g, i
+				if(lookup[i][j]==3){
+					time_isomer_doublegate_134Te->Fill(k, 0.25*Cube1->Get(i,j,k));
+					time_isomer_doublegate_bg_134Te->Fill(k, -0.25*Cube1->Get(i,j,k));
+					time_isomer_doublegate_bg_random_134Te->Fill(k, 0.25*Cube1->Get(i,j,k));
 				}
 			}
 		}
