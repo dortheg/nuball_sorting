@@ -17,18 +17,11 @@
 #include "TApplication.h"
 #include "TFile.h"
 #include <fstream>
-//#include "Spec.hxx"
-//#include "Spec.cxx"
-//#include "RWMat.hxx"
-//#include "RWMat.cxx"
 #include "TH1.h"
 #include "TMath.h"
 #include "TGraphErrors.h"
 #include "CubeDDT.hxx"
 #include "CubeDDT.cxx"
-//#include "kr94isob.hxx"
-//#include "sr95iso.hxx"
-//#include "ba144.hxx"
 
 using namespace std;
 
@@ -47,11 +40,15 @@ double NFWHM=1.0;
 
 int main(int argc, char **argv){
 
-/*	//Create & read in cubes
-	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,10);
-	CubeDDT *Cube2=new CubeDDT("",EBINS,TBINS,10);
+	//////////////////////////////////////////
+	/// 		   Import files			   ///
+	//////////////////////////////////////////
+
+	#include "SpecDefs_CubeSort.cxx"
+
+	//Create & read in cubes
+	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2); //Is it correct that it's 10 ns per channel, thought you said 2?
 	Cube1->Read("U238cube_n3_4jan2021.bin");
-	Cube2->Read("U238cube_n3_4jan2021-sub.bin");*/
 
 	// Create coincidence matrix
 	TH2F* ggm = new TH2F("ggm","ggm",EBINS,0,EBINS,EBINS,0,EBINS);
@@ -71,6 +68,7 @@ int main(int argc, char **argv){
 	int gamma_energy_2_134Te = 1279;
 
 	//Implement FWHM-dependent gates later
+
 
 	//////////////////////////////////////////
 	/// 		   Lookup table		  	   ///
@@ -134,7 +132,42 @@ int main(int argc, char **argv){
 		cout << "\n";
 	}*/
 
-	
+
+	//////////////////////////////////////////
+	/// 		  	 Sorting	     	   ///
+	//////////////////////////////////////////
+
+	for (int k=0; k < TBINS; k++){
+		for (int i=0; i < EBINS; i++){
+			for (int j=0; j < EBINS; j++){
+
+				//a b c
+				//d e f
+				//g h i
+
+				//true = e - (b+d+f+h)/2 + (a+c+g+i)/4
+				//bg_ridge = (b+d+f+h)/2
+				//bg_random = (a+c+g+i)/4
+
+				if(lookup[i][j]==2){
+					time_isomer_doublegate_134Te->Fill(k,Cube1->Get(i,j,k));
+					time_isomer_doublegate_all_134Te->Fill(k,Cube1->Get(i,j,k));
+				}
+			}
+		}
+	}
+
+	//////////////////////////////////////////
+	/// 	  Write spectra to file	       ///
+	//////////////////////////////////////////
+
+	TFile *outputspectrafile = new TFile("CubeSort.root","RECREATE");
+	time_isomer_doublegate_134Te->Write();
+	time_isomer_doublegate_all_134Te->Write();
+
+	outputspectrafile->cd();
+	outputspectrafile->Close();
+
 
 }
 
