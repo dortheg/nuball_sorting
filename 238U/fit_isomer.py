@@ -19,6 +19,7 @@ file = ROOT.TFile.Open("CubeSort.root"," READ ")
 x_lower = 100
 x_upper = 300
 
+
 #######################
 
 #Doublegate true
@@ -40,6 +41,9 @@ y_doublegate_134Te_long = y_doublegate_134Te
 
 x_doublegate_134Te = x_doublegate_134Te[x_lower:x_upper]
 y_doublegate_134Te = y_doublegate_134Te[x_lower:x_upper]
+
+
+print("\n Fit range %d - %.d \n" % (x_doublegate_134Te[0],x_doublegate_134Te[-1]))
 
 #######################
 
@@ -185,8 +189,8 @@ def sum_smeared_exp_gauss_const_bg(x, mean=0, sigma=1.0, const_bg=1.0, amplitude
 ####################################################
 
 #True
-mean_lower = 300
-mean_upper = 400
+mean_lower = 0
+mean_upper = 700
 sigma_lower = 0
 sigma_upper = 40
 const_bg_lower = 0
@@ -194,9 +198,9 @@ const_bg_upper = 1000
 amplitude_gauss_lower = 0
 amplitude_gauss_upper = 10000
 amplitude_exp_decay_lower = 0
-amplitude_exp_decay_upper = 1000
+amplitude_exp_decay_upper = 5000
 tau_decay_lower = 0#tau_134Te
-tau_decay_upper = 400#tau_134Te+0.0001
+tau_decay_upper = 1000#tau_134Te+0.0001
 
 #P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, sigma=sigma_data_doublegate(y_doublegate_all_134Te, y_doublegate_bg_ridge_134Te, y_doublegate_bg_random_134Te), bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
 P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
@@ -273,7 +277,8 @@ P_double_bg, cov_double_bg = curve_fit(sum_smeared_exp_gauss_const_bg, x_doubleg
 ## 		 Find IYR + uncertainty 	## 
 ######################################
 
-x_arr = np.linspace(0,1500,4000)
+#NB: Upper integration limit should be high enough that no changes are observed in the IYR when increasing the range
+x_arr = np.linspace(0,2000,5000)
 
 area_double_true = np.trapz(gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]) + smeared_exp_decay(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), x_arr)
 area_double_true_prompt = np.trapz(gauss(x_arr, P_double[0], P_double[1], P_double[2], P_double[3], P_double[4], P_double[5]), x_arr)

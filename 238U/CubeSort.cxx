@@ -170,6 +170,9 @@ int main(int argc, char **argv){
 	TFile *outputspectrafile = new TFile("CubeSort.root","RECREATE");
 	time_isomer_doublegate_134Te->Write();
 	time_isomer_doublegate_all_134Te->Write();
+	time_isomer_doublegate_bg_134Te->Write();
+	time_isomer_doublegate_bg_ridge_134Te->Write();
+	time_isomer_doublegate_bg_random_134Te->Write();
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();
