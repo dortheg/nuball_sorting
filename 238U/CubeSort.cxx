@@ -47,18 +47,9 @@ int main(int argc, char **argv){
 	#include "SpecDefs_CubeSort.cxx"
 
 	//Create & read in cubes
-	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2); //Is it correct that it's 10 ns per channel, thought you said 2?
-	Cube1->Read("U238cube_n3_4jan2021.bin");
+	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
+	Cube1->Read("U238cube_n3_2ns_4jan2021.bin");
 
-	// Create coincidence matrix
-	TH2F* ggm = new TH2F("ggm","ggm",EBINS,0,EBINS,EBINS,0,EBINS);
-
-	//Create time spectrum
-	TH1D **tspecs; tspecs = new TH1D*[EBINS];
-	for (int i=1; i <= TBINS; i++){
- 		TString name=Form("t%d",i);
- 		tspecs[i]=new TH1D(name.Data(),name.Data(),EBINS,0,EBINS);
- 	}
 
  	//////////////////////////////////////////
 	/// 		  Isomer properties	       ///
