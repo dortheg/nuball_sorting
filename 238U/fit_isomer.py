@@ -16,9 +16,11 @@ import time
 file = ROOT.TFile.Open("CubeSort.root"," READ ")
 
 #Define lower and upper fit limit
-x_lower = 100
-x_upper = 300
+x_lower = 200
+x_upper = 600
 
+bin_lower = x_lower//2
+bin_upper = x_upper//2
 
 #######################
 
@@ -39,11 +41,12 @@ x_doublegate_134Te = 2*x_doublegate_134Te
 x_doublegate_134Te_long = x_doublegate_134Te
 y_doublegate_134Te_long = y_doublegate_134Te
 
-x_doublegate_134Te = x_doublegate_134Te[x_lower:x_upper]
-y_doublegate_134Te = y_doublegate_134Te[x_lower:x_upper]
+x_doublegate_134Te = x_doublegate_134Te[bin_lower:bin_upper]
+y_doublegate_134Te = y_doublegate_134Te[bin_lower:bin_upper]
 
-
-print("\n Fit range %d - %.d \n" % (x_doublegate_134Te[0],x_doublegate_134Te[-1]))
+print("\n")
+print("FIT CHOICES")
+print("* Fit range %d - %.d" % (x_doublegate_134Te[0],x_doublegate_134Te[-1]))
 
 #######################
 
@@ -64,8 +67,8 @@ x_doublegate_all_134Te = 2*x_doublegate_all_134Te
 x_doublegate_all_134Te_long = x_doublegate_all_134Te
 y_doublegate_all_134Te_long = y_doublegate_all_134Te
 
-x_doublegate_all_134Te = x_doublegate_all_134Te[x_lower:x_upper]
-y_doublegate_all_134Te = y_doublegate_all_134Te[x_lower:x_upper]
+x_doublegate_all_134Te = x_doublegate_all_134Te[bin_lower:bin_upper]
+y_doublegate_all_134Te = y_doublegate_all_134Te[bin_lower:bin_upper]
 
 #######################
 
@@ -87,8 +90,8 @@ x_doublegate_bg_134Te = 2*x_doublegate_bg_134Te
 x_doublegate_bg_134Te_long = x_doublegate_bg_134Te
 y_doublegate_bg_134Te_long = y_doublegate_bg_134Te
 
-x_doublegate_bg_134Te = x_doublegate_bg_134Te[x_lower:x_upper]
-y_doublegate_bg_134Te = y_doublegate_bg_134Te[x_lower:x_upper]
+x_doublegate_bg_134Te = x_doublegate_bg_134Te[bin_lower:bin_upper]
+y_doublegate_bg_134Te = y_doublegate_bg_134Te[bin_lower:bin_upper]
 
 
 #######################
@@ -110,8 +113,8 @@ x_doublegate_bg_ridge_134Te = 2*x_doublegate_bg_ridge_134Te
 x_doublegate_bg_ridge_134Te_long = x_doublegate_bg_ridge_134Te
 y_doublegate_bg_ridge_134Te_long = y_doublegate_bg_ridge_134Te
 
-x_doublegate_bg_ridge_134Te = x_doublegate_bg_ridge_134Te[x_lower:x_upper]
-y_doublegate_bg_ridge_134Te = y_doublegate_bg_ridge_134Te[x_lower:x_upper]
+x_doublegate_bg_ridge_134Te = x_doublegate_bg_ridge_134Te[bin_lower:bin_upper]
+y_doublegate_bg_ridge_134Te = y_doublegate_bg_ridge_134Te[bin_lower:bin_upper]
 
 #######################
 
@@ -132,8 +135,8 @@ x_doublegate_bg_random_134Te = 2*x_doublegate_bg_random_134Te
 x_doublegate_bg_random_134Te_long = x_doublegate_bg_random_134Te
 y_doublegate_bg_random_134Te_long = y_doublegate_bg_random_134Te
 
-x_doublegate_bg_random_134Te = x_doublegate_bg_random_134Te[x_lower:x_upper]
-y_doublegate_bg_random_134Te = y_doublegate_bg_random_134Te[x_lower:x_upper]
+x_doublegate_bg_random_134Te = x_doublegate_bg_random_134Te[bin_lower:bin_upper]
+y_doublegate_bg_random_134Te = y_doublegate_bg_random_134Te[bin_lower:bin_upper]
 
 
 ###################################
@@ -183,6 +186,25 @@ def sum_smeared_exp_gauss_const_bg(x, mean=0, sigma=1.0, const_bg=1.0, amplitude
         + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)]),sigma) 
         + const_bg)
 
+#####################################
+## 		  Fix the const_bg         ## 
+#####################################
+
+#Take average bg-value between 50 and 200 ns
+
+bg_time_lower = 75
+bg_time_upper = 200
+
+x_bg_slice = x_doublegate_134Te_long[bg_time_lower//2:bg_time_upper//2]
+y_bg_slice = y_doublegate_134Te_long[bg_time_lower//2:bg_time_upper//2]
+
+# for f, b in zip(x_bg_slice, y_bg_slice):
+#     print(f, b)
+
+bg_value = np.average(y_bg_slice)
+
+print("* BG_const in range %.d to %.d ns is %.3f" % (bg_time_lower, bg_time_upper, bg_value))
+
 
 ####################################################
 ## 		             Fit data 		              ## 
@@ -193,8 +215,8 @@ mean_lower = 0
 mean_upper = 700
 sigma_lower = 0
 sigma_upper = 40
-const_bg_lower = 0
-const_bg_upper = 1000
+const_bg_lower = bg_value
+const_bg_upper = bg_value + 0.001
 amplitude_gauss_lower = 0
 amplitude_gauss_upper = 10000
 amplitude_exp_decay_lower = 0
@@ -203,7 +225,9 @@ tau_decay_lower = 0#tau_134Te
 tau_decay_upper = 1000#tau_134Te+0.0001
 
 #P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, sigma=sigma_data_doublegate(y_doublegate_all_134Te, y_doublegate_bg_ridge_134Te, y_doublegate_bg_random_134Te), bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+#print("\n Using uncertainty-weighted fit")
 P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+print("* Not using uncertainty-weighted fit")
 
 print("\n")
 print(" ***** 134Te:  Doublegate true spectrum fit ***** ")
@@ -320,9 +344,9 @@ plt.plot(x_arr, const_bg(x_arr, P_double[0], P_double[1], P_double[2], P_double[
 
 plt.vlines(x_doublegate_134Te[0],0,6000, label="fit range", color="black")
 plt.vlines(x_doublegate_134Te[-1],0,6000, color="black")
-
+plt.yscale("log")
 plt.title("134Te: Doublegate true spectrum fit")
-#plt.axis([800,2000,0,500])
+plt.axis([0,700,10,10**(4)])
 plt.xlabel("Time [ns]", fontsize=14)
 plt.ylabel("Counts", fontsize=14)
 plt.legend(fontsize=10)
