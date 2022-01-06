@@ -30,13 +30,16 @@ using namespace std;
 int TBINS=350;
 int EBINS=2048;
 
-short lookup[2048][2048] = {0};
+short lookup[2048][2048] = {{0}};
+short lookup_134Te[2048][2048] = {{0}};
 int coincidences[20][2];
 int lookup1D[2048] = {0};
 
 //Number of FWHM in the energy gate
 double NFWHM=1.0;
 
+
+void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]);
 
 int main(int argc, char **argv){
 
@@ -115,13 +118,16 @@ int main(int argc, char **argv){
 		}
 	}
 
-/*	//Print loopup-table to make sure all elements have right value
+	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
+
+	//Print loopup-table to make sure all elements have right value
 	for(int j=gamma_energy_2_134Te-5; j<=gamma_energy_2_134Te+6; j++){
 		for(int i=gamma_energy_1_134Te-5; i<=gamma_energy_1_134Te+6; i++){
-			cout << lookup[i][j] << " ";
+			//cout << lookup[i][j] << " ";
+			cout << lookup_134Te[i][j] << " ";
 		}
 		cout << "\n";
-	}*/
+	}
 
 
 	//////////////////////////////////////////
@@ -179,5 +185,62 @@ int main(int argc, char **argv){
 
 
 }
+
+
+void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
+	
+	//a b c
+	//d e f
+	//g h i
+
+	//true = e - (b+d+f+h)/2 + (a+c+g+i)/4
+	//bg_ridge = (b+d+f+h)/2
+	//bg_random = (a+c+g+i)/4
+
+	//fill whole square with random bg-nr
+	for(int i=energy_1-4; i<=energy_1+5; i++){
+		for(int j=energy_2-4; j<=energy_2+5; j++){
+			lookup[i][j] = 3;
+		}
+	}
+
+	//peak gate; e
+	for(int i=energy_1-2; i<=energy_1+2; i++){
+		for(int j=energy_2-2; j<=energy_2+2; j++){
+			lookup[i][j] = 2;
+		}
+	}
+
+	//bg-ridge gate, energy_1 i bg_lower; d
+	for(int i=energy_1-4; i<=energy_1-3; i++){
+		for(int j=energy_2-2; j<=energy_2+2; j++){
+			lookup[i][j] = 1;
+		}
+	}
+
+	//bg-ridge gate, energy_1 i bg_upper; f
+	for(int i=energy_1+3; i<=energy_1+5; i++){
+		for(int j=energy_2-2; j<=energy_2+2; j++){
+			lookup[i][j] = 1;
+		}
+	} 
+
+	//bg-ridge gate, energy_2 i bg_lower; h
+	for(int i=energy_1-2; i<=energy_1+2; i++){
+		for(int j=energy_2-4; j<=energy_2-3; j++){
+			lookup[i][j] = 1;
+		}
+	}
+
+	//bg-ridge gate, energy_2 i bg_upper; b
+	for(int i=energy_1-2; i<=energy_1+2; i++){
+		for(int j=energy_2+3; j<=energy_2+5; j++){
+			lookup[i][j] = 1;
+		}
+	}
+
+
+}
+
 
 //g++ -g -o CubeSort CubeSort.cxx ` root-config --cflags` `root-config --glibs` -lSpectrum
