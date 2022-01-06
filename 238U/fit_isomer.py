@@ -344,7 +344,7 @@ plt.plot(x_arr, const_bg(x_arr, P_double[0], P_double[1], P_double[2], P_double[
 
 plt.vlines(x_doublegate_134Te[0],0,6000, label="fit range", color="black")
 plt.vlines(x_doublegate_134Te[-1],0,6000, color="black")
-plt.yscale("log")
+#plt.yscale("log")
 plt.title("134Te: Doublegate true spectrum fit")
 plt.axis([0,700,10,10**(4)])
 plt.xlabel("Time [ns]", fontsize=14)
