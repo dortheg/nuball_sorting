@@ -73,7 +73,7 @@ int main(int argc, char **argv){
 	//Implement FWHM-dependent gates later
 
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
-	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_3_134Te, lookup_134Te);
+	//fill_lookuptable(gamma_energy_2_134Te, gamma_energy_3_134Te, lookup_134Te);
 
 
 /*	//Print loopup-table to make sure all elements have right value
