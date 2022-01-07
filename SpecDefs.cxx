@@ -14,6 +14,10 @@ TH1D *d_clean_ge = new TH1D("d_clean_ge","d_clean_ge",4000,0,4000); //All delaye
 d_clean_ge->GetXaxis()->SetTitle("Energy [keV]");
 d_clean_ge->GetYaxis()->SetTitle("Counts");
 
+//Multiplicity distribution
+TH1D *mult_distr = new TH1D("mult_distr","mult_distr",20,0,20);
+mult_distr->GetXaxis()->SetTitle("Multiplicity");
+mult_distr->GetYaxis()->SetTitle("Counts");
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// 							time_isomer_gate 								   ////

@@ -64,12 +64,14 @@ int main(int argc, char **argv){
 	// //Read TheEvents from file
 	string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
 	std::cout << "Reading data from file " << std::endl;
-	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
+	//ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
+	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata.txt", ios::in | ios::binary);
 	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
 	infile_edata.close();
 
 	//Read tpointer_array from file
-	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
+	//ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
+	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer.txt", ios::out | ios::binary);
 	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
 	tpointer_infile.close();
 	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
@@ -219,9 +221,8 @@ int main(int argc, char **argv){
 	//////////////////////////////////////////
 
 	double tot_mult = 0;
-	UShort_t avalmult;
-	unsigned char new_aval, mult;
-	UShort_t aval;
+	UShort_t hitmult;
+	unsigned char hit, mult;
 
 	auto start_sorting = high_resolution_clock::now();
 
@@ -246,12 +247,11 @@ int main(int argc, char **argv){
 	while(i_count<tpointer_array[0]){
 	//while(i_count<N_dummy){
 
-		//Decompress aval and mult
-		avalmult = TheEvents[i_count++];
-		new_aval = avalmult & 0xFF;
-		mult = avalmult >> 8;
+		//Decompress hit and mult
+		hitmult = TheEvents[i_count++];
+		hit = hitmult & 0xFF;
+		mult = hitmult >> 8;
 		tot_mult += mult;
-		aval = new_aval*5; //Because divided aval by 5
 
 		//mult = dummy_data[i_count++];
 
@@ -259,6 +259,7 @@ int main(int argc, char **argv){
 		int time[mult];
 
 		mult_distr->Fill(mult);
+		hit_distr->Fill(hit);
 
 		//Loop over single gammas
 		for (int k=0; k < mult; k++){
@@ -431,6 +432,38 @@ int main(int argc, char **argv){
 				}
 			}
 		}
+
+		if(mult>3){
+			for(int m=0; m < mult; m++){
+				for(int n=0; n < mult; n++){
+					if(m!=n){
+						if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==2){
+
+							//Increment time[n] since n is 1279keV line
+							time_isomer_doublegate_2_mult3_134Te->Fill(time[n]);
+							time_isomer_doublegate_2_all_mult3_134Te->Fill(time[n]);
+						}
+						//b & h, so bg_ridge
+						else if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==1){
+							time_isomer_doublegate_2_mult3_134Te->Fill(time[n], -bg_param*0.5);
+							time_isomer_doublegate_2_bg_mult3_134Te->Fill(time[n], bg_param*0.5);
+						}
+
+						// d & f, so bg_ridge
+						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==2){
+							time_isomer_doublegate_2_mult3_134Te->Fill(time[n], -bg_param*0.5);
+							time_isomer_doublegate_2_bg_mult3_134Te->Fill(time[n], bg_param*0.5);
+						}
+
+						//a + c + g + i, so bg_random
+						else if(lookup_134Te_isomer_1[energy[m]]==1 && lookup_134Te_isomer_2[energy[n]]==1){
+							time_isomer_doublegate_2_mult3_134Te->Fill(time[n], bg_param*0.25);
+							time_isomer_doublegate_2_bg_mult3_134Te->Fill(time[n], -bg_param*0.25);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	auto stop_sorting = high_resolution_clock::now();
@@ -451,8 +484,6 @@ int main(int argc, char **argv){
 	
 	single_gamma->Write();
 	double_gamma->Write();
-
-	mult_distr->Write();
 
 	time_isomer_1_gate_134Te->Write();
 	time_isomer_1_gate_bg_134Te->Write();
@@ -482,9 +513,9 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_2_all_dt70_134Te->Write();
 	time_isomer_doublegate_2_bg_dt70_134Te->Write();
 
-	time_isomer_doublegate_mult3_134Te->Write();
-	time_isomer_doublegate_bg_mult3_134Te->Write();
-	time_isomer_doublegate_all_mult3_134Te->Write();
+	time_isomer_doublegate_2_mult3_134Te->Write();
+	time_isomer_doublegate_2_bg_mult3_134Te->Write();
+	time_isomer_doublegate_2_all_mult3_134Te->Write();
 
 	time_gamma_doublegate_140Xe->Write();
 	time_gamma_doublegate_all_140Xe->Write();
@@ -498,6 +529,9 @@ int main(int argc, char **argv){
 
 	aval_prompt_134Te->Write();
 	aval_delayed_134Te->Write();
+
+	mult_distr->Write();
+	hit_distr->Write();
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();

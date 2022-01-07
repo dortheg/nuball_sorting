@@ -55,7 +55,7 @@ double APeaks[3][200];
 double tshifts[256][200]; //detector number, file number
 
 // THE INPUT FILE
-string FileList="runlist_allfiles.dat"; //The list of Event-built files to process
+string FileList="runlist_allfiles_short.dat"; //The list of Event-built files to process
 //string OutputDirectory="/Applications/nuball_sorting/252Cf/";
 string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
 string InputDirectory="/Volumes/240Pu_d_p/nuball_data/252Cf/252Cf/";
@@ -466,12 +466,15 @@ for(ULong64_t i = 0; i < entries; i++){
 	/// 		   Gate on ionization chamber 	 		///
 	///////////////////////////////////////////////////////
 
-	if (aval >= 900) {continue;} //question: is this condition right?
+	if (aval >= 900) {continue;} //"continue" skips the rest of the loop, so if over 900, we skip the following code
 	//if (aval < 700) {continue;} //condition on the anode
 	GoodEventCount++;
         
-        //D: For all hits in event
-        for (int j=0; j < mult; j++){
+      //D: For all hits in event
+			//Is "mult" the one I need for multiplicity-gating?
+			mult_distr->Fill(mult);
+
+      for (int j=0; j < mult; j++){
 			
 			// Singles spectra
 			detid=idmap_old[ids[j]]; // mapping 20101 to a faster channel stored in idmap.hxx
@@ -661,19 +664,28 @@ for(ULong64_t i = 0; i < entries; i++){
 	//Jon's way of writing to file
 
 	//Compress aval and mult into one UShort
-	UShort_t new_aval = aval/5;
-	unsigned char aval_char, mult_char;
+	//UShort_t new_aval = aval/5;
+	unsigned char aval_char, mult_char, hit_char;
 
-	if (new_aval < 254){aval_char = new_aval;}
-	else {aval_char = 254;}
+/*	if (new_aval < 254){aval_char = new_aval;}
+	else {aval_char = 254;}*/
+
+	//Yes, the hit should be filled with mult: mult is total nr of anything happening in the detector array
+	hit_char = mult;
+
+	if (hit_char < 254){mult_char = hit_char;}
+	else {hit_char = 254;}
 
 	if (clean_multiplicity < 254){mult_char = clean_multiplicity;}
 	else {mult_char = 254;}
 
-	UShort_t avalmult = (mult_char << 8) | aval_char;
-	TheEvents[tpointer++] = avalmult;
 
-	//Checking that I get same back fro bitshifting
+
+	//UShort_t avalmult = (mult_char << 8) | aval_char;
+	UShort_t hitmult = (mult_char << 8) | hit_char;
+	TheEvents[tpointer++] = hitmult;
+
+	//Checking that I get same back from bitshifting
 	//unsigned char aval_char_out, mult_char_out;
 	//aval_char_out = avalmult & 0xFF;
 	//mult_char_out = avalmult >> 8;
@@ -836,6 +848,7 @@ ET_ge->Write();
 ETla->Write();
 ETbgo->Write();
 lala->Write();
+mult_distr->Write();
 
 //RWMat *lalar=new RWMat(lala);
 //lalar->Write();
@@ -995,8 +1008,8 @@ std::cout << "tpointer_1: " << tpointer_array_1[0] << std::endl;
 
 //Interpret the data in TheEvents_1
 int aval_1;
-UShort_t avalmult_1;
-unsigned char new_aval_1, mult_1;
+UShort_t hitmult_1;
+unsigned char hit_1, mult_1;
 double tot_mult_1 = 0;
 
 int i_count = 0;
@@ -1004,10 +1017,10 @@ while(i_count<tpointer_array_1[0]){
 
 	//aval_1=TheEvents_1[i_count++];
 	//mult_1=TheEvents_1[i_count++];
-	avalmult_1 = TheEvents_1[i_count++];
+	hitmult_1 = TheEvents_1[i_count++];
 
-	new_aval_1 = avalmult_1 & 0xFF;
-	mult_1 = avalmult_1 >> 8;
+	hit_1 = hitmult_1 & 0xFF;
+	mult_1 = hitmult_1 >> 8;
 
 
 	tot_mult_1 += mult_1;
