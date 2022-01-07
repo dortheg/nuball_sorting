@@ -55,6 +55,7 @@ int main(int argc, char **argv){
 	//Create & read in cubes
 	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
 	Cube1->Read("U238cube_n3_2ns_4jan2021.bin");
+	//Cube1->Read("U238cube_n3_2ns_4jan2021-sub.bin");
 
 
  	//////////////////////////////////////////
