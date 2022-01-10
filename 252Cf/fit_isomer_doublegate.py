@@ -169,6 +169,7 @@ sigma_tau_134Te = 0.9/np.log(2)
 ##########################
 
 def IYR(prompt, delayed):
+    "Only get prompt contribution from one fragment, as the other is in-flight"
     return (delayed)/(2*prompt + delayed)
 
 def sigma_IYR(prompt, delayed, all_prompt, all_delayed, bg_prompt, bg_delayed):
@@ -188,7 +189,7 @@ def sigma_singlegate_remove_0(data_all, data_bg):
     return sigma
 
 def sigma_data_doublegate(data_all, data_bg_ridge, data_bg_random):
-    return np.sqrt(data_all + 0.25*data_bg_ridge + 0.125*data_bg_random + (0.03*data_bg_ridge)**2 + (0.05*data_bg_random)**2)
+    return np.sqrt(data_all + 0.25*data_bg_ridge + 0.125*data_bg_random + (0.03*data_bg_ridge)**2 + (0.03*data_bg_random)**2)
     #return np.sqrt(data_all + 0.25*data_bg_ridge + 0.125*data_bg_random)
 
 def sigma_doublegate_remove_0(data_all, data_bg_ridge, data_bg_random):
@@ -480,7 +481,7 @@ area_double_1_bg_prompt = np.trapz(gauss(x_arr, P_double_1_bg[0], P_double_1_bg[
 area_double_1_bg_delayed = np.trapz(smeared_exp_decay(x_arr, P_double_1_bg[0], P_double_1_bg[1], P_double_1_bg[2], P_double_1_bg[3], P_double_1_bg[4], P_double_1_bg[5], P_double_1_bg[6]), x_arr)
 
 IYR_double_1 = IYR(prompt=area_double_1_true_prompt, delayed=area_double_1_true_delayed)
-sigma_IYR_double_1 = sigma_IYR(prompt=area_double_1_true_prompt, delayed=area_double_1_true_delayed, all_prompt=area_double_1_all_prompt, all_delayed=area_double_1_all_delayed, bg_prompt=area_double_1_bg_prompt, bg_delayed=area_double_1_bg_prompt)
+sigma_IYR_double_1 = sigma_IYR(prompt=area_double_1_true_prompt, delayed=area_double_1_true_delayed, all_prompt=area_double_1_all_prompt, all_delayed=area_double_1_all_delayed, bg_prompt=area_double_1_bg_prompt, bg_delayed=area_double_1_bg_delayed)
 
 ############
 ### Doublegate_2

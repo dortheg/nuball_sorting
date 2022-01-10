@@ -65,13 +65,13 @@ int main(int argc, char **argv){
 	string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
 	std::cout << "Reading data from file " << std::endl;
 	//ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
-	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata.txt", ios::in | ios::binary);
+	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_7jan2021.txt", ios::in | ios::binary);
 	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
 	infile_edata.close();
 
 	//Read tpointer_array from file
 	//ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
-	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer.txt", ios::out | ios::binary);
+	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_7jan2021.txt", ios::out | ios::binary);
 	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
 	tpointer_infile.close();
 	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
@@ -433,7 +433,7 @@ int main(int argc, char **argv){
 			}
 		}
 
-		if(mult>3){
+		if(hit>=3){
 			for(int m=0; m < mult; m++){
 				for(int n=0; n < mult; n++){
 					if(m!=n){
