@@ -55,7 +55,7 @@ double APeaks[3][200];
 double tshifts[256][200]; //detector number, file number
 
 // THE INPUT FILE
-string FileList="runlist_allfiles_short.dat"; //The list of Event-built files to process
+string FileList="runlist_allfiles.dat"; //The list of Event-built files to process
 //string OutputDirectory="/Applications/nuball_sorting/252Cf/";
 string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
 string InputDirectory="/Volumes/240Pu_d_p/nuball_data/252Cf/252Cf/";
