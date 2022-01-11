@@ -99,8 +99,8 @@ int main(int argc, char **argv){
 */
 
 	//Print loopup-table to make sure all elements have right value
-	for(int j=gamma_energy_2_134Te-5; j<=gamma_energy_2_134Te+6; j++){
-		for(int i=gamma_energy_1_134Te-5; i<=gamma_energy_1_134Te+6; i++){
+	for(int j=gamma_energy_2_134Te-10; j<=gamma_energy_2_134Te+10; j++){
+		for(int i=gamma_energy_1_134Te-10; i<=gamma_energy_1_134Te+10; i++){
 			cout << lookup_134Te[i][j] << " ";
 		}
 		cout << "\n";
@@ -204,12 +204,12 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
 	std::cout << "Number of channels in true gate for energy_2: " << energy_2 << " keV " << gatewidth_2 << std::endl;
 
-	gatewidth_1 = 2; // energy +/- gatewidth gives total width of 5
-	gatewidth_2 = 2;
+/*	gatewidth_1 = 2; // energy +/- gatewidth gives total width of 5
+	gatewidth_2 = 2;*/
 
 	//fill whole square with random bg-nr
-	for(int i=energy_1-2*gatewidth_1; i<=energy_1+2*gatewidth_1+1; i++){
-		for(int j=energy_2-2*gatewidth_2; j<=energy_2+2*gatewidth_2+1; j++){
+	for(int i=energy_1-3*gatewidth_1-1; i<=energy_1+3*gatewidth_1+1; i++){
+		for(int j=energy_2-3*gatewidth_2-1; j<=energy_2+3*gatewidth_2+1; j++){
 			lookup[i][j] = 3;
 		}
 	}
@@ -222,14 +222,14 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	}
 
 	//bg-ridge gate, energy_1 i bg_lower; d
-	for(int i=energy_1-2*gatewidth_1; i<=energy_1-gatewidth_1-1; i++){
+	for(int i=energy_1-3*gatewidth_1-1; i<=energy_1-gatewidth_1-1; i++){
 		for(int j=energy_2-gatewidth_2; j<=energy_2+gatewidth_2; j++){
 			lookup[i][j] = 1;
 		}
 	}
 
 	//bg-ridge gate, energy_1 i bg_upper; f
-	for(int i=energy_1+gatewidth_1+1; i<=energy_1+2*gatewidth_1+1; i++){
+	for(int i=energy_1+gatewidth_1+1; i<=energy_1+3*gatewidth_1+1; i++){
 		for(int j=energy_2-gatewidth_2; j<=energy_2+gatewidth_2; j++){
 			lookup[i][j] = 1;
 		}
@@ -237,14 +237,14 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 
 	//bg-ridge gate, energy_2 i bg_lower; h
 	for(int i=energy_1-gatewidth_1; i<=energy_1+gatewidth_1; i++){
-		for(int j=energy_2-2*gatewidth_2; j<=energy_2-gatewidth_2-1; j++){
+		for(int j=energy_2-3*gatewidth_2-1; j<=energy_2-gatewidth_2-1; j++){
 			lookup[i][j] = 1;
 		}
 	}
 
 	//bg-ridge gate, energy_2 i bg_upper; b
 	for(int i=energy_1-gatewidth_1; i<=energy_1+gatewidth_1; i++){
-		for(int j=energy_2+gatewidth_2+1; j<=energy_2+2*gatewidth_2+1; j++){
+		for(int j=energy_2+gatewidth_2+1; j<=energy_2+3*gatewidth_2+1; j++){
 			lookup[i][j] = 1;
 		}
 	}
