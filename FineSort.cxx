@@ -105,9 +105,9 @@ int main(int argc, char **argv){
 	int lookup_134Te_isomer_1[65535] = {0};
 	fill_lookuptable(isomer_energy_1_134Te, lookup_134Te_isomer_1);
 
-/*	for(int i=isomer_energy_1_134Te-10; i<=isomer_energy_1_134Te+10; i++){
+	for(int i=isomer_energy_1_134Te-10; i<=isomer_energy_1_134Te+10; i++){
 		cout << lookup_134Te_isomer_1[i] << endl;
-	}*/
+	}
 
 	//134Te, isomer_2
 	int lookup_134Te_isomer_2[65535] = {0};
@@ -340,7 +340,7 @@ void fill_lookuptable(int energy, int lookup[65535]){
 	///1 for bg, 2 for peak
 
 	//fill whole area with 1 first
-	for(int i=energy-4; i<=energy+5; i++){
+	for(int i=energy-7; i<=energy+7; i++){
 		lookup[i] = 1;
 	}
 
