@@ -227,17 +227,19 @@ tau_decay_upper = tau_134Te+0.0001
 #P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, sigma=sigma_data_doublegate(y_doublegate_all_134Te, y_doublegate_bg_ridge_134Te, y_doublegate_bg_random_134Te), bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
 #print("\n Using uncertainty-weighted fit")
 P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+P_double_unc = np.sqrt(np.diag(cov_double))
+
 print("* Not using uncertainty-weighted fit")
 
 print("\n")
 print(" ***** 134Te:  Doublegate true spectrum fit ***** ")
 print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
-print("mean:                     %.2f         [%.d,%.d]" % (P_double[0], mean_lower, mean_upper))
-print("sigma:                    %.2f         [%.d,%.d]" % (P_double[1], sigma_lower, sigma_upper))
-print("const_bg:                 %.2f         [%.d,%.d]" % (P_double[2], const_bg_lower, const_bg_upper))
-print("amplitude_gauss:          %.2f         [%.d,%.d]" % (P_double[3], amplitude_gauss_lower, amplitude_gauss_upper))
-print("amplitude_exp_decay:      %.2f         [%.d,%.d]" % (P_double[4], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
-print("tau_decay, in half_life:  %.2f         [%.d,%.d]" % (P_double[5]*np.log(2), tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
+print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double[0], P_double_unc[0], mean_lower, mean_upper))
+print("sigma:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double[1], P_double_unc[1], sigma_lower, sigma_upper))
+print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double[2], P_double_unc[2], const_bg_lower, const_bg_upper))
+print("amplitude_gauss:          %.2f +/- %.2f         [%.d,%.d]" % (P_double[3], P_double_unc[3], amplitude_gauss_lower, amplitude_gauss_upper))
+print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double[4], P_double_unc[4], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
+print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double[5]*np.log(2), tau_decay_lower*np.log(2), 0, tau_decay_upper*np.log(2)))
 print("\n")
 
 
@@ -323,9 +325,36 @@ area_double_bg_delayed = np.trapz(smeared_exp_decay(x_arr, P_double_bg[0], P_dou
 IYR_double = IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed)
 sigma_IYR_double = sigma_IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed, all_prompt=area_double_all_prompt, all_delayed=area_double_all_delayed, bg_prompt=area_double_bg_prompt, bg_delayed=area_double_bg_delayed)
 
+
+####################################################
+###       Calculate uncertainty on IYR by MC     ###
+####################################################
+
+N = 10
+P_double_new = np.zeros(len(P_double))
+IYR_array = np.zeros(N)
+
+#Do N iterations
+for n in range(N):
+    for i in range(len(P_double)):
+        P_double_new[i] = P_double[i] + P_double_unc[i]*np.random.uniform(-1, 1)
+
+
+    print(P_double_new)
+
+    area_double_true = np.trapz(gauss(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]) + smeared_exp_decay(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]), x_arr)
+    area_double_true_prompt = np.trapz(gauss(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]), x_arr)
+    area_double_true_delayed = np.trapz(smeared_exp_decay(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]), x_arr)
+
+    IYR_array[n] = IYR(prompt=area_double_true_prompt, delayed=area_double_true_delayed)
+
+
+sigma_IYR_double_fitparam = (np.max(IYR_array) - np.min(IYR_array))/2.0
+
 print("\n")
 print(" ***** Isomeric Yield Ratio ****")
 print("IYR_double:               %.3f +/- %.3f" % (IYR_double, sigma_IYR_double))
+print("IYR_double_fitparm:       %.3f +/- %.3f" % (np.average(IYR_array), sigma_IYR_double_fitparam))
 print("\n")
 
 ##########################
@@ -344,7 +373,7 @@ plt.plot(x_arr, const_bg(x_arr, P_double[0], P_double[1], P_double[2], P_double[
 
 plt.vlines(x_doublegate_134Te[0],0,6000, label="fit range", color="black")
 plt.vlines(x_doublegate_134Te[-1],0,6000, color="black")
-#plt.yscale("log")
+plt.yscale("log")
 plt.title("134Te: Doublegate true spectrum fit")
 plt.axis([0,700,10,10**(4)])
 plt.xlabel("Time [ns]", fontsize=14)
