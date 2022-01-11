@@ -67,13 +67,13 @@ int main(int argc, char **argv){
 	string OutputDirectory="/Applications/nuball_sorting/IYR_Data/";
 	std::cout << "Reading data from file " << std::endl;
 	//ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_allfiles_10sep2021.txt", ios::in | ios::binary);
-	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_11jan2021.txt", ios::in | ios::binary);
+	ifstream infile_edata("/Applications/nuball_sorting/IYR_Data/edata_11jan2022.txt", ios::in | ios::binary);
 	infile_edata.read((char *) TheEvents, bsize*sizeof(UShort_t));
 	infile_edata.close();
 
 	//Read tpointer_array from file
 	//ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_allfiles_10sep2021.txt", ios::out | ios::binary);
-	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_11jan2021.txt", ios::out | ios::binary);
+	ifstream tpointer_infile("/Applications/nuball_sorting/IYR_Data/tpointer_11jan2022.txt", ios::out | ios::binary);
 	tpointer_infile.read((char *) tpointer_array, 2*sizeof(UInt_t));
 	tpointer_infile.close();
 	std::cout << "tpointer: " << tpointer_array[0] << std::endl;
@@ -214,6 +214,10 @@ int main(int argc, char **argv){
 
 						int dt = abs(time[m]-time[n]);
 
+						if(lookup_134Te_isomer_1[energy[m]]==2 && lookup_134Te_isomer_2[energy[n]]==2){
+							hit_doublegate->Fill(hit);
+						}
+
 						///////////////
 						//   134Te   //
 						///////////////
@@ -225,6 +229,10 @@ int main(int argc, char **argv){
 						
 						if(hit>=3){
 							fill_spectra_doublegate(lookup_134Te_isomer_1[energy[m]], lookup_134Te_isomer_2[energy[n]], time[n], time_isomer_doublegate_2_hit3_134Te, time_isomer_doublegate_2_all_hit3_134Te, time_isomer_doublegate_2_bg_hit3_134Te, time_isomer_doublegate_2_bg_ridge_hit3_134Te, time_isomer_doublegate_2_bg_random_hit3_134Te);	
+						}
+
+						if(hit>=4){
+							fill_spectra_doublegate(lookup_134Te_isomer_1[energy[m]], lookup_134Te_isomer_2[energy[n]], time[n], time_isomer_doublegate_2_hit4_134Te, time_isomer_doublegate_2_all_hit4_134Te, time_isomer_doublegate_2_bg_hit4_134Te, time_isomer_doublegate_2_bg_ridge_hit4_134Te, time_isomer_doublegate_2_bg_random_hit4_134Te);	
 						}
 
 						///////////////
@@ -292,6 +300,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_2_bg_ridge_hit3_134Te->Write();
 	time_isomer_doublegate_2_bg_random_hit3_134Te->Write();
 
+	time_isomer_doublegate_2_hit4_134Te->Write();
+	time_isomer_doublegate_2_all_hit4_134Te->Write();
+	time_isomer_doublegate_2_bg_hit4_134Te->Write();
+	time_isomer_doublegate_2_bg_ridge_hit4_134Te->Write();
+	time_isomer_doublegate_2_bg_random_hit4_134Te->Write();
+
 	time_gamma_doublegate_1_140Xe->Write();
 	time_gamma_doublegate_1_all_140Xe->Write();
 	time_gamma_doublegate_1_bg_140Xe->Write();
@@ -307,6 +321,7 @@ int main(int argc, char **argv){
 
 	mult_distr->Write();
 	hit_distr->Write();
+	hit_doublegate->Write();
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();

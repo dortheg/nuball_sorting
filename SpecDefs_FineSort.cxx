@@ -19,6 +19,10 @@ TH1D *hit_distr = new TH1D("hit_distr","hit_distr",20,0,20);
 hit_distr->GetXaxis()->SetTitle("Hits");
 hit_distr->GetYaxis()->SetTitle("Counts");
 
+//Distribution of hits for the doublegate
+TH1D *hit_doublegate = new TH1D("hit_doublegate","hit_doublegate",20,0,20);
+hit_doublegate->GetXaxis()->SetTitle("Hits");
+hit_doublegate->GetYaxis()->SetTitle("Counts");
 
 //////////////////////////////////////////////////////////////
 //							 134Te   						//
@@ -142,6 +146,30 @@ time_isomer_doublegate_2_bg_ridge_hit3_134Te->GetYaxis()->SetTitle("Counts");
 TH1D *time_isomer_doublegate_2_bg_random_hit3_134Te = new TH1D("time_isomer_doublegate_2_bg_random_hit3_134Te","time_isomer_doublegate_2_bg_random_hit3_134Te",2000,-1000,3000);
 time_isomer_doublegate_2_bg_random_hit3_134Te->GetXaxis()->SetTitle("Time [ns]");
 time_isomer_doublegate_2_bg_random_hit3_134Te->GetYaxis()->SetTitle("Counts");
+
+//Multiplicity-restricted doublegated spectra
+//hit4
+TH1D *time_isomer_doublegate_2_hit4_134Te = new TH1D("time_isomer_doublegate_2_hit4_134Te","time_isomer_doublegate_2_hit4_134Te",2000,-1000,3000);
+time_isomer_doublegate_2_hit4_134Te->GetXaxis()->SetTitle("Time [ns]");
+time_isomer_doublegate_2_hit4_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_2_all_hit4_134Te = new TH1D("time_isomer_doublegate_2_all_hit4_134Te","time_isomer_doublegate_2_all_hit4_134Te",2000,-1000,3000);
+time_isomer_doublegate_2_all_hit4_134Te->GetXaxis()->SetTitle("Time [ns]");
+time_isomer_doublegate_2_all_hit4_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_2_bg_hit4_134Te = new TH1D("time_isomer_doublegate_2_bg_hit4_134Te","time_isomer_doublegate_2_bg_hit4_134Te",2000,-1000,3000);
+time_isomer_doublegate_2_bg_hit4_134Te->GetXaxis()->SetTitle("Time [ns]");
+time_isomer_doublegate_2_bg_hit4_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_2_bg_ridge_hit4_134Te = new TH1D("time_isomer_doublegate_2_bg_ridge_hit4_134Te","time_isomer_doublegate_2_bg_ridge_hit4_134Te",2000,-1000,3000);
+time_isomer_doublegate_2_bg_ridge_hit4_134Te->GetXaxis()->SetTitle("Time [ns]");
+time_isomer_doublegate_2_bg_ridge_hit4_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_2_bg_random_hit4_134Te = new TH1D("time_isomer_doublegate_2_bg_random_hit4_134Te","time_isomer_doublegate_2_bg_random_hit4_134Te",2000,-1000,3000);
+time_isomer_doublegate_2_bg_random_hit4_134Te->GetXaxis()->SetTitle("Time [ns]");
+time_isomer_doublegate_2_bg_random_hit4_134Te->GetYaxis()->SetTitle("Counts");
+
+
 
 
 //Energy spectrum of all gammas that arrive in events with both 134Te lines
