@@ -363,6 +363,8 @@ void fill_spectra_doublegate(int lookup_value_1, int lookup_value_2, int time, T
 	//bg_ridge = (b+d+f+h)/2
 	//bg_random = (a+c+g+i)/4
 
+	//NB: WITH ASYMMETRIC BG GATES, THE BG SUBTRACTION IS WRONG!
+
 	//e
 	if(lookup_value_1==2 && lookup_value_2==2){
 		//Increment spec with time of one gamma-ray
