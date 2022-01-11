@@ -16,7 +16,7 @@ import time
 file = ROOT.TFile.Open("CubeSort.root"," READ ")
 
 #Define lower and upper fit limit
-x_lower = 200
+x_lower = 320
 x_upper = 600
 
 bin_lower = x_lower//2
@@ -203,7 +203,7 @@ y_bg_slice = y_doublegate_134Te_long[bg_time_lower//2:bg_time_upper//2]
 
 bg_value = np.average(y_bg_slice)
 
-print("* BG_const in range %.d to %.d ns is %.3f" % (bg_time_lower, bg_time_upper, bg_value))
+#print("* BG_const in range %.d to %.d ns is %.3f" % (bg_time_lower, bg_time_upper, bg_value))
 
 
 ####################################################
@@ -215,14 +215,14 @@ mean_lower = 0
 mean_upper = 700
 sigma_lower = 0
 sigma_upper = 40
-const_bg_lower = bg_value
-const_bg_upper = bg_value + 0.001
+const_bg_lower = 0#bg_value
+const_bg_upper = 1000#bg_value + 0.001
 amplitude_gauss_lower = 0
 amplitude_gauss_upper = 10000
 amplitude_exp_decay_lower = 0
 amplitude_exp_decay_upper = 5000
-tau_decay_lower = 0#tau_134Te
-tau_decay_upper = 1000#tau_134Te+0.0001
+tau_decay_lower = tau_134Te
+tau_decay_upper = tau_134Te+0.0001
 
 #P_double, cov_double = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_134Te, y_doublegate_134Te, sigma=sigma_data_doublegate(y_doublegate_all_134Te, y_doublegate_bg_ridge_134Te, y_doublegate_bg_random_134Te), bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
 #print("\n Using uncertainty-weighted fit")

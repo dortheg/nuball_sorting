@@ -36,9 +36,6 @@ short lookup_138Xe[2048][2048] = {{0}};
 short lookup_92Sr[2048][2048] = {{0}};
 short lookup_94Sr[2048][2048] = {{0}};
 
-//Number of FWHM in the energy gate
-double NFWHM=1.0;
-
 
 void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]);
 void fill_spectra(int lookup_value, int cube_value, int k, TH1D *true_spec, TH1D *all_spec, TH1D *bg_spec, TH1D *bg_ridge_spec, TH1D *bg_random_spec);
@@ -130,7 +127,6 @@ int main(int argc, char **argv){
 				fill_spectra(lookup_92Sr[i][j], cube_value, k, time_isomer_doublegate_92Sr, time_isomer_doublegate_all_92Sr, time_isomer_doublegate_bg_92Sr, time_isomer_doublegate_bg_ridge_92Sr, time_isomer_doublegate_bg_random_92Sr);	
 
 				fill_spectra(lookup_94Sr[i][j], cube_value, k, time_isomer_doublegate_94Sr, time_isomer_doublegate_all_94Sr, time_isomer_doublegate_bg_94Sr, time_isomer_doublegate_bg_ridge_94Sr, time_isomer_doublegate_bg_random_94Sr);	
-
 			}
 		}
 	}
@@ -173,12 +169,9 @@ int main(int argc, char **argv){
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();
-
-
-
-
-
 }
+
+
 
 
 
@@ -193,6 +186,24 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	//true = e - (b+d+f+h)/2 + (a+c+g+i)/4
 	//bg_ridge = (b+d+f+h)/2
 	//bg_random = (a+c+g+i)/4
+
+	//Number of FWHM in the energy gate
+	double NFWHM=1.0;
+
+	//Jon's parameterisation of the energy-dependence of the FWHM
+	double A=1.059;
+	double B=2.814;
+	double gatewidth_1_float = (0.5+(sqrt(A*A+(B*B*energy_1/1000.0))/1.0))*(NFWHM/2.0); //1/2 FWHM.
+	double gatewidth_2_float = (0.5+(sqrt(A*A+(B*B*energy_2/1000.0))/1.0))*(NFWHM/2.0); //1/2 FWHM.
+
+	int gatewidth_1 = round(gatewidth_1_float);
+	int gatewidth_2 = round(gatewidth_2_float);
+
+	//std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
+	//std::cout << "Number of channels in true gate for energy_2: " << energy_2 << " keV " << gatewidth_2 << std::endl;
+
+	int gatewidth = 2; //gives total width of 5
+
 
 	//fill whole square with random bg-nr
 	for(int i=energy_1-4; i<=energy_1+5; i++){
@@ -240,6 +251,8 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 
 
 
+
+
 void fill_spectra(int lookup_value, int cube_value, int k, TH1D *true_spec, TH1D *all_spec, TH1D *bg_spec, TH1D *bg_ridge_spec, TH1D *bg_random_spec){
 
 	//a b c
@@ -270,7 +283,6 @@ void fill_spectra(int lookup_value, int cube_value, int k, TH1D *true_spec, TH1D
 		bg_spec->Fill(k, -0.25*cube_value);
 		bg_random_spec->Fill(k, 0.25*cube_value);
 	}
-
 }
 
 
