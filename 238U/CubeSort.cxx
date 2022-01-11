@@ -89,23 +89,22 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
 
-	fill_lookuptable(gamma_energy_1_140Xe, gamma_energy_2_140Xe, lookup_140Xe);
+/*	fill_lookuptable(gamma_energy_1_140Xe, gamma_energy_2_140Xe, lookup_140Xe);
 
 	fill_lookuptable(gamma_energy_1_138Xe, gamma_energy_2_138Xe, lookup_138Xe);
 
 	fill_lookuptable(gamma_energy_1_92Sr, gamma_energy_2_92Sr, lookup_92Sr);
 
 	fill_lookuptable(gamma_energy_1_94Sr, gamma_energy_2_94Sr, lookup_94Sr);
+*/
 
-
-/*	//Print loopup-table to make sure all elements have right value
-	for(int j=gamma_energy_2_140Xe-5; j<=gamma_energy_2_140Xe+6; j++){
-		for(int i=gamma_energy_1_140Xe-5; i<=gamma_energy_1_140Xe+6; i++){
-			//cout << lookup_134Te[i][j] << " ";
-			cout << lookup_140Xe[i][j] << " ";
+	//Print loopup-table to make sure all elements have right value
+	for(int j=gamma_energy_2_134Te-5; j<=gamma_energy_2_134Te+6; j++){
+		for(int i=gamma_energy_1_134Te-5; i<=gamma_energy_1_134Te+6; i++){
+			cout << lookup_134Te[i][j] << " ";
 		}
 		cout << "\n";
-	}*/
+	}
 
 
 	//////////////////////////////////////////
@@ -120,13 +119,14 @@ int main(int argc, char **argv){
 
 				fill_spectra(lookup_134Te[i][j], cube_value, k, time_isomer_doublegate_134Te, time_isomer_doublegate_all_134Te, time_isomer_doublegate_bg_134Te, time_isomer_doublegate_bg_ridge_134Te, time_isomer_doublegate_bg_random_134Te);
 			
-				fill_spectra(lookup_140Xe[i][j], cube_value, k, time_isomer_doublegate_140Xe, time_isomer_doublegate_all_140Xe, time_isomer_doublegate_bg_140Xe, time_isomer_doublegate_bg_ridge_140Xe, time_isomer_doublegate_bg_random_140Xe);
+/*				fill_spectra(lookup_140Xe[i][j], cube_value, k, time_isomer_doublegate_140Xe, time_isomer_doublegate_all_140Xe, time_isomer_doublegate_bg_140Xe, time_isomer_doublegate_bg_ridge_140Xe, time_isomer_doublegate_bg_random_140Xe);
 			
 				fill_spectra(lookup_138Xe[i][j], cube_value, k, time_isomer_doublegate_138Xe, time_isomer_doublegate_all_138Xe, time_isomer_doublegate_bg_138Xe, time_isomer_doublegate_bg_ridge_138Xe, time_isomer_doublegate_bg_random_138Xe);	
 
 				fill_spectra(lookup_92Sr[i][j], cube_value, k, time_isomer_doublegate_92Sr, time_isomer_doublegate_all_92Sr, time_isomer_doublegate_bg_92Sr, time_isomer_doublegate_bg_ridge_92Sr, time_isomer_doublegate_bg_random_92Sr);	
 
 				fill_spectra(lookup_94Sr[i][j], cube_value, k, time_isomer_doublegate_94Sr, time_isomer_doublegate_all_94Sr, time_isomer_doublegate_bg_94Sr, time_isomer_doublegate_bg_ridge_94Sr, time_isomer_doublegate_bg_random_94Sr);	
+			*/
 			}
 		}
 	}
@@ -187,6 +187,8 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	//bg_ridge = (b+d+f+h)/2
 	//bg_random = (a+c+g+i)/4
 
+	//NB: WITH ASYMMETRIC BG GATES, THE BG SUBTRACTION IS WRONG!
+
 	//Number of FWHM in the energy gate
 	double NFWHM=1.0;
 
@@ -199,50 +201,50 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	int gatewidth_1 = round(gatewidth_1_float);
 	int gatewidth_2 = round(gatewidth_2_float);
 
-	//std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
-	//std::cout << "Number of channels in true gate for energy_2: " << energy_2 << " keV " << gatewidth_2 << std::endl;
+	std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
+	std::cout << "Number of channels in true gate for energy_2: " << energy_2 << " keV " << gatewidth_2 << std::endl;
 
-	int gatewidth = 2; //gives total width of 5
-
+	gatewidth_1 = 2; // energy +/- gatewidth gives total width of 5
+	gatewidth_2 = 2;
 
 	//fill whole square with random bg-nr
-	for(int i=energy_1-4; i<=energy_1+5; i++){
-		for(int j=energy_2-4; j<=energy_2+5; j++){
+	for(int i=energy_1-2*gatewidth_1; i<=energy_1+2*gatewidth_1+1; i++){
+		for(int j=energy_2-2*gatewidth_2; j<=energy_2+2*gatewidth_2+1; j++){
 			lookup[i][j] = 3;
 		}
 	}
 
 	//peak gate; e
-	for(int i=energy_1-2; i<=energy_1+2; i++){
-		for(int j=energy_2-2; j<=energy_2+2; j++){
+	for(int i=energy_1-gatewidth_1; i<=energy_1+gatewidth_1; i++){
+		for(int j=energy_2-gatewidth_2; j<=energy_2+gatewidth_2; j++){
 			lookup[i][j] = 2;
 		}
 	}
 
 	//bg-ridge gate, energy_1 i bg_lower; d
-	for(int i=energy_1-4; i<=energy_1-3; i++){
-		for(int j=energy_2-2; j<=energy_2+2; j++){
+	for(int i=energy_1-2*gatewidth_1; i<=energy_1-gatewidth_1-1; i++){
+		for(int j=energy_2-gatewidth_2; j<=energy_2+gatewidth_2; j++){
 			lookup[i][j] = 1;
 		}
 	}
 
 	//bg-ridge gate, energy_1 i bg_upper; f
-	for(int i=energy_1+3; i<=energy_1+5; i++){
-		for(int j=energy_2-2; j<=energy_2+2; j++){
+	for(int i=energy_1+gatewidth_1+1; i<=energy_1+2*gatewidth_1+1; i++){
+		for(int j=energy_2-gatewidth_2; j<=energy_2+gatewidth_2; j++){
 			lookup[i][j] = 1;
 		}
 	} 
 
 	//bg-ridge gate, energy_2 i bg_lower; h
-	for(int i=energy_1-2; i<=energy_1+2; i++){
-		for(int j=energy_2-4; j<=energy_2-3; j++){
+	for(int i=energy_1-gatewidth_1; i<=energy_1+gatewidth_1; i++){
+		for(int j=energy_2-2*gatewidth_2; j<=energy_2-gatewidth_2-1; j++){
 			lookup[i][j] = 1;
 		}
 	}
 
 	//bg-ridge gate, energy_2 i bg_upper; b
-	for(int i=energy_1-2; i<=energy_1+2; i++){
-		for(int j=energy_2+3; j<=energy_2+5; j++){
+	for(int i=energy_1-gatewidth_1; i<=energy_1+gatewidth_1; i++){
+		for(int j=energy_2+gatewidth_2+1; j<=energy_2+2*gatewidth_2+1; j++){
 			lookup[i][j] = 1;
 		}
 	}
