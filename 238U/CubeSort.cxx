@@ -31,6 +31,7 @@ int TBINS=350;
 int EBINS=2048;
 
 short lookup_134Te[2048][2048] = {{0}};
+short lookup_135Te[2048][2048] = {{0}};
 short lookup_140Xe[2048][2048] = {{0}};
 short lookup_138Xe[2048][2048] = {{0}};
 short lookup_92Sr[2048][2048] = {{0}};
@@ -51,8 +52,9 @@ int main(int argc, char **argv){
 
 	//Create & read in cubes
 	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
-	Cube1->Read("U238cube_n3_2ns_4jan2021.bin");
-	//Cube1->Read("U238cube_n3_2ns_4jan2021-sub.bin");
+	Cube1->Read("Data_cubes/U238cube_hit3_2ns_lowE_4jan2022.bin");
+	//Cube1->Read("Data_cubes/U238cube_hit4_2ns_lowE_12jan2022.bin");
+	//Cube1->Read("Data_cubes/U238cube_hit5_2ns_lowE_12jan2022.bin");
 
 
  	//////////////////////////////////////////
@@ -64,19 +66,23 @@ int main(int argc, char **argv){
 	int gamma_energy_2_134Te = 1279;
 	int gamma_energy_3_134Te = 115;
 
-	//140Xe
+	//135Te
+ 	int gamma_energy_1_135Te = 325;
+	int gamma_energy_2_135Te = 1180;
+
+	//140Xe, no isomer
 	int gamma_energy_1_140Xe = 458;
 	int gamma_energy_2_140Xe = 377;
 
-	//138Xe
+	//138Xe, no isomer
 	int gamma_energy_1_138Xe = 589;
 	int gamma_energy_2_138Xe = 484;
 
-	//92Sr
+	//92Sr, no isomer
 	int gamma_energy_1_92Sr = 815;
 	int gamma_energy_2_92Sr = 570;
 
-	//94Sr
+	//94Sr, no isomer
 	int gamma_energy_1_94Sr = 1309;
 	int gamma_energy_2_94Sr = 837;
 
@@ -89,22 +95,25 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
 
-/*	fill_lookuptable(gamma_energy_1_140Xe, gamma_energy_2_140Xe, lookup_140Xe);
+	fill_lookuptable(gamma_energy_1_135Te, gamma_energy_2_135Te, lookup_135Te);
+
+	fill_lookuptable(gamma_energy_1_140Xe, gamma_energy_2_140Xe, lookup_140Xe);
 
 	fill_lookuptable(gamma_energy_1_138Xe, gamma_energy_2_138Xe, lookup_138Xe);
 
 	fill_lookuptable(gamma_energy_1_92Sr, gamma_energy_2_92Sr, lookup_92Sr);
 
 	fill_lookuptable(gamma_energy_1_94Sr, gamma_energy_2_94Sr, lookup_94Sr);
-*/
 
-	//Print loopup-table to make sure all elements have right value
+
+/*	//Print loopup-table to make sure all elements have right value
 	for(int j=gamma_energy_2_134Te-10; j<=gamma_energy_2_134Te+10; j++){
 		for(int i=gamma_energy_1_134Te-10; i<=gamma_energy_1_134Te+10; i++){
+			cout << "134Te" <<;	
 			cout << lookup_134Te[i][j] << " ";
 		}
 		cout << "\n";
-	}
+	}*/
 
 
 	//////////////////////////////////////////
@@ -119,14 +128,16 @@ int main(int argc, char **argv){
 
 				fill_spectra(lookup_134Te[i][j], cube_value, k, time_isomer_doublegate_134Te, time_isomer_doublegate_all_134Te, time_isomer_doublegate_bg_134Te, time_isomer_doublegate_bg_ridge_134Te, time_isomer_doublegate_bg_random_134Te);
 			
-/*				fill_spectra(lookup_140Xe[i][j], cube_value, k, time_isomer_doublegate_140Xe, time_isomer_doublegate_all_140Xe, time_isomer_doublegate_bg_140Xe, time_isomer_doublegate_bg_ridge_140Xe, time_isomer_doublegate_bg_random_140Xe);
+				fill_spectra(lookup_135Te[i][j], cube_value, k, time_isomer_doublegate_135Te, time_isomer_doublegate_all_135Te, time_isomer_doublegate_bg_135Te, time_isomer_doublegate_bg_ridge_135Te, time_isomer_doublegate_bg_random_135Te);
+
+				fill_spectra(lookup_140Xe[i][j], cube_value, k, time_isomer_doublegate_140Xe, time_isomer_doublegate_all_140Xe, time_isomer_doublegate_bg_140Xe, time_isomer_doublegate_bg_ridge_140Xe, time_isomer_doublegate_bg_random_140Xe);
 			
 				fill_spectra(lookup_138Xe[i][j], cube_value, k, time_isomer_doublegate_138Xe, time_isomer_doublegate_all_138Xe, time_isomer_doublegate_bg_138Xe, time_isomer_doublegate_bg_ridge_138Xe, time_isomer_doublegate_bg_random_138Xe);	
 
 				fill_spectra(lookup_92Sr[i][j], cube_value, k, time_isomer_doublegate_92Sr, time_isomer_doublegate_all_92Sr, time_isomer_doublegate_bg_92Sr, time_isomer_doublegate_bg_ridge_92Sr, time_isomer_doublegate_bg_random_92Sr);	
 
 				fill_spectra(lookup_94Sr[i][j], cube_value, k, time_isomer_doublegate_94Sr, time_isomer_doublegate_all_94Sr, time_isomer_doublegate_bg_94Sr, time_isomer_doublegate_bg_ridge_94Sr, time_isomer_doublegate_bg_random_94Sr);	
-			*/
+			
 			}
 		}
 	}
@@ -142,6 +153,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_134Te->Write();
 	time_isomer_doublegate_bg_ridge_134Te->Write();
 	time_isomer_doublegate_bg_random_134Te->Write();
+
+	time_isomer_doublegate_135Te->Write();
+	time_isomer_doublegate_all_135Te->Write();
+	time_isomer_doublegate_bg_135Te->Write();
+	time_isomer_doublegate_bg_ridge_135Te->Write();
+	time_isomer_doublegate_bg_random_135Te->Write();
 
 	time_isomer_doublegate_140Xe->Write();
 	time_isomer_doublegate_all_140Xe->Write();
@@ -187,8 +204,6 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	//bg_ridge = (b+d+f+h)/2
 	//bg_random = (a+c+g+i)/4
 
-	//NB: WITH ASYMMETRIC BG GATES, THE BG SUBTRACTION IS WRONG!
-
 	//Number of FWHM in the energy gate
 	double NFWHM=1.0;
 
@@ -201,9 +216,9 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 	int gatewidth_1 = round(gatewidth_1_float);
 	int gatewidth_2 = round(gatewidth_2_float);
 
-	std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
+/*	std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
 	std::cout << "Number of channels in true gate for energy_2: " << energy_2 << " keV " << gatewidth_2 << std::endl;
-
+*/
 /*	gatewidth_1 = 2; // energy +/- gatewidth gives total width of 5
 	gatewidth_2 = 2;*/
 

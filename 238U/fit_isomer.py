@@ -13,7 +13,13 @@ import time
 ##     Read in data     ## 
 ##########################
 
-file = ROOT.TFile.Open("CubeSort.root"," READ ")
+#file = ROOT.TFile.Open("CubeSort.root"," READ ")
+#file = ROOT.TFile.Open("Sorted_files/U238cube_hit3_2ns_lowE_12jan2022.root"," READ ")
+#file = ROOT.TFile.Open("Sorted_files/U238cube_hit4_2ns_lowE_12jan2022.root"," READ ")
+file = ROOT.TFile.Open("Sorted_files/U238cube_hit5_2ns_lowE_12jan2022.root"," READ ")
+
+print("\n")
+print("Reading file", file)
 
 #Define lower and upper fit limit
 x_lower = 320
@@ -330,7 +336,7 @@ sigma_IYR_double = sigma_IYR(prompt=area_double_true_prompt, delayed=area_double
 ###       Calculate uncertainty on IYR by MC     ###
 ####################################################
 
-N = 10
+N = 1000
 P_double_new = np.zeros(len(P_double))
 IYR_array = np.zeros(N)
 
@@ -338,9 +344,6 @@ IYR_array = np.zeros(N)
 for n in range(N):
     for i in range(len(P_double)):
         P_double_new[i] = P_double[i] + P_double_unc[i]*np.random.uniform(-1, 1)
-
-
-    print(P_double_new)
 
     area_double_true = np.trapz(gauss(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]) + smeared_exp_decay(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]), x_arr)
     area_double_true_prompt = np.trapz(gauss(x_arr, P_double_new[0], P_double_new[1], P_double_new[2], P_double_new[3], P_double_new[4], P_double[5]), x_arr)
@@ -375,7 +378,7 @@ plt.vlines(x_doublegate_134Te[0],0,6000, label="fit range", color="black")
 plt.vlines(x_doublegate_134Te[-1],0,6000, color="black")
 plt.yscale("log")
 plt.title("134Te: Doublegate true spectrum fit")
-plt.axis([0,700,10,10**(4)])
+plt.axis([0,700,1,10**(4)])
 plt.xlabel("Time [ns]", fontsize=14)
 plt.ylabel("Counts", fontsize=14)
 plt.legend(fontsize=10)
