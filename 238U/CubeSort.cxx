@@ -34,6 +34,7 @@ short lookup_134Te[2048][2048] = {{0}};
 short lookup_135Te[2048][2048] = {{0}};
 short lookup_1_93Rb[2048][2048] = {{0}};
 short lookup_2_93Rb[2048][2048] = {{0}};
+short lookup_94Rb[2048][2048] = {{0}};
 short lookup_140Xe[2048][2048] = {{0}};
 short lookup_138Xe[2048][2048] = {{0}};
 short lookup_92Sr[2048][2048] = {{0}};
@@ -54,9 +55,9 @@ int main(int argc, char **argv){
 
 	//Create & read in cubes
 	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
-	Cube1->Read("Data_cubes/U238cube_hit3_2ns_lowE_4jan2022.bin");
-	//Cube1->Read("Data_cubes/U238cube_hit4_2ns_lowE_12jan2022.bin");
-	//Cube1->Read("Data_cubes/U238cube_hit5_2ns_lowE_12jan2022.bin");
+	//Cube1->Read("Data_cubes/238Ucube_hit3_2ns_lowE_4jan2022.bin");
+	//Cube1->Read("Data_cubes/238Ucube_hit4_2ns_lowE_12jan2022.bin");
+	Cube1->Read("Data_cubes/238Ucube_hit5_2ns_lowE_12jan2022.bin");
 
 
  	//////////////////////////////////////////
@@ -73,10 +74,15 @@ int main(int argc, char **argv){
 	int gamma_energy_2_135Te = 1180;
 
 	//93Rb
-	int gamma_energy_1_93Rb = 372;
-	int gamma_energy_2_93Rb = 912;
+	int gamma_energy_1_93Rb = 373;
+	int gamma_energy_2_93Rb = 746; //can use this with pretty much everything 
+
 	int gamma_energy_3_93Rb = 552;
 	int gamma_energy_4_93Rb = 733;
+
+	//94Rb
+	int gamma_energy_1_94Rb = 217;
+	int gamma_energy_2_94Rb = 339;
 
 	//140Xe, no isomer
 	int gamma_energy_1_140Xe = 458;
@@ -109,6 +115,8 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_3_93Rb, gamma_energy_4_93Rb, lookup_2_93Rb);
 
+	fill_lookuptable(gamma_energy_1_94Rb, gamma_energy_2_94Rb, lookup_94Rb);
+
 	fill_lookuptable(gamma_energy_1_140Xe, gamma_energy_2_140Xe, lookup_140Xe);
 
 	fill_lookuptable(gamma_energy_1_138Xe, gamma_energy_2_138Xe, lookup_138Xe);
@@ -119,10 +127,10 @@ int main(int argc, char **argv){
 
 
 	//Print loopup-table to make sure all elements have right value
-	cout << "93Rb" << " " << endl;
-	for(int j=gamma_energy_2_93Rb-10; j<=gamma_energy_2_93Rb+10; j++){
-		for(int i=gamma_energy_1_93Rb-10; i<=gamma_energy_1_93Rb+10; i++){	
-			cout << lookup_1_93Rb[i][j] << " ";
+	cout << "94Rb" << " " << endl;
+	for(int j=gamma_energy_2_94Rb-10; j<=gamma_energy_2_94Rb+10; j++){
+		for(int i=gamma_energy_1_94Rb-10; i<=gamma_energy_1_94Rb+10; i++){	
+			cout << lookup_94Rb[i][j] << " ";
 		}
 		cout << "\n";
 	}
@@ -145,6 +153,8 @@ int main(int argc, char **argv){
 				fill_spectra(lookup_1_93Rb[i][j], cube_value, k, time_isomer_doublegate_1_93Rb, time_isomer_doublegate_1_all_93Rb, time_isomer_doublegate_1_bg_93Rb, time_isomer_doublegate_1_bg_ridge_93Rb, time_isomer_doublegate_1_bg_random_93Rb);
 
 				fill_spectra(lookup_2_93Rb[i][j], cube_value, k, time_isomer_doublegate_2_93Rb, time_isomer_doublegate_2_all_93Rb, time_isomer_doublegate_2_bg_93Rb, time_isomer_doublegate_2_bg_ridge_93Rb, time_isomer_doublegate_2_bg_random_93Rb);
+
+				fill_spectra(lookup_94Rb[i][j], cube_value, k, time_isomer_doublegate_94Rb, time_isomer_doublegate_all_94Rb, time_isomer_doublegate_bg_94Rb, time_isomer_doublegate_bg_ridge_94Rb, time_isomer_doublegate_bg_random_94Rb);
 
 				fill_spectra(lookup_140Xe[i][j], cube_value, k, time_isomer_doublegate_140Xe, time_isomer_doublegate_all_140Xe, time_isomer_doublegate_bg_140Xe, time_isomer_doublegate_bg_ridge_140Xe, time_isomer_doublegate_bg_random_140Xe);
 			
@@ -187,6 +197,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_2_bg_93Rb->Write();
 	time_isomer_doublegate_2_bg_ridge_93Rb->Write();
 	time_isomer_doublegate_2_bg_random_93Rb->Write();
+
+	time_isomer_doublegate_94Rb->Write();
+	time_isomer_doublegate_all_94Rb->Write();
+	time_isomer_doublegate_bg_94Rb->Write();
+	time_isomer_doublegate_bg_ridge_94Rb->Write();
+	time_isomer_doublegate_bg_random_94Rb->Write();
 
 	time_isomer_doublegate_140Xe->Write();
 	time_isomer_doublegate_all_140Xe->Write();
@@ -247,8 +263,8 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 /*	std::cout << "Number of channels in true gate for energy_1: " << energy_1 << " keV " << gatewidth_1 << std::endl;
 	std::cout << "Number of channels in true gate for energy_2: " << energy_2 << " keV " << gatewidth_2 << std::endl;
 */
-/*	gatewidth_1 = 2; // energy +/- gatewidth gives total width of 5
-	gatewidth_2 = 2;*/
+	gatewidth_1 = 2; // energy +/- gatewidth gives total width of 5
+	gatewidth_2 = 2;
 
 	//fill whole square with random bg-nr
 	for(int i=energy_1-3*gatewidth_1-1; i<=energy_1+3*gatewidth_1+1; i++){
