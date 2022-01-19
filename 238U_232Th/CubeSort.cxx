@@ -64,8 +64,8 @@ int main(int argc, char **argv){
 	//Cube1->Read("Data_cubes/238Ucube_hit5_2ns_lowE_12jan2022.bin");
 
 	//232Th
-/*	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
-	Cube1->Read("Data_cubes/232Thcube_hit4_2ns_17jan2022.bin");*/
+	//CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
+	//Cube1->Read("Data_cubes/232Thcube_hit4_2ns_17jan2022.bin");
 
  	//////////////////////////////////////////
 	/// 		  Isomer properties	       ///
