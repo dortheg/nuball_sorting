@@ -32,9 +32,11 @@ int EBINS=2048;
 
 short lookup_134Te[2048][2048] = {{0}};
 short lookup_1n_134Te[2048][2048] = {{0}};
+short lookup_2n_134Te[2048][2048] = {{0}};
 short lookup_3n_134Te[2048][2048] = {{0}};
 short lookup_4n_134Te[2048][2048] = {{0}};
 short lookup_5n_134Te[2048][2048] = {{0}};
+short lookup_6n_134Te[2048][2048] = {{0}};
 short lookup_135Te[2048][2048] = {{0}};
 short lookup_1_93Rb[2048][2048] = {{0}};
 short lookup_2_93Rb[2048][2048] = {{0}};
@@ -56,36 +58,90 @@ int main(int argc, char **argv){
 	//////////////////////////////////////////
 
 	#include "SpecDefs_CubeSort.cxx"
-
-	//238U
 	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
-	//Cube1->Read("Data_cubes/238Ucube_hit3_2ns_lowE_4jan2022.bin");
-	Cube1->Read("Data_cubes/238Ucube_hit4_2ns_lowE_12jan2022.bin");
-	//Cube1->Read("Data_cubes/238Ucube_hit5_2ns_lowE_12jan2022.bin");
 
-	//232Th
-	//CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
-	//Cube1->Read("Data_cubes/232Thcube_hit4_2ns_17jan2022.bin");
+	int A = 252;
+
+	if(A==238){
+		//238U
+		//Cube1->Read("Data_cubes/238Ucube_hit3_2ns_lowE_4jan2022.bin");
+		Cube1->Read("Data_cubes/238Ucube_hit4_2ns_lowE_12jan2022.bin");
+		//Cube1->Read("Data_cubes/238Ucube_hit5_2ns_lowE_12jan2022.bin");
+	}
+
+	else if(A==232){
+		//232Th
+		Cube1->Read("Data_cubes/232Thcube_hit4_2ns_17jan2022.bin");
+	}
+
+	else if(A==252){
+		//232Th
+		Cube1->Read("Data_cubes/252Cfcube_hit4_2ns_19jan2022.bin");
+	}
 
  	//////////////////////////////////////////
 	/// 		  Isomer properties	       ///
 	//////////////////////////////////////////
 
+
 	//134Te
  	int gamma_energy_1_134Te = 297; //279.0
 	int gamma_energy_2_134Te = 1279; //1279.01
 
-	//104Zr, 1n-partner with 134Te
-	int gamma_energy_104Zr = 312; //312.2
+	int gamma_energy_1n = 0;
+	int gamma_energy_2n = 0;
+	int gamma_energy_3n = 0;
+	int gamma_energy_4n = 0;
+	int gamma_energy_5n = 0;
+	int gamma_energy_6n = 0;
 
-	//102Zr, 3n-partner with 134Te
-	int gamma_energy_102Zr = 326; //326.48
+	if(A==238){
+		//104Zr, 1n-partner with 134Te for 238U
+		gamma_energy_1n = 312; //312.2
 
-	//101Zr, 4n-partner with 134Te
-	int gamma_energy_101Zr = 217; //216.68
+		//102Zr, 3n-partner with 134Te
+		gamma_energy_3n = 326; //326.48
 
-	//100Zr, 5n-partner with 134Te
-	int gamma_energy_100Zr = 212; //212.61
+		//101Zr, 4n-partner with 134Te
+		gamma_energy_4n = 217; //216.68
+
+		//100Zr, 5n-partner with 134Te
+		gamma_energy_5n = 212; //212.61
+	}
+
+	if(A==232){
+		//98Sr
+		gamma_energy_1n = 433; //144.70
+
+		//96Sr
+		gamma_energy_3n = 815; //815.0
+
+		//95Sr
+		gamma_energy_4n = 352; //352.01
+
+		//94Sr
+		gamma_energy_5n = 837; //836.9
+	}
+
+	if(A==252){
+		//117Pd
+		gamma_energy_1n = 438; //438.0, cannot go lower due to isomer
+
+		//116Pd
+		gamma_energy_2n = 340; //340.3
+
+		//115Pd
+		gamma_energy_3n = 128; //127.8
+
+		//114Pd
+		gamma_energy_4n = 333; //332.6
+
+		//113Pd
+		gamma_energy_5n = 128; //127.8
+
+		//122Pd
+		gamma_energy_6n = 128; //127.8
+	}
 
 	//135Te
  	int gamma_energy_1_135Te = 325; //325.0
@@ -127,13 +183,17 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
 
-	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_104Zr, lookup_1n_134Te);
+	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_1n, lookup_1n_134Te);
 
-	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_102Zr, lookup_3n_134Te);
+	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_2n, lookup_2n_134Te);
 
-	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_101Zr, lookup_4n_134Te);
+	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_3n, lookup_3n_134Te);
 
-	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_100Zr, lookup_5n_134Te);
+	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_4n, lookup_4n_134Te);
+
+	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_5n, lookup_5n_134Te);
+
+	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_6n, lookup_6n_134Te);
 
 	fill_lookuptable(gamma_energy_1_135Te, gamma_energy_2_135Te, lookup_135Te);
 
@@ -176,11 +236,15 @@ int main(int argc, char **argv){
 				
 				fill_spectra(lookup_1n_134Te[i][j], cube_value, k, time_isomer_doublegate_1n_134Te, time_isomer_doublegate_1n_all_134Te, time_isomer_doublegate_1n_bg_134Te, time_isomer_doublegate_1n_bg_ridge_134Te, time_isomer_doublegate_1n_bg_random_134Te);
 
+				fill_spectra(lookup_2n_134Te[i][j], cube_value, k, time_isomer_doublegate_2n_134Te, time_isomer_doublegate_2n_all_134Te, time_isomer_doublegate_2n_bg_134Te, time_isomer_doublegate_2n_bg_ridge_134Te, time_isomer_doublegate_2n_bg_random_134Te);
+
 				fill_spectra(lookup_3n_134Te[i][j], cube_value, k, time_isomer_doublegate_3n_134Te, time_isomer_doublegate_3n_all_134Te, time_isomer_doublegate_3n_bg_134Te, time_isomer_doublegate_3n_bg_ridge_134Te, time_isomer_doublegate_3n_bg_random_134Te);
 
 				fill_spectra(lookup_4n_134Te[i][j], cube_value, k, time_isomer_doublegate_4n_134Te, time_isomer_doublegate_4n_all_134Te, time_isomer_doublegate_4n_bg_134Te, time_isomer_doublegate_4n_bg_ridge_134Te, time_isomer_doublegate_4n_bg_random_134Te);
 
 				fill_spectra(lookup_5n_134Te[i][j], cube_value, k, time_isomer_doublegate_5n_134Te, time_isomer_doublegate_5n_all_134Te, time_isomer_doublegate_5n_bg_134Te, time_isomer_doublegate_5n_bg_ridge_134Te, time_isomer_doublegate_5n_bg_random_134Te);
+
+				fill_spectra(lookup_6n_134Te[i][j], cube_value, k, time_isomer_doublegate_6n_134Te, time_isomer_doublegate_6n_all_134Te, time_isomer_doublegate_6n_bg_134Te, time_isomer_doublegate_6n_bg_ridge_134Te, time_isomer_doublegate_6n_bg_random_134Te);
 
 				fill_spectra(lookup_135Te[i][j], cube_value, k, time_isomer_doublegate_135Te, time_isomer_doublegate_all_135Te, time_isomer_doublegate_bg_135Te, time_isomer_doublegate_bg_ridge_135Te, time_isomer_doublegate_bg_random_135Te);
 
@@ -220,6 +284,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_1n_bg_ridge_134Te->Write();
 	time_isomer_doublegate_1n_bg_random_134Te->Write();
 
+	time_isomer_doublegate_2n_134Te->Write();
+	time_isomer_doublegate_2n_all_134Te->Write();
+	time_isomer_doublegate_2n_bg_134Te->Write();
+	time_isomer_doublegate_2n_bg_ridge_134Te->Write();
+	time_isomer_doublegate_2n_bg_random_134Te->Write();
+
 	time_isomer_doublegate_3n_134Te->Write();
 	time_isomer_doublegate_3n_all_134Te->Write();
 	time_isomer_doublegate_3n_bg_134Te->Write();
@@ -237,6 +307,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_5n_bg_134Te->Write();
 	time_isomer_doublegate_5n_bg_ridge_134Te->Write();
 	time_isomer_doublegate_5n_bg_random_134Te->Write();
+
+	time_isomer_doublegate_6n_134Te->Write();
+	time_isomer_doublegate_6n_all_134Te->Write();
+	time_isomer_doublegate_6n_bg_134Te->Write();
+	time_isomer_doublegate_6n_bg_ridge_134Te->Write();
+	time_isomer_doublegate_6n_bg_random_134Te->Write();
 
 	time_isomer_doublegate_135Te->Write();
 	time_isomer_doublegate_all_135Te->Write();
