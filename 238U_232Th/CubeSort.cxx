@@ -210,7 +210,7 @@ fill_lookuptable(gamma_energy_2_134Te, gamma_energy_1n, lookup_1n_134Te);
 
 	fill_lookuptable(gamma_energy_1_135Te, gamma_energy_2_135Te, lookup_135Te);
 
-/*	fill_lookuptable(gamma_energy_1_93Rb, gamma_energy_2_93Rb, lookup_1_93Rb);
+	fill_lookuptable(gamma_energy_1_93Rb, gamma_energy_2_93Rb, lookup_1_93Rb);
 
 	fill_lookuptable(gamma_energy_3_93Rb, gamma_energy_4_93Rb, lookup_2_93Rb);
 
@@ -222,7 +222,7 @@ fill_lookuptable(gamma_energy_2_134Te, gamma_energy_1n, lookup_1n_134Te);
 
 	fill_lookuptable(gamma_energy_1_92Sr, gamma_energy_2_92Sr, lookup_92Sr);
 
-	fill_lookuptable(gamma_energy_1_94Sr, gamma_energy_2_94Sr, lookup_94Sr);*/
+	fill_lookuptable(gamma_energy_1_94Sr, gamma_energy_2_94Sr, lookup_94Sr);
 
 
 	//Print loopup-table to make sure all elements have right value
@@ -265,7 +265,7 @@ fill_lookuptable(gamma_energy_2_134Te, gamma_energy_1n, lookup_1n_134Te);
 
 				fill_spectra(lookup_135Te[i][j], cube_value, k, time_isomer_doublegate_135Te, time_isomer_doublegate_all_135Te, time_isomer_doublegate_bg_135Te, time_isomer_doublegate_bg_ridge_135Te, time_isomer_doublegate_bg_random_135Te);
 
-/*
+
 				fill_spectra(lookup_1_93Rb[i][j], cube_value, k, time_isomer_doublegate_1_93Rb, time_isomer_doublegate_1_all_93Rb, time_isomer_doublegate_1_bg_93Rb, time_isomer_doublegate_1_bg_ridge_93Rb, time_isomer_doublegate_1_bg_random_93Rb);
 
 				fill_spectra(lookup_2_93Rb[i][j], cube_value, k, time_isomer_doublegate_2_93Rb, time_isomer_doublegate_2_all_93Rb, time_isomer_doublegate_2_bg_93Rb, time_isomer_doublegate_2_bg_ridge_93Rb, time_isomer_doublegate_2_bg_random_93Rb);
@@ -279,7 +279,7 @@ fill_lookuptable(gamma_energy_2_134Te, gamma_energy_1n, lookup_1n_134Te);
 				fill_spectra(lookup_92Sr[i][j], cube_value, k, time_isomer_doublegate_92Sr, time_isomer_doublegate_all_92Sr, time_isomer_doublegate_bg_92Sr, time_isomer_doublegate_bg_ridge_92Sr, time_isomer_doublegate_bg_random_92Sr);	
 
 				fill_spectra(lookup_94Sr[i][j], cube_value, k, time_isomer_doublegate_94Sr, time_isomer_doublegate_all_94Sr, time_isomer_doublegate_bg_94Sr, time_isomer_doublegate_bg_ridge_94Sr, time_isomer_doublegate_bg_random_94Sr);	
-			*/
+			
 			}
 		}
 	}
