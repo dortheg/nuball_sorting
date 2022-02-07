@@ -155,7 +155,7 @@ def sum_smeared_exp_gauss_const_bg(x, mean=0, sigma=1.0, const_bg=1.0, amplitude
 
 ################   238U lowE -  134Te   #################
 
-absolute_sigma_value = True
+absolute_sigma_value = False
 
 print("\n * Absolute sigma is %.d \n" % absolute_sigma_value)
 
@@ -275,6 +275,9 @@ x_array_plot = np.linspace(0,1000,10000)
 #First calculate uncertainty in each data point
 def func_sigma_data(data_all, data_bg, BG):
     return np.sqrt(data_all + data_bg + (BG*data_bg)**2)
+
+
+    
 
 BG_percent = 0.05
 sigma_data = func_sigma_data(x_doublegate_all_238U_lowE_134Te, x_doublegate_bg_238U_lowE_134Te, BG_percent)
