@@ -34,6 +34,8 @@ short lookup_134Te[2048][2048] = {{0}};
 short lookup_1_134Te[2048][2048] = {{0}};
 short lookup_2_134Te[2048][2048] = {{0}};
 
+short lookup_singlegate_3n[2048] = {0};
+
 short lookup_1n_134Te[2048][2048] = {{0}};
 short lookup_2n_134Te[2048][2048] = {{0}};
 short lookup_3n_134Te[2048][2048] = {{0}};
@@ -60,6 +62,10 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]);
 void fill_spectra(int lookup_value, int cube_value, int k, TH1D *true_spec, TH1D *all_spec, TH1D *bg_spec, TH1D *bg_ridge_spec, TH1D *bg_random_spec);
 
 
+void fill_lookuptable_singlegate(int energy, short lookup[2048]);
+void fill_spectra_singlegate(int energy, int lookup_value, int cube_value, TH1D *true_spec, TH1D *all_spec, TH1D *bg_spec);
+
+
 int main(int argc, char **argv){
 
 	//////////////////////////////////////////
@@ -69,29 +75,38 @@ int main(int argc, char **argv){
 	#include "SpecDefs_CubeSort.cxx"
 	CubeDDT *Cube1=new CubeDDT("",EBINS,TBINS,2);
 
-	int A = 232;
+	string filename = "no";
+	string fileplace;
+
+	int A = 238;
 
 	if(A==238){
 		//238U
 
-		//lowE
-		//Cube1->Read("Data_cubes/238Ucube_hit3_2ns_lowE_4jan2022.bin");
-		Cube1->Read("Data_cubes/238Ucube_hit4_2ns_lowE_12jan2022.bin");
-		//Cube1->Read("Data_cubes/238Ucube_hit5_2ns_lowE_12jan2022.bin");
+		//lowE - highgammatime
+		filename = "238Ucube_hit4_2ns_lowE_12jan2022.bin";
 
-		//highE
-		//Cube1->Read("Data_cubes/238Ucube_hit4_2ns_highE_19jan2022.bin");
+		//lowE - lowgammatime
+		//filename = "238Ucube_hit4_2ns_lowE_lowgammatime_7feb2022.bin";
+
+
+		//highE - highgammatime
+		//filename = "238Ucube_hit4_2ns_highE_19jan2022.bin";
 	}
 
 	else if(A==232){
 		//232Th
-		Cube1->Read("Data_cubes/232Thcube_hit4_2ns_17jan2022.bin");
+		filename = "232Thcube_hit4_2ns_17jan2022.bin";	
 	}
 
 	else if(A==252){
 		//232Th
-		Cube1->Read("Data_cubes/252Cfcube_hit4_2ns_19jan2022.bin");
+		filename = "252Cfcube_hit4_2ns_19jan2022.bin";
 	}
+
+	fileplace = "Data_cubes/" + filename;
+
+	Cube1->Read(fileplace.c_str());
 
  	//////////////////////////////////////////
 	/// 		  Isomer properties	       ///
@@ -236,6 +251,8 @@ int main(int argc, char **argv){
 	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_3n, lookup_2_134Te);
 
 
+	fill_lookuptable_singlegate(gamma_energy_3n, lookup_singlegate_3n);
+
 
 	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_1n, lookup_1n_134Te);
 
@@ -294,10 +311,14 @@ int main(int argc, char **argv){
 
 	for (int k=0; k < TBINS; k++){
 		for (int i=0; i < EBINS; i++){
+
+
 			for (int j=0; j < EBINS; j++){
 
 				int cube_value = Cube1->Get(i,j,k);
 
+				fill_spectra_singlegate(j, lookup_singlegate_3n[i], cube_value, singlegate_3n, singlegate_3n_all, singlegate_3n_bg);
+			
 				fill_spectra(lookup_134Te[i][j], cube_value, k, time_isomer_doublegate_134Te, time_isomer_doublegate_all_134Te, time_isomer_doublegate_bg_134Te, time_isomer_doublegate_bg_ridge_134Te, time_isomer_doublegate_bg_random_134Te);
 				
 				fill_spectra(lookup_1_134Te[i][j], cube_value, k, time_isomer_doublegate_1_134Te, time_isomer_doublegate_1_all_134Te, time_isomer_doublegate_1_bg_134Te, time_isomer_doublegate_1_bg_ridge_134Te, time_isomer_doublegate_1_bg_random_134Te);
@@ -365,7 +386,13 @@ int main(int argc, char **argv){
 	/// 	  Write spectra to file	       ///
 	//////////////////////////////////////////
 
-	TFile *outputspectrafile = new TFile("CubeSort.root","RECREATE");
+	string filename_out = filename + ".root";
+	TFile *outputspectrafile = new TFile(filename_out.c_str(),"RECREATE");
+
+
+	singlegate_3n->Write();
+	singlegate_3n_all->Write();
+	singlegate_3n_bg->Write();
 
 	time_isomer_doublegate_134Te->Write();
 	time_isomer_doublegate_all_134Te->Write();
@@ -501,7 +528,25 @@ int main(int argc, char **argv){
 
 
 
+void fill_lookuptable_singlegate(int energy, short lookup[2048]){
 
+
+	//Peak gate 
+	for(int i=energy-2; i<=energy+2; i++){
+			lookup[i] = 2;
+	}
+
+	//NB: asymmetric BG-gate, is ok in 1 dimention
+	for(int i=energy-5; i<=energy-3; i++){
+			lookup[i] = 1;
+	}
+
+	for(int i=energy+3; i<=energy+4; i++){
+			lookup[i] = 1;
+	}
+
+
+}
 
 
 
@@ -611,6 +656,21 @@ void fill_spectra(int lookup_value, int cube_value, int k, TH1D *true_spec, TH1D
 		bg_spec->Fill(k, -0.25*cube_value);
 		bg_random_spec->Fill(k, 0.25*cube_value);
 	}
+}
+
+void fill_spectra_singlegate(int energy, int lookup_value, int cube_value, TH1D *true_spec, TH1D *all_spec, TH1D *bg_spec){
+	
+	//Peak
+	if(lookup_value==2){
+		true_spec->Fill(energy, cube_value);
+		all_spec->Fill(energy, cube_value);
+	}
+
+	//BG
+	if(lookup_value==1){
+		true_spec->Fill(energy, -cube_value);
+		bg_spec->Fill(energy, cube_value);
+	}	
 }
 
 
