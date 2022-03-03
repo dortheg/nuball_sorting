@@ -36,7 +36,7 @@ print("FIT CHOICES")
 
 ################   238U lowE_highT -  134Te   #################
 
-#Define lowE_highT and upper fit limit
+#Define lower and upper fit limit
 x_lower = 330
 x_upper = 640
 
@@ -1055,6 +1055,7 @@ area_double_true_238U_lowE_highT_134Te = np.trapz(gauss(x_arr_134Te, P_double_23
 area_double_true_prompt_238U_lowE_highT_134Te = np.trapz(gauss(x_arr_134Te, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), x_arr_134Te)
 area_double_true_delayed_238U_lowE_highT_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), x_arr_134Te)
 
+
 IYR_double_238U_lowE_highT_134Te = IYR(prompt=area_double_true_prompt_238U_lowE_highT_134Te, delayed=area_double_true_delayed_238U_lowE_highT_134Te)
 
 
@@ -1573,7 +1574,7 @@ t.add_row(['238U - lowE highT', '134Te', '3n - 6plus', '1279-487', round(IYR_dou
 
 t.add_row([' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '])
 
-t.add_row(['238U - lowE lowT', '134Te', 'Double', '1279-297', round(IYR_double_238U_lowE_lowT_134Te,3), round(sigma_IYR_238U_lowE_lowT_134Te,3), 0, 0])
+#t.add_row(['238U - lowE lowT', '134Te', 'Double', '1279-297', round(IYR_double_238U_lowE_lowT_134Te,3), round(sigma_IYR_238U_lowE_lowT_134Te,3), 0, 0])
 
 t.add_row([' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '])
 
@@ -1612,10 +1613,10 @@ x_array_plot = np.linspace(0,1000,10000)
 # #plt.yscale("log")
 # plt.title("238U lowE_highT - 134Te: Doublegate true spectrum fit")
 # #plt.axis([0,700,1,10**(4)])
-# plt.axis([0,700,0,4*10**(3)])
+# plt.axis([300,650,0,4*10**(3)])
 # plt.xlabel("Time [ns]", fontsize=14)
 # plt.ylabel("Counts", fontsize=14)
-# plt.legend(fontsize=14)
+# plt.legend(fontsize=12)
 # plt.grid()
 # plt.show()
 

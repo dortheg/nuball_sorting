@@ -13,7 +13,7 @@ import time
 ##     				Read in data                  ## 
 ####################################################
 
-file_238U_lowE = ROOT.TFile.Open("Sorted_files/238Ucube_hit4_2ns_lowE_12jan2022_03feb22.root"," READ ")
+file_238U_lowE = ROOT.TFile.Open("Sorted_files/238Ucube_hit4_2ns_lowE_highT_12jan2022.bin.root"," READ ")
 
 ################   238U lowE -  134Te   #################
 
@@ -246,24 +246,24 @@ x_array_plot = np.linspace(0,1000,10000)
 
 ################   238U lowE -  134Te   #################
 
-# plt.plot(x_doublegate_238U_lowE_134Te_long, y_doublegate_238U_lowE_134Te_long, label="doublegate_238U_lowE_134Te", color="royalblue")
+plt.plot(x_doublegate_238U_lowE_134Te_long, y_doublegate_238U_lowE_134Te_long, label="doublegate_238U_lowE_134Te", color="royalblue")
 
-# plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="true fit, total", color="orange")
-# plt.plot(x_array_plot, gauss(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="true gaussian", color="green")
-# plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="true smeared exp decay", color="red")
-# plt.plot(x_array_plot, const_bg(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="constant BG", color="hotpink")
+plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="true fit, total", color="orange")
+plt.plot(x_array_plot, gauss(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="true gaussian", color="green")
+plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="true smeared exp decay", color="red")
+plt.plot(x_array_plot, const_bg(x_array_plot, P_double_238U_lowE_134Te[0], P_double_238U_lowE_134Te[1], P_double_238U_lowE_134Te[2], P_double_238U_lowE_134Te[3], P_double_238U_lowE_134Te[4], P_double_238U_lowE_134Te[5]), label="constant BG", color="hotpink")
 
-# plt.vlines(x_doublegate_238U_lowE_134Te[0],0,6000, label="fit range", color="black")
-# plt.vlines(x_doublegate_238U_lowE_134Te[-1],0,6000, color="black")
-# #plt.yscale("log")
-# plt.title("238U lowE - 134Te: Doublegate true spectrum fit")
-# #plt.axis([0,700,1,10**(4)])
-# plt.axis([0,700,0,4*10**(3)])
-# plt.xlabel("Time [ns]", fontsize=14)
-# plt.ylabel("Counts", fontsize=14)
-# plt.legend(fontsize=14)
-# plt.grid()
-# plt.show()
+plt.vlines(x_doublegate_238U_lowE_134Te[0],0,6000, label="fit range", color="black")
+plt.vlines(x_doublegate_238U_lowE_134Te[-1],0,6000, color="black")
+#plt.yscale("log")
+plt.title("238U lowE - 134Te: Doublegate true spectrum fit")
+#plt.axis([0,700,1,10**(4)])
+plt.axis([0,700,0,4*10**(3)])
+plt.xlabel("Time [ns]", fontsize=14)
+plt.ylabel("Counts", fontsize=14)
+plt.legend(fontsize=14)
+plt.grid()
+plt.show()
 
 
 

@@ -35,6 +35,29 @@ TH1D *time_isomer_doublegate_bg_random_134Te = new TH1D("time_isomer_doublegate_
 time_isomer_doublegate_bg_random_134Te->GetXaxis()->SetTitle("Time [2 ns]");
 time_isomer_doublegate_bg_random_134Te->GetYaxis()->SetTitle("Counts");
 
+//134Te doublegate_isomer_3n
+TH1D *time_isomer_doublegate_isomer_3n_134Te = new TH1D("time_isomer_doublegate_isomer_3n_134Te","time_isomer_doublegate_isomer_3n_134Te",350,0,350);
+time_isomer_doublegate_isomer_3n_134Te->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_isomer_3n_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_isomer_3n_all_134Te = new TH1D("time_isomer_doublegate_isomer_3n_all_134Te","time_isomer_doublegate_isomer_3n_all_134Te",350,0,350);
+time_isomer_doublegate_isomer_3n_all_134Te->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_isomer_3n_all_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_isomer_3n_bg_134Te = new TH1D("time_isomer_doublegate_isomer_3n_bg_134Te","time_isomer_doublegate_isomer_3n_bg_134Te",350,0,350);
+time_isomer_doublegate_isomer_3n_bg_134Te->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_isomer_3n_bg_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_isomer_3n_bg_ridge_134Te = new TH1D("time_isomer_doublegate_isomer_3n_bg_ridge_134Te","time_isomer_doublegate_isomer_3n_bg_ridge_134Te",350,0,350);
+time_isomer_doublegate_isomer_3n_bg_ridge_134Te->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_isomer_3n_bg_ridge_134Te->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_isomer_3n_bg_random_134Te = new TH1D("time_isomer_doublegate_isomer_3n_bg_random_134Te","time_isomer_doublegate_isomer_3n_bg_random_134Te",350,0,350);
+time_isomer_doublegate_isomer_3n_bg_random_134Te->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_isomer_3n_bg_random_134Te->GetYaxis()->SetTitle("Counts");
+
+
+
 //134Te doublegate_1
 TH1D *time_isomer_doublegate_1_134Te = new TH1D("time_isomer_doublegate_1_134Te","time_isomer_doublegate_1_134Te",350,0,350);
 time_isomer_doublegate_1_134Te->GetXaxis()->SetTitle("Time [2 ns]");

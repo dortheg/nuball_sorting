@@ -31,6 +31,7 @@ int TBINS=350;
 int EBINS=2048;
 
 short lookup_134Te[2048][2048] = {{0}};
+short lookup_isomer_3n_134Te[2048][2048] = {{0}};
 short lookup_1_134Te[2048][2048] = {{0}};
 short lookup_2_134Te[2048][2048] = {{0}};
 
@@ -78,25 +79,34 @@ int main(int argc, char **argv){
 	string filename = "no";
 	string fileplace;
 
-	int A = 238;
+	int A = 232;
 
 	if(A==238){
 		//238U
 
-		//lowE - highgammatime
-		filename = "238Ucube_hit4_2ns_lowE_12jan2022.bin";
+		//1.7 MeV neutrons
+		//lowE - highT
+		filename = "238Ucube_hit4_lowE_hightT_8feb2022.bin";
 
-		//lowE - lowgammatime
-		//filename = "238Ucube_hit4_2ns_lowE_lowgammatime_7feb2022.bin";
+		//lowE - lowT
+		//filename = "238Ucube_hit4_lowE_lowT_8feb2022.bin";
 
 
-		//highE - highgammatime
-		//filename = "238Ucube_hit4_2ns_highE_19jan2022.bin";
+		//3.6 MeV neutrons
+		//highE - highT
+		//This is before BugFix
+		//filename = "238Ucube_hit4_2ns_highE_highT_19jan2022.bin";
 	}
 
 	else if(A==232){
 		//232Th
-		filename = "232Thcube_hit4_2ns_17jan2022.bin";	
+
+		//highT
+		//filename = "232Thcube_hit4_highE_highT_28feb2022.bin";
+
+		//lowT
+		filename = "232Thcube_hit4_highE_lowT_28feb2022.bin";
+
 	}
 
 	else if(A==252){
@@ -104,7 +114,10 @@ int main(int argc, char **argv){
 		filename = "252Cfcube_hit4_2ns_19jan2022.bin";
 	}
 
-	fileplace = "Data_cubes/" + filename;
+
+	std::cout << "File: " << filename << std::endl;
+
+	fileplace = "Data_cubes/CubesAfterTimeBugFix/" + filename;
 
 	Cube1->Read(fileplace.c_str());
 
@@ -114,6 +127,7 @@ int main(int argc, char **argv){
 
 
 	//134Te
+	int gamma_isomer_134Te = 115;
  	int gamma_energy_1_134Te = 297; //297.0
 	int gamma_energy_2_134Te = 1279; //1279.01
 
@@ -246,9 +260,12 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
 
+	fill_lookuptable(gamma_isomer_134Te, gamma_energy_3n, lookup_isomer_3n_134Te);
+
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_3n, lookup_1_134Te);
 
 	fill_lookuptable(gamma_energy_2_134Te, gamma_energy_3n, lookup_2_134Te);
+
 
 
 	fill_lookuptable_singlegate(gamma_energy_3n, lookup_singlegate_3n);
@@ -309,6 +326,8 @@ int main(int argc, char **argv){
 	/// 		  	 Sorting	     	   ///
 	//////////////////////////////////////////
 
+	int cube_sum = 0;
+
 	for (int k=0; k < TBINS; k++){
 		for (int i=0; i < EBINS; i++){
 
@@ -317,10 +336,15 @@ int main(int argc, char **argv){
 
 				int cube_value = Cube1->Get(i,j,k);
 
+				cube_sum += cube_value;
+
 				fill_spectra_singlegate(j, lookup_singlegate_3n[i], cube_value, singlegate_3n, singlegate_3n_all, singlegate_3n_bg);
 			
 				fill_spectra(lookup_134Te[i][j], cube_value, k, time_isomer_doublegate_134Te, time_isomer_doublegate_all_134Te, time_isomer_doublegate_bg_134Te, time_isomer_doublegate_bg_ridge_134Te, time_isomer_doublegate_bg_random_134Te);
 				
+				fill_spectra(lookup_isomer_3n_134Te[i][j], cube_value, k, time_isomer_doublegate_isomer_3n_134Te, time_isomer_doublegate_isomer_3n_all_134Te, time_isomer_doublegate_isomer_3n_bg_134Te, time_isomer_doublegate_isomer_3n_bg_ridge_134Te, time_isomer_doublegate_isomer_3n_bg_random_134Te);
+
+
 				fill_spectra(lookup_1_134Te[i][j], cube_value, k, time_isomer_doublegate_1_134Te, time_isomer_doublegate_1_all_134Te, time_isomer_doublegate_1_bg_134Te, time_isomer_doublegate_1_bg_ridge_134Te, time_isomer_doublegate_1_bg_random_134Te);
 				
 				fill_spectra(lookup_2_134Te[i][j], cube_value, k, time_isomer_doublegate_2_134Te, time_isomer_doublegate_2_all_134Te, time_isomer_doublegate_2_bg_134Te, time_isomer_doublegate_2_bg_ridge_134Te, time_isomer_doublegate_2_bg_random_134Te);
@@ -371,6 +395,8 @@ int main(int argc, char **argv){
 		}
 	}
 
+	std::cout << "Sum of counts in cube: " << cube_sum << std::endl;
+
 	//////////////////////////////////////////
 	/// 	     Create any-n gate 	       ///
 	//////////////////////////////////////////
@@ -399,6 +425,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_134Te->Write();
 	time_isomer_doublegate_bg_ridge_134Te->Write();
 	time_isomer_doublegate_bg_random_134Te->Write();
+
+	time_isomer_doublegate_isomer_3n_134Te->Write();
+	time_isomer_doublegate_isomer_3n_all_134Te->Write();
+	time_isomer_doublegate_isomer_3n_bg_134Te->Write();
+	time_isomer_doublegate_isomer_3n_bg_ridge_134Te->Write();
+	time_isomer_doublegate_isomer_3n_bg_random_134Te->Write();
 
 	time_isomer_doublegate_1_134Te->Write();
 	time_isomer_doublegate_1_all_134Te->Write();
