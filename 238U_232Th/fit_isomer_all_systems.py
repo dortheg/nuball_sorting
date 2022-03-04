@@ -1556,16 +1556,20 @@ if SIGMA_VAR==True:
 
 if BOOTSTRAP==True:
 
-    print("\n Starting BOOTSTRAPPING... ")
 
-    N_BOOTSTRAP = 500
+    N_BOOTSTRAP = 1000
+
+    print("\n Starting BOOTSTRAPPING... Number of iterations: %.d" % N_BOOTSTRAP)
 
     #Find uncertainty on data set
     unc_y_doublegate_238U_lowE_highT_134Te_long = sigma_data_doublegate_all_bg(data_all=y_doublegate_all_238U_lowE_highT_134Te_long, data_bg=y_doublegate_bg_238U_lowE_highT_134Te_long)
+    unc_y_doublegate_238U_lowE_highT_134Te = sigma_data_doublegate_all_bg(data_all=y_doublegate_all_238U_lowE_highT_134Te, data_bg=y_doublegate_bg_238U_lowE_highT_134Te)
+
 
     #Arrays to store resampled data
     resampled_y_doublegate_238U_lowE_highT_134Te_long = np.zeros(len(y_doublegate_238U_lowE_highT_134Te_long))
     resampled_IYR_array_238U_lowE_highT_134Te = np.zeros(N_BOOTSTRAP)
+
 
     for n in range(N_BOOTSTRAP):
 
@@ -1574,6 +1578,7 @@ if BOOTSTRAP==True:
 
         for i in range(len(y_doublegate_238U_lowE_highT_134Te_long)):
             resampled_y_doublegate_238U_lowE_highT_134Te_long[i] = y_doublegate_238U_lowE_highT_134Te_long_bg_varied[i] + np.random.normal(0, unc_y_doublegate_238U_lowE_highT_134Te_long[i]) 
+
 
         #Fit resampled data
         mean_lower = 0
@@ -1589,16 +1594,15 @@ if BOOTSTRAP==True:
         tau_decay_lower = tau_134Te
         tau_decay_upper = tau_134Te+0.0001
 
-        
         #Define lower and upper fit limit
-        x_lower = 330
+        x_lower = 330 + np.random.randint(-3,3)
         x_upper = 640
 
         bin_lower = x_lower//2
         bin_upper = x_upper//2        
 
         #resampled_P_double_238U_lowE_highT_134Te, resampled_cov_double_238U_lowE_highT_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_238U_lowE_highT_134Te, resampled_y_doublegate_238U_lowE_highT_134Te, sigma=unc_y_doublegate_238U_lowE_highT_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
-        resampled_P_double_238U_lowE_highT_134Te, resampled_cov_double_238U_lowE_highT_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_238U_lowE_highT_134Te_long[x_lower:x_upper], resampled_y_doublegate_238U_lowE_highT_134Te_long[x_lower:x_upper], bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+        resampled_P_double_238U_lowE_highT_134Te, resampled_cov_double_238U_lowE_highT_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_238U_lowE_highT_134Te_long[bin_lower:bin_upper], resampled_y_doublegate_238U_lowE_highT_134Te_long[bin_lower:bin_upper], bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
 
 
         resampled_area_double_true_238U_lowE_highT_134Te = np.trapz(gauss(x_arr_134Te, resampled_P_double_238U_lowE_highT_134Te[0], resampled_P_double_238U_lowE_highT_134Te[1], resampled_P_double_238U_lowE_highT_134Te[2], resampled_P_double_238U_lowE_highT_134Te[3], resampled_P_double_238U_lowE_highT_134Te[4], resampled_P_double_238U_lowE_highT_134Te[5]) + smeared_exp_decay(x_arr_134Te, resampled_P_double_238U_lowE_highT_134Te[0], resampled_P_double_238U_lowE_highT_134Te[1], resampled_P_double_238U_lowE_highT_134Te[2], resampled_P_double_238U_lowE_highT_134Te[3], resampled_P_double_238U_lowE_highT_134Te[4], resampled_P_double_238U_lowE_highT_134Te[5]), x_arr_134Te)
@@ -1610,7 +1614,7 @@ if BOOTSTRAP==True:
 
     sigma_bootstrap_IYR_238U_lowE_highT_134Te = np.std(resampled_IYR_array_238U_lowE_highT_134Te)
 
-#print(resampled_IYR_array_238U_lowE_highT_134Te)
+print(np.average(resampled_IYR_array_238U_lowE_highT_134Te))
 
 ####################################################
 ###     Calculate chi-squared values for fits    ###
@@ -1674,24 +1678,24 @@ x_array_plot = np.linspace(0,1000,10000)
 
 ################   238U lowE_highT -  134Te   #################
 
-plt.plot(x_doublegate_238U_lowE_highT_134Te_long, y_doublegate_238U_lowE_highT_134Te_long, label="doublegate_238U_lowE_highT_134Te", color="royalblue")
+# plt.plot(x_doublegate_238U_lowE_highT_134Te_long, y_doublegate_238U_lowE_highT_134Te_long, label="doublegate_238U_lowE_highT_134Te", color="royalblue")
 
-plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true fit, total", color="orange")
-plt.plot(x_array_plot, gauss(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true gaussian", color="green")
-plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true smeared exp decay", color="red")
-plt.plot(x_array_plot, const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="constant BG", color="hotpink")
+# plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true fit, total", color="orange")
+# plt.plot(x_array_plot, gauss(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true gaussian", color="green")
+# plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true smeared exp decay", color="red")
+# plt.plot(x_array_plot, const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="constant BG", color="hotpink")
 
-plt.vlines(x_doublegate_238U_lowE_highT_134Te[0],0,6000, label="fit range", color="black")
-plt.vlines(x_doublegate_238U_lowE_highT_134Te[-1],0,6000, color="black")
-#plt.yscale("log")
-plt.title("238U lowE_highT - 134Te: Doublegate true spectrum fit")
-#plt.axis([0,700,1,10**(4)])
-plt.axis([0,650,0,4*10**(3)])
-plt.xlabel("Time [ns]", fontsize=14)
-plt.ylabel("Counts", fontsize=14)
-plt.legend(fontsize=12)
-plt.grid()
-plt.show()
+# plt.vlines(x_doublegate_238U_lowE_highT_134Te[0],0,6000, label="fit range", color="black")
+# plt.vlines(x_doublegate_238U_lowE_highT_134Te[-1],0,6000, color="black")
+# #plt.yscale("log")
+# plt.title("238U lowE_highT - 134Te: Doublegate true spectrum fit")
+# #plt.axis([0,700,1,10**(4)])
+# plt.axis([0,650,0,4*10**(3)])
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# plt.legend(fontsize=12)
+# plt.grid()
+# plt.show()
 
 ################   238U lowE_highT -  134Te  1n  #################
 
