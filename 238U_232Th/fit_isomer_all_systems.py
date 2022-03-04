@@ -1561,19 +1561,19 @@ if BOOTSTRAP==True:
     N_BOOTSTRAP = 500
 
     #Find uncertainty on data set
-    unc_y_doublegate_238U_lowE_highT_134Te = sigma_data_doublegate_all_bg(data_all=y_doublegate_all_238U_lowE_highT_134Te, data_bg=y_doublegate_bg_238U_lowE_highT_134Te)
+    unc_y_doublegate_238U_lowE_highT_134Te_long = sigma_data_doublegate_all_bg(data_all=y_doublegate_all_238U_lowE_highT_134Te_long, data_bg=y_doublegate_bg_238U_lowE_highT_134Te_long)
 
     #Arrays to store resampled data
-    resampled_y_doublegate_238U_lowE_highT_134Te = np.zeros(len(y_doublegate_238U_lowE_highT_134Te))
+    resampled_y_doublegate_238U_lowE_highT_134Te_long = np.zeros(len(y_doublegate_238U_lowE_highT_134Te_long))
     resampled_IYR_array_238U_lowE_highT_134Te = np.zeros(N_BOOTSTRAP)
 
     for n in range(N_BOOTSTRAP):
 
         #Vary BG withing a normal distribution of sigma = 0.0125, then +-2sigma spans a BG-variation of 5%
-        y_doublegate_238U_lowE_highT_134Te_bg_varied = y_doublegate_all_238U_lowE_highT_134Te-y_doublegate_bg_238U_lowE_highT_134Te*np.random.normal(1,0.0125)
+        y_doublegate_238U_lowE_highT_134Te_long_bg_varied = y_doublegate_all_238U_lowE_highT_134Te_long-y_doublegate_bg_238U_lowE_highT_134Te_long*np.random.normal(1,0.0125)
 
-        for i in range(len(y_doublegate_238U_lowE_highT_134Te)):
-            resampled_y_doublegate_238U_lowE_highT_134Te[i] = y_doublegate_238U_lowE_highT_134Te_bg_varied[i] + np.random.normal(0, unc_y_doublegate_238U_lowE_highT_134Te[i]) 
+        for i in range(len(y_doublegate_238U_lowE_highT_134Te_long)):
+            resampled_y_doublegate_238U_lowE_highT_134Te_long[i] = y_doublegate_238U_lowE_highT_134Te_long_bg_varied[i] + np.random.normal(0, unc_y_doublegate_238U_lowE_highT_134Te_long[i]) 
 
         #Fit resampled data
         mean_lower = 0
@@ -1589,8 +1589,16 @@ if BOOTSTRAP==True:
         tau_decay_lower = tau_134Te
         tau_decay_upper = tau_134Te+0.0001
 
+        
+        #Define lower and upper fit limit
+        x_lower = 330
+        x_upper = 640
+
+        bin_lower = x_lower//2
+        bin_upper = x_upper//2        
+
         #resampled_P_double_238U_lowE_highT_134Te, resampled_cov_double_238U_lowE_highT_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_238U_lowE_highT_134Te, resampled_y_doublegate_238U_lowE_highT_134Te, sigma=unc_y_doublegate_238U_lowE_highT_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
-        resampled_P_double_238U_lowE_highT_134Te, resampled_cov_double_238U_lowE_highT_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_238U_lowE_highT_134Te, resampled_y_doublegate_238U_lowE_highT_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+        resampled_P_double_238U_lowE_highT_134Te, resampled_cov_double_238U_lowE_highT_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_238U_lowE_highT_134Te_long[x_lower:x_upper], resampled_y_doublegate_238U_lowE_highT_134Te_long[x_lower:x_upper], bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
 
 
         resampled_area_double_true_238U_lowE_highT_134Te = np.trapz(gauss(x_arr_134Te, resampled_P_double_238U_lowE_highT_134Te[0], resampled_P_double_238U_lowE_highT_134Te[1], resampled_P_double_238U_lowE_highT_134Te[2], resampled_P_double_238U_lowE_highT_134Te[3], resampled_P_double_238U_lowE_highT_134Te[4], resampled_P_double_238U_lowE_highT_134Te[5]) + smeared_exp_decay(x_arr_134Te, resampled_P_double_238U_lowE_highT_134Te[0], resampled_P_double_238U_lowE_highT_134Te[1], resampled_P_double_238U_lowE_highT_134Te[2], resampled_P_double_238U_lowE_highT_134Te[3], resampled_P_double_238U_lowE_highT_134Te[4], resampled_P_double_238U_lowE_highT_134Te[5]), x_arr_134Te)
