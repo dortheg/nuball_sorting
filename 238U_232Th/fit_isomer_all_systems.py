@@ -1574,6 +1574,7 @@ if BOOTSTRAP==True:
     for n in range(N_BOOTSTRAP):
 
         #Vary BG withing a normal distribution of sigma = 0.0125, then +-2sigma spans a BG-variation of 5%
+        # Jon said I need to redo this to vary bin-by-bin
         y_doublegate_238U_lowE_highT_134Te_long_bg_varied = y_doublegate_all_238U_lowE_highT_134Te_long-y_doublegate_bg_238U_lowE_highT_134Te_long*np.random.normal(1,0.0125)
 
         for i in range(len(y_doublegate_238U_lowE_highT_134Te_long)):
