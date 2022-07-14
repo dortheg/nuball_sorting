@@ -9,8 +9,8 @@ from scipy.ndimage import gaussian_filter1d
 import time
 from prettytable import PrettyTable
 
-BOOTSTRAP = True
-SIGMA_VAR = True
+BOOTSTRAP = False
+SIGMA_VAR = False
 
 ####################################################
 ##     				Read in data                  ## 
@@ -270,7 +270,6 @@ x_doublegate_3n_bg_238U_lowE_highT_134Te = x_doublegate_3n_bg_238U_lowE_highT_13
 y_doublegate_3n_bg_238U_lowE_highT_134Te = y_doublegate_3n_bg_238U_lowE_highT_134Te[bin_lower:bin_upper]
 
 #print("* 238U - 134Te 3n_bg fit range %d - %.d" % (x_doublegate_3n_bg_238U_lowE_highT_134Te[0],x_doublegate_3n_bg_238U_lowE_highT_134Te[-1]))
-
 
 
 
@@ -1056,6 +1055,158 @@ y_doublegate_5n_bg_232Th_134Te = y_doublegate_5n_bg_232Th_134Te[bin_lower:bin_up
 #print("* 232Th - 134Te fit range %d - %.d" % (x_doublegate_5n_bg_232Th_134Te[0],x_doublegate_5n_bg_232Th_134Te[-1]))
 
 
+################   232Th -  134Te 3n_2plus  #################
+
+#doublegate_3n_2plus true
+hist_doublegate_3n_2plus_232Th_134Te = file_232Th.Get('time_isomer_doublegate_3n_2plus_134Te')
+x_bins = hist_doublegate_3n_2plus_232Th_134Te.GetNbinsX()
+
+x_doublegate_3n_2plus_232Th_134Te = np.zeros(x_bins)
+y_doublegate_3n_2plus_232Th_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_3n_2plus_232Th_134Te[i] = hist_doublegate_3n_2plus_232Th_134Te.GetBinCenter(i+1)
+    y_doublegate_3n_2plus_232Th_134Te[i] = hist_doublegate_3n_2plus_232Th_134Te.GetBinContent(i+1)
+
+#Make up for 2ns bins
+x_doublegate_3n_2plus_232Th_134Te = 2*x_doublegate_3n_2plus_232Th_134Te
+
+x_doublegate_3n_2plus_232Th_134Te_long = x_doublegate_3n_2plus_232Th_134Te
+y_doublegate_3n_2plus_232Th_134Te_long = y_doublegate_3n_2plus_232Th_134Te
+
+x_doublegate_3n_2plus_232Th_134Te = x_doublegate_3n_2plus_232Th_134Te[bin_lower:bin_upper]
+y_doublegate_3n_2plus_232Th_134Te = y_doublegate_3n_2plus_232Th_134Te[bin_lower:bin_upper]
+
+#print("* 232Th - 134Te 3n_2plus fit range %d - %.d" % (x_doublegate_3n_2plus_232Th_134Te[0],x_doublegate_3n_2plus_232Th_134Te[-1]))
+
+
+################   232Th all -  134Te 3n_2plus  #################
+
+#doublegate_3n_2plus_all true
+hist_doublegate_3n_2plus_all_232Th_134Te = file_232Th.Get('time_isomer_doublegate_3n_2plus_all_134Te')
+x_bins = hist_doublegate_3n_2plus_all_232Th_134Te.GetNbinsX()
+
+x_doublegate_3n_2plus_all_232Th_134Te = np.zeros(x_bins)
+y_doublegate_3n_2plus_all_232Th_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_3n_2plus_all_232Th_134Te[i] = hist_doublegate_3n_2plus_all_232Th_134Te.GetBinCenter(i+1)
+    y_doublegate_3n_2plus_all_232Th_134Te[i] = hist_doublegate_3n_2plus_all_232Th_134Te.GetBinContent(i+1)
+
+#Make up for 2ns bins
+x_doublegate_3n_2plus_all_232Th_134Te = 2*x_doublegate_3n_2plus_all_232Th_134Te
+
+x_doublegate_3n_2plus_all_232Th_134Te_long = x_doublegate_3n_2plus_all_232Th_134Te
+y_doublegate_3n_2plus_all_232Th_134Te_long = y_doublegate_3n_2plus_all_232Th_134Te
+
+x_doublegate_3n_2plus_all_232Th_134Te = x_doublegate_3n_2plus_all_232Th_134Te[bin_lower:bin_upper]
+y_doublegate_3n_2plus_all_232Th_134Te = y_doublegate_3n_2plus_all_232Th_134Te[bin_lower:bin_upper]
+
+#print("* 232Th - 134Te 3n_2plus_all fit range %d - %.d" % (x_doublegate_3n_2plus_all_232Th_134Te[0],x_doublegate_3n_2plus_all_232Th_134Te[-1]))
+
+
+
+################   232Th bg -  134Te 3n_2plus  #################
+
+#doublegate_3n_2plus_bg true
+hist_doublegate_3n_2plus_bg_232Th_134Te = file_232Th.Get('time_isomer_doublegate_3n_2plus_bg_134Te')
+x_bins = hist_doublegate_3n_2plus_bg_232Th_134Te.GetNbinsX()
+
+x_doublegate_3n_2plus_bg_232Th_134Te = np.zeros(x_bins)
+y_doublegate_3n_2plus_bg_232Th_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_3n_2plus_bg_232Th_134Te[i] = hist_doublegate_3n_2plus_bg_232Th_134Te.GetBinCenter(i+1)
+    y_doublegate_3n_2plus_bg_232Th_134Te[i] = hist_doublegate_3n_2plus_bg_232Th_134Te.GetBinContent(i+1)
+
+#Make up for 2ns bins
+x_doublegate_3n_2plus_bg_232Th_134Te = 2*x_doublegate_3n_2plus_bg_232Th_134Te
+
+x_doublegate_3n_2plus_bg_232Th_134Te_long = x_doublegate_3n_2plus_bg_232Th_134Te
+y_doublegate_3n_2plus_bg_232Th_134Te_long = y_doublegate_3n_2plus_bg_232Th_134Te
+
+x_doublegate_3n_2plus_bg_232Th_134Te = x_doublegate_3n_2plus_bg_232Th_134Te[bin_lower:bin_upper]
+y_doublegate_3n_2plus_bg_232Th_134Te = y_doublegate_3n_2plus_bg_232Th_134Te[bin_lower:bin_upper]
+
+#print("* 232Th - 134Te 3n_2plus_bg fit range %d - %.d" % (x_doublegate_3n_2plus_bg_232Th_134Te[0],x_doublegate_3n_2plus_bg_232Th_134Te[-1]))
+
+
+
+################   232Th -  134Te 3n_4plus  #################
+
+#doublegate_3n_4plus true
+hist_doublegate_3n_4plus_232Th_134Te = file_232Th.Get('time_isomer_doublegate_3n_4plus_134Te')
+x_bins = hist_doublegate_3n_4plus_232Th_134Te.GetNbinsX()
+
+x_doublegate_3n_4plus_232Th_134Te = np.zeros(x_bins)
+y_doublegate_3n_4plus_232Th_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_3n_4plus_232Th_134Te[i] = hist_doublegate_3n_4plus_232Th_134Te.GetBinCenter(i+1)
+    y_doublegate_3n_4plus_232Th_134Te[i] = hist_doublegate_3n_4plus_232Th_134Te.GetBinContent(i+1)
+
+#Make up for 2ns bins
+x_doublegate_3n_4plus_232Th_134Te = 2*x_doublegate_3n_4plus_232Th_134Te
+
+x_doublegate_3n_4plus_232Th_134Te_long = x_doublegate_3n_4plus_232Th_134Te
+y_doublegate_3n_4plus_232Th_134Te_long = y_doublegate_3n_4plus_232Th_134Te
+
+x_doublegate_3n_4plus_232Th_134Te = x_doublegate_3n_4plus_232Th_134Te[bin_lower:bin_upper]
+y_doublegate_3n_4plus_232Th_134Te = y_doublegate_3n_4plus_232Th_134Te[bin_lower:bin_upper]
+
+#print("* 232Th - 134Te 3n_4plus fit range %d - %.d" % (x_doublegate_3n_4plus_232Th_134Te[0],x_doublegate_3n_4plus_232Th_134Te[-1]))
+
+
+################   232Th lowE_highT all -  134Te 3n_4plus  #################
+
+#doublegate_3n_4plus_all true
+hist_doublegate_3n_4plus_all_232Th_134Te = file_232Th.Get('time_isomer_doublegate_3n_4plus_all_134Te')
+x_bins = hist_doublegate_3n_4plus_all_232Th_134Te.GetNbinsX()
+
+x_doublegate_3n_4plus_all_232Th_134Te = np.zeros(x_bins)
+y_doublegate_3n_4plus_all_232Th_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_3n_4plus_all_232Th_134Te[i] = hist_doublegate_3n_4plus_all_232Th_134Te.GetBinCenter(i+1)
+    y_doublegate_3n_4plus_all_232Th_134Te[i] = hist_doublegate_3n_4plus_all_232Th_134Te.GetBinContent(i+1)
+
+#Make up for 2ns bins
+x_doublegate_3n_4plus_all_232Th_134Te = 2*x_doublegate_3n_4plus_all_232Th_134Te
+
+x_doublegate_3n_4plus_all_232Th_134Te_long = x_doublegate_3n_4plus_all_232Th_134Te
+y_doublegate_3n_4plus_all_232Th_134Te_long = y_doublegate_3n_4plus_all_232Th_134Te
+
+x_doublegate_3n_4plus_all_232Th_134Te = x_doublegate_3n_4plus_all_232Th_134Te[bin_lower:bin_upper]
+y_doublegate_3n_4plus_all_232Th_134Te = y_doublegate_3n_4plus_all_232Th_134Te[bin_lower:bin_upper]
+
+#print("* 232Th - 134Te 3n_4plus_all fit range %d - %.d" % (x_doublegate_3n_4plus_all_232Th_134Te[0],x_doublegate_3n_4plus_all_232Th_134Te[-1]))
+
+
+
+################   232Th lowE_highT bg -  134Te 3n_4plus  #################
+
+#doublegate_3n_4plus_bg true
+hist_doublegate_3n_4plus_bg_232Th_134Te = file_232Th.Get('time_isomer_doublegate_3n_4plus_bg_134Te')
+x_bins = hist_doublegate_3n_4plus_bg_232Th_134Te.GetNbinsX()
+
+x_doublegate_3n_4plus_bg_232Th_134Te = np.zeros(x_bins)
+y_doublegate_3n_4plus_bg_232Th_134Te = np.zeros(x_bins)
+    
+for i in range(x_bins):
+    x_doublegate_3n_4plus_bg_232Th_134Te[i] = hist_doublegate_3n_4plus_bg_232Th_134Te.GetBinCenter(i+1)
+    y_doublegate_3n_4plus_bg_232Th_134Te[i] = hist_doublegate_3n_4plus_bg_232Th_134Te.GetBinContent(i+1)
+
+#Make up for 2ns bins
+x_doublegate_3n_4plus_bg_232Th_134Te = 2*x_doublegate_3n_4plus_bg_232Th_134Te
+
+x_doublegate_3n_4plus_bg_232Th_134Te_long = x_doublegate_3n_4plus_bg_232Th_134Te
+y_doublegate_3n_4plus_bg_232Th_134Te_long = y_doublegate_3n_4plus_bg_232Th_134Te
+
+x_doublegate_3n_4plus_bg_232Th_134Te = x_doublegate_3n_4plus_bg_232Th_134Te[bin_lower:bin_upper]
+y_doublegate_3n_4plus_bg_232Th_134Te = y_doublegate_3n_4plus_bg_232Th_134Te[bin_lower:bin_upper]
+
+#print("* 232Th - 134Te 3n_4plus_bg fit range %d - %.d" % (x_doublegate_3n_4plus_bg_232Th_134Te[0],x_doublegate_3n_4plus_bg_232Th_134Te[-1]))
+
 
 
 
@@ -1209,16 +1360,16 @@ P_double_238U_lowE_highT_134Te, cov_double_238U_lowE_highT_134Te = curve_fit(sum
 
 P_double_unc_238U_lowE_highT_134Te = np.sqrt(np.diag(cov_double_238U_lowE_highT_134Te))
 
-print("\n")
-print(" ***** 238U lowE_highT - 134Te:  Doublegate true spectrum fit ***** ")
-print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
-print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[0], P_double_unc_238U_lowE_highT_134Te[0], mean_lower, mean_upper))
-print("sigma:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[1], P_double_unc_238U_lowE_highT_134Te[1], sigma_lower, sigma_upper))
-print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[2], P_double_unc_238U_lowE_highT_134Te[2], const_bg_lower, const_bg_upper))
-print("amplitude_gauss:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[3], P_double_unc_238U_lowE_highT_134Te[3], amplitude_gauss_lower, amplitude_gauss_upper))
-print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[4], P_double_unc_238U_lowE_highT_134Te[4], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
-print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[5]*np.log(2), 0, tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
-print("\n")
+# print("\n")
+# print(" ***** 238U lowE_highT - 134Te:  Doublegate true spectrum fit ***** ")
+# print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
+# print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[0], P_double_unc_238U_lowE_highT_134Te[0], mean_lower, mean_upper))
+# print("sigma:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[1], P_double_unc_238U_lowE_highT_134Te[1], sigma_lower, sigma_upper))
+# print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[2], P_double_unc_238U_lowE_highT_134Te[2], const_bg_lower, const_bg_upper))
+# print("amplitude_gauss:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[3], P_double_unc_238U_lowE_highT_134Te[3], amplitude_gauss_lower, amplitude_gauss_upper))
+# print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[4], P_double_unc_238U_lowE_highT_134Te[4], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
+# print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[5]*np.log(2), 0, tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
+# print("\n")
 
 ################   238U lowE_highT -  134Te 1n  #################
 
@@ -1628,6 +1779,76 @@ P_double_5n_unc_232Th_134Te = np.sqrt(np.diag(cov_double_5n_232Th_134Te))
 
 
 
+################   232Th -  134Te 3n_2plus  #################
+
+mean_lower = 0
+mean_upper = 700
+sigma_lower = 0
+sigma_upper = 40
+const_bg_lower = 0
+const_bg_upper = 1000
+amplitude_gauss_lower = 0
+amplitude_gauss_upper = 10000
+amplitude_exp_decay_lower = 0
+amplitude_exp_decay_upper = 5000
+tau_decay_lower = tau_134Te
+tau_decay_upper = tau_134Te+0.0001
+
+P_double_3n_2plus_232Th_134Te, cov_double_3n_2plus_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_2plus_232Th_134Te, y_doublegate_3n_2plus_232Th_134Te, sigma=sigma_data_doublegate(y_doublegate_3n_2plus_232Th_134Te), bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+#print("* 232Th lowE_highT - 134Te 3n_2plus Using uncertainty-weighted fit")
+# P_double_3n_2plus_232Th_134Te, cov_double_3n_2plus_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_2plus_232Th_134Te, y_doublegate_3n_2plus_232Th_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+# print("* Not using uncertainty-weighted fit")
+
+P_double_3n_2plus_unc_232Th_134Te = np.sqrt(np.diag(cov_double_3n_2plus_232Th_134Te))
+
+# print("\n")
+# print(" ***** 232Th - 134Te 3n_2plus:  doublegate true spectrum fit ***** ")
+# print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
+# print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_unc_232Th_134Te[0], mean_lower, mean_upper))
+# print("sigma:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_unc_232Th_134Te[1], sigma_lower, sigma_upper))
+# print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_unc_232Th_134Te[2], const_bg_lower, const_bg_upper))
+# print("amplitude_gauss:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_unc_232Th_134Te[3], amplitude_gauss_lower, amplitude_gauss_upper))
+# print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_unc_232Th_134Te[4], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
+# print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_2plus_232Th_134Te[5]*np.log(2), 0, tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
+# print("\n")
+
+
+################   232Th -  134Te 3n_4plus  #################
+
+mean_lower = 300
+mean_upper = 400
+sigma_lower = 3
+sigma_upper = 40
+const_bg_lower = 0
+const_bg_upper = 100
+amplitude_gauss_lower = 0
+amplitude_gauss_upper = 4000
+amplitude_exp_decay_lower = 100
+amplitude_exp_decay_upper = 1000
+tau_decay_lower = tau_134Te
+tau_decay_upper = tau_134Te+0.0001
+
+P_double_3n_4plus_232Th_134Te, cov_double_3n_4plus_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_4plus_232Th_134Te, y_doublegate_3n_4plus_232Th_134Te, sigma=sigma_data_doublegate(y_doublegate_3n_4plus_232Th_134Te), bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+#print("* 232Th lowE_highT - 134Te 3n_4plus Using uncertainty-weighted fit")
+# P_double_3n_4plus_232Th_134Te, cov_double_3n_4plus_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_4plus_232Th_134Te, y_doublegate_3n_4plus_232Th_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+# print("* Not using uncertainty-weighted fit")
+
+P_double_3n_4plus_unc_232Th_134Te = np.sqrt(np.diag(cov_double_3n_4plus_232Th_134Te))
+
+print("\n")
+print(" ***** 232Th - 134Te 3n_4plus:  doublegate true spectrum fit ***** ")
+print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
+print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_unc_232Th_134Te[0], mean_lower, mean_upper))
+print("sigma:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_unc_232Th_134Te[1], sigma_lower, sigma_upper))
+print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_unc_232Th_134Te[2], const_bg_lower, const_bg_upper))
+print("amplitude_gauss:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_unc_232Th_134Te[3], amplitude_gauss_lower, amplitude_gauss_upper))
+print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_unc_232Th_134Te[4], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
+print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double_3n_4plus_232Th_134Te[5]*np.log(2), 0, tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
+print("\n")
+
+
+
+
 ################   238U -  135Te   #################
 
 mean_lower = 0
@@ -1795,6 +2016,24 @@ area_double_5n_true_delayed_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te
 IYR_double_5n_232Th_134Te = IYR(prompt=area_double_5n_true_prompt_232Th_134Te, delayed=area_double_5n_true_delayed_232Th_134Te)
 
 
+################   232Th -  134Te 3n_2plus  #################
+
+area_double_3n_2plus_true_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]) + smeared_exp_decay(x_arr_134Te, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+area_double_3n_2plus_true_prompt_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+area_double_3n_2plus_true_delayed_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+
+IYR_double_3n_2plus_232Th_134Te = IYR(prompt=area_double_3n_2plus_true_prompt_232Th_134Te, delayed=area_double_3n_2plus_true_delayed_232Th_134Te)
+
+
+################   232Th -  134Te 3n_4plus  #################
+
+area_double_3n_4plus_true_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]) + smeared_exp_decay(x_arr_134Te, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+area_double_3n_4plus_true_prompt_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+area_double_3n_4plus_true_delayed_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+
+IYR_double_3n_4plus_232Th_134Te = IYR(prompt=area_double_3n_4plus_true_prompt_232Th_134Te, delayed=area_double_3n_4plus_true_delayed_232Th_134Te)
+
+
 ################   238U -  135Te   #################
 
 #NB: Upper integration limit should be high enough that no changes are observed in the IYR when increasing the range
@@ -1838,6 +2077,10 @@ sigma_IYR_3n_232Th_134Te = 0
 sigma_IYR_4n_232Th_134Te = 0
 #232Th - 134Te 5n
 sigma_IYR_5n_232Th_134Te = 0
+#232Th - 134Te 3n_2plus
+sigma_IYR_3n_2plus_232Th_134Te = 0
+#232Th - 134Te 3n_4plus
+sigma_IYR_3n_4plus_232Th_134Te = 0
 #238U - 135Te
 sigma_IYR_238U_lowE_highT_135Te = 0
 
@@ -1900,6 +2143,14 @@ if SIGMA_VAR==True:
     P_double_5n_new_232Th_134Te = np.zeros(len(P_double_5n_232Th_134Te))
     IYR_array_5n_232Th_134Te = np.zeros(N_SIGMA_VAR)
 
+    #232Th - 134Te 3n_2plus
+    P_double_3n_2plus_new_232Th_134Te = np.zeros(len(P_double_3n_2plus_232Th_134Te))
+    IYR_array_3n_2plus_232Th_134Te = np.zeros(N_SIGMA_VAR)
+
+    #232Th - 134Te 3n_4plus
+    P_double_3n_4plus_new_232Th_134Te = np.zeros(len(P_double_3n_4plus_232Th_134Te))
+    IYR_array_3n_4plus_232Th_134Te = np.zeros(N_SIGMA_VAR)
+
     #238U - 135Te
     P_double_new_238U_lowE_highT_135Te = np.zeros(len(P_double_238U_lowE_highT_135Te))
     IYR_array_238U_lowE_highT_135Te = np.zeros(N_SIGMA_VAR)
@@ -1950,6 +2201,13 @@ if SIGMA_VAR==True:
 
             #232Th - 134Te 5n
             P_double_5n_new_232Th_134Te[i] = P_double_5n_232Th_134Te[i] + P_double_5n_unc_232Th_134Te[i]*np.random.uniform(-1,1)
+
+            #232Th - 134Te 3n_2plus
+            P_double_3n_2plus_new_232Th_134Te[i] = P_double_3n_2plus_232Th_134Te[i] + P_double_3n_2plus_unc_232Th_134Te[i]*np.random.uniform(-1, 1)
+
+            #232Th - 134Te 3n_4plus
+            P_double_3n_4plus_new_232Th_134Te[i] = P_double_3n_4plus_232Th_134Te[i] + np.random.normal(0, P_double_3n_4plus_unc_232Th_134Te[i])
+
 
             #238U - 135Te
             P_double_new_238U_lowE_highT_135Te[i] = P_double_238U_lowE_highT_135Te[i] + np.random.normal(0, P_double_unc_238U_lowE_highT_135Te[i])
@@ -2033,6 +2291,19 @@ if SIGMA_VAR==True:
         area_double_5n_true_delayed_new_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, P_double_5n_new_232Th_134Te[0], P_double_5n_new_232Th_134Te[1], P_double_5n_new_232Th_134Te[2], P_double_5n_new_232Th_134Te[3], P_double_5n_new_232Th_134Te[4], P_double_5n_232Th_134Te[5]), x_arr_134Te)
         IYR_array_5n_232Th_134Te[n] = IYR(prompt=area_double_5n_true_prompt_new_232Th_134Te, delayed=area_double_5n_true_delayed_new_232Th_134Te)
 
+        #232Th - 134Te 3n_2plus
+        area_double_3n_2plus_true_new_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_2plus_new_232Th_134Te[0], P_double_3n_2plus_new_232Th_134Te[1], P_double_3n_2plus_new_232Th_134Te[2], P_double_3n_2plus_new_232Th_134Te[3], P_double_3n_2plus_new_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]) + smeared_exp_decay(x_arr_134Te, P_double_3n_2plus_new_232Th_134Te[0], P_double_3n_2plus_new_232Th_134Te[1], P_double_3n_2plus_new_232Th_134Te[2], P_double_3n_2plus_new_232Th_134Te[3], P_double_3n_2plus_new_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+        area_double_3n_2plus_true_prompt_new_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_2plus_new_232Th_134Te[0], P_double_3n_2plus_new_232Th_134Te[1], P_double_3n_2plus_new_232Th_134Te[2], P_double_3n_2plus_new_232Th_134Te[3], P_double_3n_2plus_new_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+        area_double_3n_2plus_true_delayed_new_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, P_double_3n_2plus_new_232Th_134Te[0], P_double_3n_2plus_new_232Th_134Te[1], P_double_3n_2plus_new_232Th_134Te[2], P_double_3n_2plus_new_232Th_134Te[3], P_double_3n_2plus_new_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+        IYR_array_3n_2plus_232Th_134Te[n] = IYR(prompt=area_double_3n_2plus_true_prompt_new_232Th_134Te, delayed=area_double_3n_2plus_true_delayed_new_232Th_134Te)
+
+        #232Th - 134Te 3n_4plus
+        area_double_3n_4plus_true_new_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_4plus_new_232Th_134Te[0], P_double_3n_4plus_new_232Th_134Te[1], P_double_3n_4plus_new_232Th_134Te[2], P_double_3n_4plus_new_232Th_134Te[3], P_double_3n_4plus_new_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]) + smeared_exp_decay(x_arr_134Te, P_double_3n_4plus_new_232Th_134Te[0], P_double_3n_4plus_new_232Th_134Te[1], P_double_3n_4plus_new_232Th_134Te[2], P_double_3n_4plus_new_232Th_134Te[3], P_double_3n_4plus_new_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+        area_double_3n_4plus_true_prompt_new_232Th_134Te = np.trapz(gauss(x_arr_134Te, P_double_3n_4plus_new_232Th_134Te[0], P_double_3n_4plus_new_232Th_134Te[1], P_double_3n_4plus_new_232Th_134Te[2], P_double_3n_4plus_new_232Th_134Te[3], P_double_3n_4plus_new_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+        area_double_3n_4plus_true_delayed_new_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, P_double_3n_4plus_new_232Th_134Te[0], P_double_3n_4plus_new_232Th_134Te[1], P_double_3n_4plus_new_232Th_134Te[2], P_double_3n_4plus_new_232Th_134Te[3], P_double_3n_4plus_new_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+        IYR_array_3n_4plus_232Th_134Te[n] = IYR(prompt=area_double_3n_4plus_true_prompt_new_232Th_134Te, delayed=area_double_3n_4plus_true_delayed_new_232Th_134Te)
+
+
         #238U - 135Te
         area_double_true_new_238U_lowE_highT_135Te = np.trapz(gauss(x_arr_135Te, P_double_new_238U_lowE_highT_135Te[0], P_double_new_238U_lowE_highT_135Te[1], P_double_new_238U_lowE_highT_135Te[2], P_double_new_238U_lowE_highT_135Te[3], P_double_new_238U_lowE_highT_135Te[4], P_double_238U_lowE_highT_135Te[5]) + smeared_exp_decay(x_arr_135Te, P_double_new_238U_lowE_highT_135Te[0], P_double_new_238U_lowE_highT_135Te[1], P_double_new_238U_lowE_highT_135Te[2], P_double_new_238U_lowE_highT_135Te[3], P_double_new_238U_lowE_highT_135Te[4], P_double_238U_lowE_highT_135Te[5]), x_arr_135Te)
         area_double_true_prompt_new_238U_lowE_highT_135Te = np.trapz(gauss(x_arr_135Te, P_double_new_238U_lowE_highT_135Te[0], P_double_new_238U_lowE_highT_135Te[1], P_double_new_238U_lowE_highT_135Te[2], P_double_new_238U_lowE_highT_135Te[3], P_double_new_238U_lowE_highT_135Te[4], P_double_238U_lowE_highT_135Te[5]), x_arr_135Te)
@@ -2079,9 +2350,65 @@ if SIGMA_VAR==True:
     #232Th - 134Te 5n
     sigma_IYR_5n_232Th_134Te = np.std(IYR_array_5n_232Th_134Te)
 
+    #232Th - 134Te 3n_2plus
+    sigma_IYR_3n_2plus_232Th_134Te = np.std(IYR_array_3n_2plus_232Th_134Te)
+
+    #232Th - 134Te 3n_4plus
+    sigma_IYR_3n_4plus_232Th_134Te = np.std(IYR_array_3n_4plus_232Th_134Te)
+
+
     #238U - 135Te
     sigma_IYR_238U_lowE_highT_135Te = np.std(IYR_array_238U_lowE_highT_135Te)
 
+if SIGMA_VAR == False:
+
+    #238U lowE_highT - 134Te
+    sigma_IYR_238U_lowE_highT_134Te = 0
+
+    #238U lowE_highT - 134Te 1n
+    sigma_IYR_1n_238U_lowE_highT_134Te = 0
+
+    #238U lowE_highT - 134Te 3n
+    sigma_IYR_3n_238U_lowE_highT_134Te = 0
+
+    #238U lowE_highT - 134Te 3n_2plus
+    sigma_IYR_3n_2plus_238U_lowE_highT_134Te = 0
+
+    #238U lowE_highT - 134Te 3n_4plus
+    sigma_IYR_3n_4plus_238U_lowE_highT_134Te = 0
+
+    #238U lowE_highT - 134Te 3n_6plus
+    sigma_IYR_3n_6plus_238U_lowE_highT_134Te = 0
+
+    #238U lowE_lowT - 134Te
+    sigma_IYR_238U_lowE_lowT_134Te = 0
+
+    #238U highE - 134Te
+    sigma_IYR_238U_highE_highT_134Te = 0
+
+    #232Th - 134Te
+    sigma_IYR_232Th_134Te = 0
+
+    #232Th - 134Te 1n
+    sigma_IYR_1n_232Th_134Te = 0
+
+    #232Th - 134Te 3n
+    sigma_IYR_3n_232Th_134Te = 0
+
+    #232Th - 134Te 4n
+    sigma_IYR_4n_232Th_134Te = 0
+
+    #232Th - 134Te 5n
+    sigma_IYR_5n_232Th_134Te = 0
+
+    #232Th - 134Te 3n_2plus
+    sigma_IYR_3n_2plus_232Th_134Te = 0
+
+    #232Th - 134Te 3n_4plus
+    sigma_IYR_3n_4plus_232Th_134Te = 0
+
+    #238U - 135Te
+    sigma_IYR_238U_lowE_highT_135Te = 0
 
 
 ####################################################
@@ -2089,7 +2416,6 @@ if SIGMA_VAR==True:
 ####################################################
 
 if BOOTSTRAP==True:
-
 
     N_BOOTSTRAP = 1000
 
@@ -2147,6 +2473,15 @@ if BOOTSTRAP==True:
     unc_y_doublegate_5n_232Th_134Te_long = sigma_data_doublegate_all_bg(data_all=y_doublegate_5n_all_232Th_134Te_long, data_bg=y_doublegate_5n_bg_232Th_134Te_long)
     unc_y_doublegate_5n_232Th_134Te = sigma_data_doublegate_all_bg(data_all=y_doublegate_5n_all_232Th_134Te, data_bg=y_doublegate_5n_bg_232Th_134Te)
 
+    #232Th - 134Te 3n_2plus
+    unc_y_doublegate_3n_2plus_232Th_134Te_long = sigma_data_doublegate_all_bg(data_all=y_doublegate_3n_2plus_all_232Th_134Te_long, data_bg=y_doublegate_3n_2plus_bg_232Th_134Te_long)
+    unc_y_doublegate_3n_2plus_232Th_134Te = sigma_data_doublegate_all_bg(data_all=y_doublegate_3n_2plus_all_232Th_134Te, data_bg=y_doublegate_3n_2plus_bg_232Th_134Te)
+
+    #232Th - 134Te 3n_4plus
+    unc_y_doublegate_3n_4plus_232Th_134Te_long = sigma_data_doublegate_all_bg(data_all=y_doublegate_3n_4plus_all_232Th_134Te_long, data_bg=y_doublegate_3n_4plus_bg_232Th_134Te_long)
+    unc_y_doublegate_3n_4plus_232Th_134Te = sigma_data_doublegate_all_bg(data_all=y_doublegate_3n_4plus_all_232Th_134Te, data_bg=y_doublegate_3n_4plus_bg_232Th_134Te)
+
+
 
     ### Arrays to store resampled data ###
 
@@ -2197,6 +2532,15 @@ if BOOTSTRAP==True:
     #232Th - 134Te 5n
     resampled_y_doublegate_5n_232Th_134Te_long = np.zeros(len(y_doublegate_5n_232Th_134Te_long))
     resampled_IYR_array_5n_232Th_134Te = np.zeros(N_BOOTSTRAP)
+
+    #232Th - 134Te 3n_2plus
+    resampled_y_doublegate_3n_2plus_232Th_134Te_long = np.zeros(len(y_doublegate_3n_2plus_232Th_134Te_long))
+    resampled_IYR_array_3n_2plus_232Th_134Te = np.zeros(N_BOOTSTRAP)
+
+    #232Th - 134Te 3n_4plus
+    resampled_y_doublegate_3n_4plus_232Th_134Te_long = np.zeros(len(y_doublegate_3n_4plus_232Th_134Te_long))
+    resampled_IYR_array_3n_4plus_232Th_134Te = np.zeros(N_BOOTSTRAP)
+
 
 
     for n in range(N_BOOTSTRAP):
@@ -2724,11 +3068,94 @@ if BOOTSTRAP==True:
             print("Error - curve_fit failed")
 
 
+#################   232Th 3n_2plus -  134Te   #################
+
+        y_doublegate_3n_2plus_232Th_134Te_long_bgvaried = np.zeros(len(y_doublegate_3n_2plus_all_232Th_134Te_long))
+        
+        for i in range (len(y_doublegate_3n_2plus_all_232Th_134Te_long)):
+            #Vary BG withing a normal distribution of sigma = 0.0125, then +-2sigma spans a BG-variation of 5%
+            y_doublegate_3n_2plus_232Th_134Te_long_bgvaried[i] = y_doublegate_3n_2plus_all_232Th_134Te_long[i]-y_doublegate_3n_2plus_bg_232Th_134Te_long[i]*np.random.normal(1,0.0125)
+            #Vary value of each bin within uncertainty
+            resampled_y_doublegate_3n_2plus_232Th_134Te_long[i] = y_doublegate_3n_2plus_232Th_134Te_long_bgvaried[i] + np.random.normal(0, unc_y_doublegate_3n_2plus_232Th_134Te_long[i]) 
+
+
+        #Fit resampled data
+        mean_lower = 0
+        mean_upper = 700
+        sigma_lower = 0
+        sigma_upper = 40
+        const_bg_lower = 0
+        const_bg_upper = 1000
+        amplitude_gauss_lower = 0
+        amplitude_gauss_upper = 10000
+        amplitude_exp_decay_lower = 0
+        amplitude_exp_decay_upper = 5000
+        tau_decay_lower = tau_134Te
+        tau_decay_upper = tau_134Te+0.0001
+
+        #Define lower and upper fit limit
+        x_lower = 330 + np.random.randint(-3,3)
+        x_upper = 640
+
+        bin_lower = x_lower//2
+        bin_upper = x_upper//2        
+
+        #resampled_P_double_232Th_134Te, resampled_cov_double_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_2plus_232Th_134Te, resampled_y_doublegate_3n_2plus_232Th_134Te, sigma=unc_y_doublegate_3n_2plus_232Th_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+        resampled_P_double_3n_2plus_232Th_134Te, resampled_cov_double_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_2plus_232Th_134Te_long[bin_lower:bin_upper], resampled_y_doublegate_3n_2plus_232Th_134Te_long[bin_lower:bin_upper], bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+
+        resampled_area_double_3n_2plus_true_232Th_134Te = np.trapz(gauss(x_arr_134Te, resampled_P_double_3n_2plus_232Th_134Te[0], resampled_P_double_3n_2plus_232Th_134Te[1], resampled_P_double_3n_2plus_232Th_134Te[2], resampled_P_double_3n_2plus_232Th_134Te[3], resampled_P_double_3n_2plus_232Th_134Te[4], resampled_P_double_3n_2plus_232Th_134Te[5]) + smeared_exp_decay(x_arr_134Te, resampled_P_double_3n_2plus_232Th_134Te[0], resampled_P_double_3n_2plus_232Th_134Te[1], resampled_P_double_3n_2plus_232Th_134Te[2], resampled_P_double_3n_2plus_232Th_134Te[3], resampled_P_double_3n_2plus_232Th_134Te[4], resampled_P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+        resampled_area_double_3n_2plus_true_prompt_232Th_134Te = np.trapz(gauss(x_arr_134Te, resampled_P_double_3n_2plus_232Th_134Te[0], resampled_P_double_3n_2plus_232Th_134Te[1], resampled_P_double_3n_2plus_232Th_134Te[2], resampled_P_double_3n_2plus_232Th_134Te[3], resampled_P_double_3n_2plus_232Th_134Te[4], resampled_P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+        resampled_area_double_3n_2plus_true_delayed_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, resampled_P_double_3n_2plus_232Th_134Te[0], resampled_P_double_3n_2plus_232Th_134Te[1], resampled_P_double_3n_2plus_232Th_134Te[2], resampled_P_double_3n_2plus_232Th_134Te[3], resampled_P_double_3n_2plus_232Th_134Te[4], resampled_P_double_3n_2plus_232Th_134Te[5]), x_arr_134Te)
+
+        resampled_IYR_array_3n_2plus_232Th_134Te[n] = IYR(prompt=resampled_area_double_3n_2plus_true_prompt_232Th_134Te, delayed=resampled_area_double_3n_2plus_true_delayed_232Th_134Te)
+
+
+#################   232Th 3n_4plus -  134Te   #################
+
+        y_doublegate_3n_4plus_232Th_134Te_long_bgvaried = np.zeros(len(y_doublegate_3n_4plus_all_232Th_134Te_long))
+        
+        for i in range (len(y_doublegate_3n_4plus_all_232Th_134Te_long)):
+            #Vary BG withing a normal distribution of sigma = 0.0125, then +-2sigma spans a BG-variation of 5%
+            y_doublegate_3n_4plus_232Th_134Te_long_bgvaried[i] = y_doublegate_3n_4plus_all_232Th_134Te_long[i]-y_doublegate_3n_4plus_bg_232Th_134Te_long[i]*np.random.normal(1,0.0125)
+            #Vary value of each bin within uncertainty
+            resampled_y_doublegate_3n_4plus_232Th_134Te_long[i] = y_doublegate_3n_4plus_232Th_134Te_long_bgvaried[i] + np.random.normal(0, unc_y_doublegate_3n_4plus_232Th_134Te_long[i]) 
+
+
+        #Fit resampled data
+        mean_lower = 0
+        mean_upper = 700
+        sigma_lower = 0
+        sigma_upper = 40
+        const_bg_lower = 0
+        const_bg_upper = 1000
+        amplitude_gauss_lower = 0
+        amplitude_gauss_upper = 10000
+        amplitude_exp_decay_lower = 0
+        amplitude_exp_decay_upper = 5000
+        tau_decay_lower = tau_134Te
+        tau_decay_upper = tau_134Te+0.0001
+
+        #Define lower and upper fit limit
+        x_lower = 330 + np.random.randint(-3,3)
+        x_upper = 640
+
+        bin_lower = x_lower//2
+        bin_upper = x_upper//2        
+
+        #resampled_P_double_232Th_134Te, resampled_cov_double_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_4plus_232Th_134Te, resampled_y_doublegate_3n_4plus_232Th_134Te, sigma=unc_y_doublegate_3n_4plus_232Th_134Te, bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+        resampled_P_double_3n_4plus_232Th_134Te, resampled_cov_double_232Th_134Te = curve_fit(sum_smeared_exp_gauss_const_bg, x_doublegate_3n_4plus_232Th_134Te_long[bin_lower:bin_upper], resampled_y_doublegate_3n_4plus_232Th_134Te_long[bin_lower:bin_upper], bounds=([mean_lower,sigma_lower,const_bg_lower,amplitude_gauss_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,const_bg_upper,amplitude_gauss_upper,amplitude_exp_decay_upper,tau_decay_upper]), absolute_sigma = False)
+
+        resampled_area_double_3n_4plus_true_232Th_134Te = np.trapz(gauss(x_arr_134Te, resampled_P_double_3n_4plus_232Th_134Te[0], resampled_P_double_3n_4plus_232Th_134Te[1], resampled_P_double_3n_4plus_232Th_134Te[2], resampled_P_double_3n_4plus_232Th_134Te[3], resampled_P_double_3n_4plus_232Th_134Te[4], resampled_P_double_3n_4plus_232Th_134Te[5]) + smeared_exp_decay(x_arr_134Te, resampled_P_double_3n_4plus_232Th_134Te[0], resampled_P_double_3n_4plus_232Th_134Te[1], resampled_P_double_3n_4plus_232Th_134Te[2], resampled_P_double_3n_4plus_232Th_134Te[3], resampled_P_double_3n_4plus_232Th_134Te[4], resampled_P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+        resampled_area_double_3n_4plus_true_prompt_232Th_134Te = np.trapz(gauss(x_arr_134Te, resampled_P_double_3n_4plus_232Th_134Te[0], resampled_P_double_3n_4plus_232Th_134Te[1], resampled_P_double_3n_4plus_232Th_134Te[2], resampled_P_double_3n_4plus_232Th_134Te[3], resampled_P_double_3n_4plus_232Th_134Te[4], resampled_P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+        resampled_area_double_3n_4plus_true_delayed_232Th_134Te = np.trapz(smeared_exp_decay(x_arr_134Te, resampled_P_double_3n_4plus_232Th_134Te[0], resampled_P_double_3n_4plus_232Th_134Te[1], resampled_P_double_3n_4plus_232Th_134Te[2], resampled_P_double_3n_4plus_232Th_134Te[3], resampled_P_double_3n_4plus_232Th_134Te[4], resampled_P_double_3n_4plus_232Th_134Te[5]), x_arr_134Te)
+
+        resampled_IYR_array_3n_4plus_232Th_134Te[n] = IYR(prompt=resampled_area_double_3n_4plus_true_prompt_232Th_134Te, delayed=resampled_area_double_3n_4plus_true_delayed_232Th_134Te)
+
+
         if(n%100==0):
             print("Now finished iteration %.d" % n)
 
     ################   END OF BOOTSTRAP-SAMPLING   #################
-
 
     #238U lowE_highT - 134Te
     sigma_bootstrap_IYR_238U_lowE_highT_134Te = np.std(resampled_IYR_array_238U_lowE_highT_134Te)
@@ -2754,7 +3181,40 @@ if BOOTSTRAP==True:
     sigma_bootstrap_IYR_4n_232Th_134Te = np.std(resampled_IYR_array_4n_232Th_134Te)
     #232Th - 134Te 5n
     sigma_bootstrap_IYR_5n_232Th_134Te = np.std(resampled_IYR_array_5n_232Th_134Te)
-    
+    #232Th - 134Te 3n_2plus
+    sigma_bootstrap_IYR_3n_2plus_232Th_134Te = np.std(resampled_IYR_array_3n_2plus_232Th_134Te)
+    #232Th - 134Te 3n_4plus
+    sigma_bootstrap_IYR_3n_4plus_232Th_134Te = np.std(resampled_IYR_array_3n_4plus_232Th_134Te)    
+
+if BOOTSTRAP==False:
+    #238U lowE_highT - 134Te
+    sigma_bootstrap_IYR_238U_lowE_highT_134Te = 0
+    #238U lowE_highT - 134Te 1n
+    sigma_bootstrap_IYR_1n_238U_lowE_highT_134Te = 0
+    #238U lowE_highT - 134Te 3n
+    sigma_bootstrap_IYR_3n_238U_lowE_highT_134Te = 0
+    #238U lowE_highT - 134Te 3n_2plus
+    sigma_bootstrap_IYR_3n_2plus_238U_lowE_highT_134Te = 0
+    #238U lowE_highT - 134Te 3n_4plus
+    sigma_bootstrap_IYR_3n_4plus_238U_lowE_highT_134Te = 0
+    #238U lowE_highT - 134Te 3n_6plus
+    sigma_bootstrap_IYR_3n_6plus_238U_lowE_highT_134Te = 0
+    #238U highE_highT - 134Te
+    sigma_bootstrap_IYR_238U_highE_highT_134Te = 0
+    #232Th - 134Te
+    sigma_bootstrap_IYR_232Th_134Te = 0
+    #232Th - 134Te 1n
+    sigma_bootstrap_IYR_1n_232Th_134Te = 0
+    #232Th - 134Te 3n
+    sigma_bootstrap_IYR_3n_232Th_134Te = 0
+    #232Th - 134Te 4n
+    sigma_bootstrap_IYR_4n_232Th_134Te = 0
+    #232Th - 134Te 5n
+    sigma_bootstrap_IYR_5n_232Th_134Te = 0
+    #232Th - 134Te 3n_2plus
+    sigma_bootstrap_IYR_3n_2plus_232Th_134Te = 0
+    #232Th - 134Te 3n_4plus
+    sigma_bootstrap_IYR_3n_4plus_232Th_134Te = 0  
 
 ####################################################
 ###     Calculate chi-squared values for fits    ###
@@ -2799,11 +3259,17 @@ t.add_row(['238U - highE highT', '134Te', 'Double', '1279-297', round(IYR_double
 
 t.add_row([' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '])
 
-t.add_row(['232Th - highE lowT', '134Te', 'Double', '1279-297', round(IYR_double_232Th_134Te,3), round(sigma_IYR_232Th_134Te,3), round(sigma_bootstrap_IYR_232Th_134Te,3), 0])
-t.add_row(['232Th - highE lowT', '134Te', '1n', '1279-433', round(IYR_double_1n_232Th_134Te,3), round(sigma_IYR_1n_232Th_134Te,3), round(sigma_bootstrap_IYR_1n_232Th_134Te,3), 0])
-t.add_row(['232Th - highE lowT', '134Te', '3n', '1279-815', round(IYR_double_3n_232Th_134Te,3), round(sigma_IYR_3n_232Th_134Te,3), round(sigma_bootstrap_IYR_3n_232Th_134Te,3), 0])
-t.add_row(['232Th - highE lowT', '134Te', '4n', '1279-352', round(IYR_double_4n_232Th_134Te,3), round(sigma_IYR_4n_232Th_134Te,3), round(sigma_bootstrap_IYR_4n_232Th_134Te,3), 0])
-t.add_row(['232Th - highE lowT', '134Te', '5n', '1279-837', round(IYR_double_5n_232Th_134Te,3), round(sigma_IYR_5n_232Th_134Te,3), round(sigma_bootstrap_IYR_5n_232Th_134Te,3), 0])
+t.add_row(['232Th - lowE highT', '134Te', 'Double', '1279-297', round(IYR_double_232Th_134Te,3), round(sigma_IYR_232Th_134Te,3), round(sigma_bootstrap_IYR_232Th_134Te,3), 0])
+t.add_row(['232Th - lowE highT', '134Te', '1n', '1279-433', round(IYR_double_1n_232Th_134Te,3), round(sigma_IYR_1n_232Th_134Te,3), round(sigma_bootstrap_IYR_1n_232Th_134Te,3), 0])
+t.add_row(['232Th - lowE highT', '134Te', '3n', '1279-815', round(IYR_double_3n_232Th_134Te,3), round(sigma_IYR_3n_232Th_134Te,3), round(sigma_bootstrap_IYR_3n_232Th_134Te,3), 0])
+t.add_row(['232Th - lowE highT', '134Te', '4n', '1279-352', round(IYR_double_4n_232Th_134Te,3), round(sigma_IYR_4n_232Th_134Te,3), round(sigma_bootstrap_IYR_4n_232Th_134Te,3), 0])
+t.add_row(['232Th - lowE highT', '134Te', '5n', '1279-837', round(IYR_double_5n_232Th_134Te,3), round(sigma_IYR_5n_232Th_134Te,3), round(sigma_bootstrap_IYR_5n_232Th_134Te,3), 0])
+
+t.add_row([' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '])
+
+t.add_row(['232Th - lowE highT', '134Te', '3n - 2plus', '1279-815', round(IYR_double_3n_2plus_232Th_134Te,3), round(sigma_IYR_3n_2plus_232Th_134Te,3), round(sigma_bootstrap_IYR_3n_2plus_232Th_134Te,3), 0])
+t.add_row(['232Th - lowE highT', '134Te', '3n - 4plus', '1279-978', round(IYR_double_3n_4plus_232Th_134Te,3), round(sigma_IYR_3n_4plus_232Th_134Te,3), round(sigma_bootstrap_IYR_3n_4plus_232Th_134Te,3), 0])
+
 
 print(t)
 
@@ -2818,24 +3284,24 @@ x_array_plot = np.linspace(0,1000,10000)
 
 ################   238U lowE_highT -  134Te   #################
 
-plt.plot(x_doublegate_238U_lowE_highT_134Te_long, y_doublegate_238U_lowE_highT_134Te_long, label="doublegate_238U_lowE_highT_134Te", color="royalblue")
+# plt.plot(x_doublegate_238U_lowE_highT_134Te_long, y_doublegate_238U_lowE_highT_134Te_long, label="doublegate_238U_lowE_highT_134Te", color="royalblue")
 
-plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true fit, total", color="orange")
-plt.plot(x_array_plot, gauss(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true gaussian", color="green")
-plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true smeared exp decay", color="red")
-plt.plot(x_array_plot, const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="constant BG", color="hotpink")
+# plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true fit, total", color="orange")
+# plt.plot(x_array_plot, gauss(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true gaussian", color="green")
+# plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="true smeared exp decay", color="red")
+# plt.plot(x_array_plot, const_bg(x_array_plot, P_double_238U_lowE_highT_134Te[0], P_double_238U_lowE_highT_134Te[1], P_double_238U_lowE_highT_134Te[2], P_double_238U_lowE_highT_134Te[3], P_double_238U_lowE_highT_134Te[4], P_double_238U_lowE_highT_134Te[5]), label="constant BG", color="hotpink")
 
-plt.vlines(x_doublegate_238U_lowE_highT_134Te[0],0,6000, label="fit range", color="black")
-plt.vlines(x_doublegate_238U_lowE_highT_134Te[-1],0,6000, color="black")
-#plt.yscale("log")
-plt.title("238U lowE_highT - 134Te: Doublegate true spectrum fit")
-#plt.axis([0,700,1,10**(4)])
-plt.axis([300,650,0,4*10**(3)])
-plt.xlabel("Time [ns]", fontsize=14)
-plt.ylabel("Counts", fontsize=14)
-#plt.legend(fontsize=12)
-plt.grid()
-plt.show()
+# plt.vlines(x_doublegate_238U_lowE_highT_134Te[0],0,6000, label="fit range", color="black")
+# plt.vlines(x_doublegate_238U_lowE_highT_134Te[-1],0,6000, color="black")
+# #plt.yscale("log")
+# plt.title("238U lowE_highT - 134Te: Doublegate true spectrum fit")
+# #plt.axis([0,700,1,10**(4)])
+# plt.axis([300,650,0,4*10**(3)])
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# #plt.legend(fontsize=12)
+# plt.grid()
+# plt.show()
 
 ################   238U lowE_highT -  134Te  1n  #################
 
@@ -3084,6 +3550,47 @@ plt.show()
 # plt.legend(fontsize=10)
 # plt.grid()
 # plt.show()
+
+################   232Th -  134Te  3n_2plus  #################
+
+# plt.plot(x_doublegate_3n_2plus_232Th_134Te_long, y_doublegate_3n_2plus_232Th_134Te_long, label="doublegate_3n_2plus_232Th_134Te", color="royalblue")
+
+# plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), label="true fit, total", color="orange")
+# plt.plot(x_array_plot, gauss(x_array_plot, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), label="true gaussian", color="green")
+# plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), label="true smeared exp decay", color="red")
+# plt.plot(x_array_plot, const_bg(x_array_plot, P_double_3n_2plus_232Th_134Te[0], P_double_3n_2plus_232Th_134Te[1], P_double_3n_2plus_232Th_134Te[2], P_double_3n_2plus_232Th_134Te[3], P_double_3n_2plus_232Th_134Te[4], P_double_3n_2plus_232Th_134Te[5]), label="constant BG", color="hotpink")
+
+# plt.vlines(x_doublegate_3n_2plus_232Th_134Te[0],0,6000, label="fit range", color="black")
+# plt.vlines(x_doublegate_3n_2plus_232Th_134Te[-1],0,6000, color="black")
+# #plt.yscale("log")
+# plt.title("232Th lowE_highT - 134Te 3n_2plus: Doublegate true spectrum fit")
+# plt.axis([0,700,0,5*10**(3)])
+# plt.xlabel("Time [ns]", fontsize=14)
+# plt.ylabel("Counts", fontsize=14)
+# plt.legend(fontsize=10)
+# plt.grid()
+# plt.show()
+
+
+################   232Th -  134Te  3n_4plus  #################
+
+plt.plot(x_doublegate_3n_4plus_232Th_134Te_long, y_doublegate_3n_4plus_232Th_134Te_long, label="doublegate_3n_4plus_232Th_134Te", color="royalblue")
+
+plt.plot(x_array_plot, sum_smeared_exp_gauss_const_bg(x_array_plot, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), label="true fit, total", color="orange")
+plt.plot(x_array_plot, gauss(x_array_plot, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), label="true gaussian", color="green")
+plt.plot(x_array_plot, smeared_exp_decay(x_array_plot, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), label="true smeared exp decay", color="red")
+plt.plot(x_array_plot, const_bg(x_array_plot, P_double_3n_4plus_232Th_134Te[0], P_double_3n_4plus_232Th_134Te[1], P_double_3n_4plus_232Th_134Te[2], P_double_3n_4plus_232Th_134Te[3], P_double_3n_4plus_232Th_134Te[4], P_double_3n_4plus_232Th_134Te[5]), label="constant BG", color="hotpink")
+
+plt.vlines(x_doublegate_3n_4plus_232Th_134Te[0],0,6000, label="fit range", color="black")
+plt.vlines(x_doublegate_3n_4plus_232Th_134Te[-1],0,6000, color="black")
+#plt.yscale("log")
+plt.title("232Th lowE_highT - 134Te 3n_4plus: Doublegate true spectrum fit")
+plt.axis([0,700,0,5*10**(3)])
+plt.xlabel("Time [ns]", fontsize=14)
+plt.ylabel("Counts", fontsize=14)
+plt.legend(fontsize=10)
+plt.grid()
+plt.show()
 
 
 ################   238U -  135Te   #################
