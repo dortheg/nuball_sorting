@@ -262,4 +262,3 @@ aval_prompt_134Te->GetYaxis()->SetTitle("Counts");
 TH1D *aval_delayed_134Te = new TH1D("aval_delayed_134Te","aval_delayed_134Te",1000,0,1000);
 aval_delayed_134Te->GetXaxis()->SetTitle("Energy [keV]");
 aval_delayed_134Te->GetYaxis()->SetTitle("Counts");
-

@@ -397,4 +397,3 @@ void fill_spectra_doublegate(int lookup_value_1, int lookup_value_2, int time, T
 
 
 //g++ -g -o FineSort FineSort.cxx ` root-config --cflags` `root-config --glibs`
-

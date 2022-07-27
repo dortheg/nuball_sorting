@@ -13,8 +13,7 @@ import time
 ##     Read in data     ## 
 ##########################
 
-file = ROOT.TFile.Open("252Cf_8des2021_A.root"," READ ") #2ns bins
-#ile = ROOT.TFile.Open("252Cf_8des2021.root"," READ ") #4ns bins
+file = ROOT.TFile.Open("252Cf_11jan2022.root"," READ ")
 
 #######################
 
@@ -457,7 +456,7 @@ P_double_2_bg, cov_double_2_bg = curve_fit(sum_two_smeared_exp_gauss, x_doublega
 ## 		 Find IYR + uncertainty 	## 
 ######################################
 
-x_arr = np.linspace(-1000,3000,4000)
+x_arr = np.linspace(-1000,10000,10000)
 
 
 ############
