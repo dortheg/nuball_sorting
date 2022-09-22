@@ -212,6 +212,8 @@ def sum_skewnormal_const_bg(x, mean=0, sigma=1.0, const_bg=1.0, amplitude_gauss=
 	t = (x-mean)/sigma
 	return (amplitude_gauss*2.0/sigma * pdf_skewnormal(t) * cdf_skewnormal(alpha*t)) + const_bg
 
+def sum_two_gauss_const_bg(x, mean=0, sigma1=1.0, const_bg=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0):
+	return amplitude_gauss1*np.exp(-(x-mean)**2/(2*sigma1**2)) + amplitude_gauss2*np.exp(-(x-mean)**2/(2*sigma2**2)) + const_bg
 
 
 ####################################################
@@ -271,10 +273,43 @@ print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_s
 print("sigma:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_skew_238U_lowE_highT_140Xe[1], P_double_skew_unc_238U_lowE_highT_140Xe[1], sigma_lower, sigma_upper))
 print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_skew_238U_lowE_highT_140Xe[2], P_double_skew_unc_238U_lowE_highT_140Xe[2], const_bg_lower, const_bg_upper))
 print("amplitude_gauss:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_skew_238U_lowE_highT_140Xe[3], P_double_skew_unc_238U_lowE_highT_140Xe[3], amplitude_gauss_lower, amplitude_gauss_upper))
-print("alpha:          			 %.2f +/- %.2f         [%.d,%.d]" % (P_double_skew_238U_lowE_highT_140Xe[4], P_double_skew_unc_238U_lowE_highT_140Xe[4], alpha_lower, alpha_upper))
+print("alpha:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_skew_238U_lowE_highT_140Xe[4], P_double_skew_unc_238U_lowE_highT_140Xe[4], alpha_lower, alpha_upper))
 
 print("\n")
 
+
+################   238U lowE_highT -  140Xe - two_gauss  #################
+
+mean_lower = 300
+mean_upper = 400
+sigma1_lower = 0
+sigma1_upper = 40
+const_bg_lower = 0
+const_bg_upper = 1000
+amplitude_gauss1_lower = 0
+amplitude_gauss1_upper = 300000
+sigma2_lower = 0
+sigma2_upper = 40
+amplitude_gauss2_lower = 0
+amplitude_gauss2_upper = 300000
+
+P_double_two_gauss_238U_lowE_highT_140Xe, cov_double_two_gauss_238U_lowE_highT_140Xe = curve_fit(sum_two_gauss_const_bg, x_doublegate_238U_lowE_highT_140Xe, y_doublegate_238U_lowE_highT_140Xe, sigma=sigma_data_doublegate_all_bg(data_all=y_doublegate_all_238U_lowE_highT_140Xe, data_bg_ridge=y_doublegate_bg_ridge_238U_lowE_highT_140Xe, data_bg_random=y_doublegate_bg_random_238U_lowE_highT_140Xe), bounds=([mean_lower,sigma1_lower,const_bg_lower,amplitude_gauss1_lower, sigma2_lower,amplitude_gauss2_lower],[mean_upper,sigma1_upper,const_bg_upper,amplitude_gauss1_upper, sigma2_upper, amplitude_gauss2_upper]), absolute_sigma = False)
+#print("* 238U lowE_highT - 140Xe Using uncertainty-weighted fit")
+
+P_double_two_gauss_unc_238U_lowE_highT_140Xe = np.sqrt(np.diag(cov_double_two_gauss_238U_lowE_highT_140Xe))
+
+print("\n")
+print(" ***** 238U lowE_highT - 140Xe:  Doublegate true spectrum fit: ***** ")
+print("                  -- TWO GAUSS + CONST_BG FIT --   ")
+print("mean:                     %.2f +/- %.2f         [%.d,%.d]" % (P_double_two_gauss_238U_lowE_highT_140Xe[0], P_double_two_gauss_unc_238U_lowE_highT_140Xe[0], mean_lower, mean_upper))
+print("sigma1:                   %.2f +/- %.2f         [%.d,%.d]" % (P_double_two_gauss_238U_lowE_highT_140Xe[1], P_double_two_gauss_unc_238U_lowE_highT_140Xe[1], sigma1_lower, sigma1_upper))
+print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_two_gauss_238U_lowE_highT_140Xe[2], P_double_two_gauss_unc_238U_lowE_highT_140Xe[2], const_bg_lower, const_bg_upper))
+print("amplitude_gauss1:         %.2f +/- %.2f         [%.d,%.d]" % (P_double_two_gauss_238U_lowE_highT_140Xe[3], P_double_two_gauss_unc_238U_lowE_highT_140Xe[3], amplitude_gauss1_lower, amplitude_gauss1_upper))
+print("sigma2:                   %.2f +/- %.2f         [%.d,%.d]" % (P_double_two_gauss_238U_lowE_highT_140Xe[4], P_double_two_gauss_unc_238U_lowE_highT_140Xe[4], sigma2_lower, sigma2_upper))
+print("amplitude_gauss2:         %.2f +/- %.2f         [%.d,%.d]" % (P_double_two_gauss_238U_lowE_highT_140Xe[5], P_double_two_gauss_unc_238U_lowE_highT_140Xe[5], amplitude_gauss2_lower, amplitude_gauss2_upper))
+
+
+print("\n")
 
 
 
@@ -312,6 +347,12 @@ plt.plot(x_array_plot, sum_gauss_const_bg(x_array_plot, P_double_238U_lowE_highT
 plt.plot(x_array_plot, sum_skewnormal_const_bg(x_array_plot, P_double_skew_238U_lowE_highT_140Xe[0], P_double_skew_238U_lowE_highT_140Xe[1], P_double_skew_238U_lowE_highT_140Xe[2], P_double_skew_238U_lowE_highT_140Xe[3], P_double_skew_238U_lowE_highT_140Xe[4]), label="sum skew gauss + const bg", color="red")
 #plt.plot(x_array_plot, skewnormal(x_array_plot, P_double_skew_238U_lowE_highT_140Xe[0], P_double_skew_238U_lowE_highT_140Xe[1], P_double_skew_238U_lowE_highT_140Xe[2], P_double_skew_238U_lowE_highT_140Xe[3], P_double_skew_238U_lowE_highT_140Xe[4]), label="skew gaussian", color="orange")
 #plt.plot(x_array_plot, const_bg(x_array_plot, P_double_skew_238U_lowE_highT_140Xe[0], P_double_skew_238U_lowE_highT_140Xe[1], P_double_skew_238U_lowE_highT_140Xe[2], P_double_skew_238U_lowE_highT_140Xe[3]), label="constant BG", color="orange")
+
+# plt.plot(x_array_plot, sum_two_gauss_const_bg(x_array_plot, P_double_two_gauss_238U_lowE_highT_140Xe[0], P_double_two_gauss_238U_lowE_highT_140Xe[1], P_double_two_gauss_238U_lowE_highT_140Xe[2], P_double_two_gauss_238U_lowE_highT_140Xe[3], P_double_two_gauss_238U_lowE_highT_140Xe[4], P_double_two_gauss_238U_lowE_highT_140Xe[5]), label="sum two gauss + const bg", color="green" )
+# plt.plot(x_array_plot, gauss(x_array_plot, P_double_two_gauss_238U_lowE_highT_140Xe[0],P_double_two_gauss_238U_lowE_highT_140Xe[1],P_double_two_gauss_238U_lowE_highT_140Xe[2],P_double_two_gauss_238U_lowE_highT_140Xe[3]), label="gauss 1", color="lightgreen" )
+# plt.plot(x_array_plot, gauss(x_array_plot, P_double_two_gauss_238U_lowE_highT_140Xe[0],P_double_two_gauss_238U_lowE_highT_140Xe[4],P_double_two_gauss_238U_lowE_highT_140Xe[2],P_double_two_gauss_238U_lowE_highT_140Xe[5]), label="gauss 2", color="yellowgreen" )
+# plt.plot(x_array_plot, const_bg(x_array_plot, P_double_two_gauss_238U_lowE_highT_140Xe[0], P_double_two_gauss_238U_lowE_highT_140Xe[1], P_double_two_gauss_238U_lowE_highT_140Xe[2], P_double_two_gauss_238U_lowE_highT_140Xe[3]), label="constant BG", color="orange")
+
 
 plt.vlines(x_doublegate_238U_lowE_highT_140Xe[0],0,6000, label="fit range", color="black")
 plt.vlines(x_doublegate_238U_lowE_highT_140Xe[-1],0,6000, color="black")
