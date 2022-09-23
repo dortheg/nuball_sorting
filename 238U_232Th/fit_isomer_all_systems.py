@@ -9,7 +9,7 @@ from scipy.ndimage import gaussian_filter1d
 import time
 from prettytable import PrettyTable
 
-BOOTSTRAP = False
+BOOTSTRAP = False 
 SIGMA_VAR = False
 
 ####################################################
