@@ -9,12 +9,19 @@ from scipy.ndimage import gaussian_filter1d
 
 class IYR_extraction_class:
 
-    def __init__(self, name, CN, file, x_lower):
+    def __init__(self, name, gatetype, CN, file, x_lower):
+        
+        #Define parameters
         self.name = name
+        self.gatetype = gatetype
         self.CN = CN   
         self.file = file
         self.x_lower = x_lower
-        self.x_upper = 640
+        self.x_upper = 640 
+        self.IYR = 0
+        self.sigma_IYR = 0
+        self.sigma_IYR_handcalc = 0
+        self.red_chi2 = 0 
 
         #Lifetimes we need
         self.tau_134Te = 164.1/np.log(2)
@@ -77,6 +84,7 @@ class IYR_extraction_class:
         #plt.plot(self.x_spec_all_long, self.y_spec_all_long, label="all")
         #plt.plot(self.x_spec_bg_long, self.y_spec_bg_long, label="bg")
         #plt.plot(self.x_spec_bg_ridge_long, self.y_spec_bg_ridge_long - self.y_spec_bg_random_long, label="bg_ridge - bg_random")
+        plt.title("134Te: %s    %s    %s " % (self.CN, self.name, self.file))
         plt.legend()
         plt.xlabel("Time [ns]")
         plt.xlabel("Counts")
@@ -87,7 +95,7 @@ class IYR_extraction_class:
 ###########################################################################################
 
 
-    def fit_spec_and_IYR_calc(self, plot=False, print_fitparam=False):
+    def fit_spec_and_IYR_calc(self, plot=False, print_fitparam=False, calc_redchi2=False):
 
         def sum_smeared_exp_two_gauss_const_bg(x, mean=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
             return amplitude_gauss1*np.exp(-(x-mean)**2/(2*sigma1**2)) \
@@ -110,6 +118,11 @@ class IYR_extraction_class:
         def const_bg(x, mean=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
             return const_bg + x*0
 
+
+        ####################################################
+        ##                      Fit                       ## 
+        ####################################################
+
         mean_lower = 300
         mean_upper = 400
         sigma1_lower = 0
@@ -120,8 +133,15 @@ class IYR_extraction_class:
         sigma2_upper = 40
         amplitude_gauss2_lower = 0
         amplitude_gauss2_upper = 10000
-        const_bg_lower = 0
-        const_bg_upper = 1000
+
+        if self.gatetype == "double":
+            const_bg_lower = 0
+            const_bg_upper = 1000
+
+        if self.gatetype == "partner":
+            const_bg_lower = 0
+            const_bg_upper = 0+0.0001
+
         amplitude_exp_decay_lower = 0
         amplitude_exp_decay_upper = 5000
         tau_decay_lower = self.tau_134Te
@@ -181,10 +201,37 @@ class IYR_extraction_class:
 
         self.IYR = area_delayed/(area_prompt+area_delayed)
 
-        print("Area all: %.2f " % area_all)
-        print("Area prompt: %.2f " % area_prompt)
-        print("Area delayed: %.2f " % area_delayed)
-        print("IYR: %.3f" % self.IYR)
+        # print("Area all: %.2f " % area_all)
+        # print("Area prompt: %.2f " % area_prompt)
+        # print("Area delayed: %.2f " % area_delayed)
+        # print("IYR: %.3f" % self.IYR)
+
+
+        ####################################################
+        ##                Calc red chi^2                  ## 
+        ####################################################
+
+        if calc_redchi2==True:
+
+            def sum_smeared_exp_two_gauss_const_bg(x, mean=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+                return amplitude_gauss1*np.exp(-(x-mean)**2/(2*sigma1**2)) \
+                + amplitude_gauss2*np.exp(-(x-mean)**2/(2*sigma2**2)) \
+                + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)]),sigma1)  \
+                + const_bg
+
+            def reduced_chisquare_func(f_obs, f_exp, N):
+                dof = N-7
+                warning = 0
+                for i in range(len(f_exp)):
+                    if f_exp[i] < 15:
+                        warning = 1
+                if warning==1:
+                    print("Warning: in chisquared-calc, the expected is < 15")
+                return np.sum((f_obs-f_exp)**2/(f_exp))/dof
+
+            self.red_chi2 = reduced_chisquare_func(f_obs=self.y_spec, f_exp=sum_smeared_exp_two_gauss_const_bg(self.x_spec, self.P[0], self.P[1], self.P[2], self.P[3], self.P[4], self.P[5], self.P[6], self.P[7]), N=len(self.y_spec))
+
+
 
 ###########################################################################################
 
@@ -222,8 +269,15 @@ class IYR_extraction_class:
         sigma2_upper = 40
         amplitude_gauss2_lower = 0
         amplitude_gauss2_upper = 10000
-        const_bg_lower = 0
-        const_bg_upper = 1000
+
+        if self.gatetype == "double":
+            const_bg_lower = 0
+            const_bg_upper = 1000
+
+        if self.gatetype == "partner":
+            const_bg_lower = 0
+            const_bg_upper = 0+0.0001
+            
         amplitude_exp_decay_lower = 0
         amplitude_exp_decay_upper = 5000
         tau_decay_lower = self.tau_134Te
@@ -242,8 +296,8 @@ class IYR_extraction_class:
                 #Vary value of each bin within uncertainty
                 resampled_y_spec_long[i] = y_spec_long_bgvaried[i] + np.random.normal(0, self.y_spec_long_unc[i]) 
 
-            x_lower_new = self.x_lower + int(np.random.normal(0,5))
-            x_upper_new = self.x_upper + int(np.random.normal(0,5))
+            x_lower_new = self.x_lower + int(np.random.normal(0,10))
+            x_upper_new = self.x_upper + int(np.random.normal(0,10))
 
             bin_lower = x_lower_new//2
             bin_upper = x_upper_new//2
@@ -267,7 +321,7 @@ class IYR_extraction_class:
         self.sigma_IYR = np.std(resampled_IYR_array)
 
         # Plot distribution of calculated IYRs
-        IYR_binwith = 0.01
+        IYR_binwith = 0.001
         IYR_min = 0.5
         IYR_max = 1.0 + 2*IYR_binwith
         N_IYR_bins = int((IYR_max-IYR_min)//IYR_binwith)
@@ -279,31 +333,35 @@ class IYR_extraction_class:
             IYR_bin = int(resampled_IYR_array[i]//IYR_binwith - IYR_min//IYR_binwith)
             IYR_histogram[IYR_bin] += 1
 
+        # Calculate standard deviation by hand
+        std_value = np.linspace(0,0.5,10000)
+        std_found = False
+        self.sigma_IYR_handcalc = 0
+
+        for i in range(len(std_value)):
+            within_std = np.where((resampled_IYR_array >= self.IYR-std_value[i]) & (resampled_IYR_array < self.IYR+std_value[i]))[0]
+            percentage_covered = len(within_std)/len(resampled_IYR_array)
+
+            if 0.675 <= percentage_covered < 0.685:
+                std_found = True
+                self.sigma_IYR_handcalc = std_value[i]
+                #print("By-hand standard deviation is %.3f" % std_value[i])
+                break
+
         if plot == True:    
             plt.plot(IYR_array,IYR_histogram, label="Calculated IYR distribution")
-            plt.axvline(x=self.IYR, ymin=0, ymax=max(IYR_histogram), label="IYR", color="red")
-            plt.axvline(x=self.IYR-self.sigma_IYR, ymin=0, ymax=max(IYR_histogram), label="IYR-sigma", color="black")
-            plt.axvline(x=self.IYR+self.sigma_IYR, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma", color="black")
-            plt.xlabel("Calculated IYR", fontsize=14)
+            plt.axvline(x=self.IYR, ymin=0, ymax=max(IYR_histogram), label="IYR center", color="red")
+            plt.axvline(x=self.IYR-self.sigma_IYR, ymin=0, ymax=max(IYR_histogram), label="IYR-sigma_np", color="black")
+            plt.axvline(x=self.IYR+self.sigma_IYR, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma_np", color="black")
+            plt.axvline(x=self.IYR-self.sigma_IYR_handcalc, ymin=0, ymax=max(IYR_histogram), label="IYR-sigma_handcalc", color="grey")
+            plt.axvline(x=self.IYR+self.sigma_IYR_handcalc, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma_handcalc", color="grey")
+            plt.xlabel("IYR", fontsize=14)
             plt.ylabel("Counts", fontsize=14)
             plt.legend(fontsize=14)
+            plt.title("Bootstrapping IYR, N= %d , x_lower = %.d" % (N_BOOTSTRAP, self.x_lower))
             plt.grid()
             plt.show()
 
-    #     # Calculate standard deviation by hand
-    #     std_value = np.linspace(0,0.5,10000)
-    #     std_found = False
-    #     std_handcalc = 0
-
-    # for i in range(len(std_value)):
-    #     within_std = np.where((resampled_IYR_array >= IYR_double_238U_lowE_highT_134Te-std_value[i]) & (resampled_IYR_array_238U_lowE_highT_134Te < IYR_double_238U_lowE_highT_134Te+std_value[i]))[0]
-    #     percentage_covered = len(within_std)/len(resampled_IYR_array_238U_lowE_highT_134Te)
-
-    #     if 0.675 <= percentage_covered < 0.685:
-    #         std_found = True
-    #         std_handcalc = std_value[i]
-    #         print("By-hand standard deviation is %.3f" % std_value[i])
-    #         break
 
 
 
