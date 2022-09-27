@@ -65,9 +65,8 @@ class IYR_extraction_class:
                     unc[i] = np.sqrt(spec_all[i]+spec_bg_ridge[i]+spec_bg_random[i])
             return unc
 
-        self.y_spec_unc = yerr(self.x_spec_all, self.x_spec_bg_ridge, self.x_spec_bg_random)
-        self.y_spec_long_unc = yerr(self.x_spec_all_long, self.x_spec_bg_ridge_long, self.x_spec_bg_random_long)
-
+        self.y_spec_unc = yerr(self.y_spec_all, self.y_spec_bg_ridge, self.y_spec_bg_random)
+        self.y_spec_long_unc = yerr(self.y_spec_all_long, self.y_spec_bg_ridge_long, self.y_spec_bg_random_long)
 
 ###########################################################################################
 
@@ -88,7 +87,7 @@ class IYR_extraction_class:
 ###########################################################################################
 
 
-    def fit_spec_and_IYR_calc(self, plot=False, show_fitparam=False):
+    def fit_spec_and_IYR_calc(self, plot=False, print_fitparam=False):
 
         def sum_smeared_exp_two_gauss_const_bg(x, mean=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
             return amplitude_gauss1*np.exp(-(x-mean)**2/(2*sigma1**2)) \
@@ -131,7 +130,7 @@ class IYR_extraction_class:
         self.P, self.cov = curve_fit(sum_smeared_exp_two_gauss_const_bg, self.x_spec, self.y_spec, sigma=self.y_spec_unc, bounds=([mean_lower, sigma1_lower, amplitude_gauss1_lower, sigma2_lower, amplitude_gauss2_lower, const_bg_lower, amplitude_exp_decay_lower, tau_decay_lower],[mean_upper, sigma1_upper, amplitude_gauss1_upper, sigma2_upper, amplitude_gauss2_upper, const_bg_upper, amplitude_exp_decay_upper, tau_decay_upper]), absolute_sigma = False)
         self.P_unc = np.sqrt(np.diag(self.cov))
 
-        if show_fitparam==True:
+        if print_fitparam==True:
             print("\n")
             print(" *****       %s    %s    134Te ***** " % (self.CN, self.name) )
             print("          -- 2 GAUSS + SMEARED EXP + CONST_BG FIT --   ")
@@ -181,6 +180,11 @@ class IYR_extraction_class:
         area_delayed = np.trapz(smeared_exp_decay(self.x_arr_134Te, self.P[0], self.P[1], self.P[2], self.P[3], self.P[4], self.P[5], self.P[6], self.P[7]), self.x_arr_134Te)
 
         self.IYR = area_delayed/(area_prompt+area_delayed)
+
+        print("Area all: %.2f " % area_all)
+        print("Area prompt: %.2f " % area_prompt)
+        print("Area delayed: %.2f " % area_delayed)
+        print("IYR: %.3f" % self.IYR)
 
 ###########################################################################################
 

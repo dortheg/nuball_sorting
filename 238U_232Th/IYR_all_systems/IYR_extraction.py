@@ -21,9 +21,9 @@ file_232Th = ROOT.TFile.Open("../Sorted_files/232Thcube_hit4_lowE_highT_28feb202
 
 
 
-double_238U_lowE_134Te = IYR_extraction_class(name="doublegate", CN="238U", file=file_238U_lowE, x_lower=320)
-double_238U_lowE_134Te.fit_spec_and_IYR_calc(show_fitparam=True, plot=False)
-double_238U_lowE_134Te.IYR_uncertainty(N_BOOTSTRAP=1000, plot=True)
+double_238U_lowE_134Te = IYR_extraction_class(name="doublegate", CN="238U", file=file_238U_lowE, x_lower=330)
+double_238U_lowE_134Te.fit_spec_and_IYR_calc(print_fitparam=True, plot=False)
+#double_238U_lowE_134Te.IYR_uncertainty(N_BOOTSTRAP=1000, plot=True)
 
 # double_3n_238U_lowE_134Te = IYR_extraction_class(name="doublegate_3n", CN="238U", file=file_238U_lowE)
 # double_3n_238U_lowE_134Te.load_spec_all()
