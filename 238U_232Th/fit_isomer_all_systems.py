@@ -2122,18 +2122,18 @@ P_double_238U_lowE_highT_134Te, cov_double_238U_lowE_highT_134Te = curve_fit(sum
 
 P_double_unc_238U_lowE_highT_134Te = np.sqrt(np.diag(cov_double_238U_lowE_highT_134Te))
 
-print("\n")
-print(" ***** 238U lowE_highT - 134Te:  Doublegate true spectrum fit ***** ")
-print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
-print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[0], P_double_unc_238U_lowE_highT_134Te[0], mean_lower, mean_upper))
-print("sigma1:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[1], P_double_unc_238U_lowE_highT_134Te[1], sigma1_lower, sigma1_upper))
-print("amplitude_gauss1:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[2], P_double_unc_238U_lowE_highT_134Te[2], amplitude_gauss1_lower, amplitude_gauss1_upper))
-print("sigma2:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[3], P_double_unc_238U_lowE_highT_134Te[3], sigma2_lower, sigma2_upper))
-print("amplitude_gauss2:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[4], P_double_unc_238U_lowE_highT_134Te[4], amplitude_gauss2_lower, amplitude_gauss2_upper))
-print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[5], P_double_unc_238U_lowE_highT_134Te[5], const_bg_lower, const_bg_upper))
-print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[6], P_double_unc_238U_lowE_highT_134Te[6], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
-print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[7]*np.log(2), 0, tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
-print("\n")
+# print("\n")
+# print(" ***** 238U lowE_highT - 134Te:  Doublegate true spectrum fit ***** ")
+# print("          -- GAUSS + SMEARED EXP + CONST_BG FIT --   ")
+# print("mean:                     %.2f +/- %.2f          [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[0], P_double_unc_238U_lowE_highT_134Te[0], mean_lower, mean_upper))
+# print("sigma1:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[1], P_double_unc_238U_lowE_highT_134Te[1], sigma1_lower, sigma1_upper))
+# print("amplitude_gauss1:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[2], P_double_unc_238U_lowE_highT_134Te[2], amplitude_gauss1_lower, amplitude_gauss1_upper))
+# print("sigma2:                    %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[3], P_double_unc_238U_lowE_highT_134Te[3], sigma2_lower, sigma2_upper))
+# print("amplitude_gauss2:          %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[4], P_double_unc_238U_lowE_highT_134Te[4], amplitude_gauss2_lower, amplitude_gauss2_upper))
+# print("const_bg:                 %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[5], P_double_unc_238U_lowE_highT_134Te[5], const_bg_lower, const_bg_upper))
+# print("amplitude_exp_decay:      %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[6], P_double_unc_238U_lowE_highT_134Te[6], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
+# print("tau_decay, in half_life:  %.2f +/- %.2f         [%.d,%.d]" % (P_double_238U_lowE_highT_134Te[7]*np.log(2), 0, tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
+# print("\n")
 
 # ################   238U lowE_highT -  134Te 1n  #################
 

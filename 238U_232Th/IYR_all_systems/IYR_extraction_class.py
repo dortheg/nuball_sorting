@@ -29,7 +29,6 @@ class IYR_extraction_class:
 
         def load_spec(name_spec):
 
-
             bin_lower = self.x_lower//2
             bin_upper = self.x_upper//2
 
@@ -179,8 +178,8 @@ class IYR_extraction_class:
             plt.vlines(self.x_spec[0],0,6000, label="fit range", color="black")
             plt.vlines(self.x_spec[-1],0,6000, color="black")
             
-            plt.title("%s %s  134Te" % (self.CN, self.name) )  
-            plt.axis([0,700,-50,5*10**(3)])
+            plt.title("%s %s Fit 134Te isomer" % (self.CN, self.name) )  
+            plt.axis([0,700,-50,1.2*10**(4)])
             plt.xlabel("Time [ns]", fontsize=14)
             plt.ylabel("Counts", fontsize=14)
             plt.legend(fontsize=12)
@@ -277,7 +276,7 @@ class IYR_extraction_class:
         if self.gatetype == "partner":
             const_bg_lower = 0
             const_bg_upper = 0+0.0001
-            
+
         amplitude_exp_decay_lower = 0
         amplitude_exp_decay_upper = 5000
         tau_decay_lower = self.tau_134Te
@@ -322,7 +321,7 @@ class IYR_extraction_class:
 
         # Plot distribution of calculated IYRs
         IYR_binwith = 0.001
-        IYR_min = 0.5
+        IYR_min = 0.0
         IYR_max = 1.0 + 2*IYR_binwith
         N_IYR_bins = int((IYR_max-IYR_min)//IYR_binwith)
 
@@ -358,7 +357,7 @@ class IYR_extraction_class:
             plt.xlabel("IYR", fontsize=14)
             plt.ylabel("Counts", fontsize=14)
             plt.legend(fontsize=14)
-            plt.title("Bootstrapping IYR, N= %d , x_lower = %.d" % (N_BOOTSTRAP, self.x_lower))
+            plt.title("%s %s Bootstrapping IYR, N= %d , x_lower = %.d" % (self.CN, self.name, N_BOOTSTRAP, self.x_lower))
             plt.grid()
             plt.show()
 
