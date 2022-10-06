@@ -35,6 +35,7 @@ TH1D *time_isomer_doublegate_bg_random_134Te = new TH1D("time_isomer_doublegate_
 time_isomer_doublegate_bg_random_134Te->GetXaxis()->SetTitle("Time [2 ns]");
 time_isomer_doublegate_bg_random_134Te->GetYaxis()->SetTitle("Counts");
 
+
 //134Te doublegate_isomer_3n
 TH1D *time_isomer_doublegate_isomer_3n_134Te = new TH1D("time_isomer_doublegate_isomer_3n_134Te","time_isomer_doublegate_isomer_3n_134Te",350,0,350);
 time_isomer_doublegate_isomer_3n_134Te->GetXaxis()->SetTitle("Time [2 ns]");
@@ -495,4 +496,25 @@ TH1D *time_isomer_doublegate_bg_random_94Sr = new TH1D("time_isomer_doublegate_b
 time_isomer_doublegate_bg_random_94Sr->GetXaxis()->SetTitle("Time [2 ns]");
 time_isomer_doublegate_bg_random_94Sr->GetYaxis()->SetTitle("Counts");
 
+/*//132Sn doublegate
+TH1D *time_isomer_doublegate_132Sn = new TH1D("time_isomer_doublegate_132Sn","time_isomer_doublegate_132Sn",350,0,350);
+time_isomer_doublegate_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_132Sn->GetYaxis()->SetTitle("Counts");
 
+TH1D *time_isomer_doublegate_all_132Sn = new TH1D("time_isomer_doublegate_all_132Sn","time_isomer_doublegate_all_132Sn",350,0,350);
+time_isomer_doublegate_all_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_all_132Sn->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_bg_132Sn = new TH1D("time_isomer_doublegate_bg_132Sn","time_isomer_doublegate_bg_132Sn",350,0,350);
+time_isomer_doublegate_bg_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_bg_132Sn->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_bg_ridge_132Sn = new TH1D("time_isomer_doublegate_bg_ridge_132Sn","time_isomer_doublegate_bg_ridge_132Sn",350,0,350);
+time_isomer_doublegate_bg_ridge_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_bg_ridge_132Sn->GetYaxis()->SetTitle("Counts");
+
+TH1D *time_isomer_doublegate_bg_random_132Sn = new TH1D("time_isomer_doublegate_bg_random_132Sn","time_isomer_doublegate_bg_random_132Sn",350,0,350);
+time_isomer_doublegate_bg_random_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
+time_isomer_doublegate_bg_random_132Sn->GetYaxis()->SetTitle("Counts");
+
+*/

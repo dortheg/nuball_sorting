@@ -57,6 +57,7 @@ short lookup_140Xe[2048][2048] = {{0}};
 short lookup_138Xe[2048][2048] = {{0}};
 short lookup_92Sr[2048][2048] = {{0}};
 short lookup_94Sr[2048][2048] = {{0}};
+//short lookup_132Sn[2048][2048] = {{0}};
 
 
 void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]);
@@ -79,14 +80,14 @@ int main(int argc, char **argv){
 	string filename = "no";
 	string fileplace;
 
-	int A = 232;
+	int A = 238;
 
 	if(A==238){
 		//238U
 
 		//1.7 MeV neutrons
 		//lowE - highT
-		filename = "238Ucube_hit4_lowE_hightT_8feb2022.bin";
+		filename = "238Ucube_hit4_lowE_highT_8feb2022.bin";
 
 		//lowE - lowT
 		//filename = "238Ucube_hit4_lowE_lowT_8feb2022.bin";
@@ -102,10 +103,10 @@ int main(int argc, char **argv){
 		//232Th
 
 		//highT
-		//filename = "232Thcube_hit4_highE_highT_28feb2022.bin";
+		filename = "232Thcube_hit4_lowE_highT_28feb2022.bin";
 
 		//lowT
-		filename = "232Thcube_hit4_highE_lowT_28feb2022.bin";
+		//filename = "232Thcube_hit4_lowE_lowT_28feb2022.bin";
 
 	}
 
@@ -251,12 +252,15 @@ int main(int argc, char **argv){
 	int gamma_energy_1_94Sr = 1309;
 	int gamma_energy_2_94Sr = 837;
 
+/*	//132Sn, no isomer
+	int gamma_energy_1_132Sn = 4041;
+	int gamma_energy_2_132Sn = 375;*/
 
 	//////////////////////////////////////////
 	/// 		   Lookup table		  	   ///
 	//////////////////////////////////////////
 
-	//Implement FWHM-dependent gates later
+	//Implement FWHM-dependent gates later?
 
 	fill_lookuptable(gamma_energy_1_134Te, gamma_energy_2_134Te, lookup_134Te);
 
@@ -311,6 +315,7 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_1_94Sr, gamma_energy_2_94Sr, lookup_94Sr);
 
+	//fill_lookuptable(gamma_energy_1_132Sn, gamma_energy_2_132Sn, lookup_132Sn);
 
 	//Print loopup-table to make sure all elements have right value
 /*	cout << "94Rb" << " " << endl;
@@ -391,6 +396,8 @@ int main(int argc, char **argv){
 
 				fill_spectra(lookup_94Sr[i][j], cube_value, k, time_isomer_doublegate_94Sr, time_isomer_doublegate_all_94Sr, time_isomer_doublegate_bg_94Sr, time_isomer_doublegate_bg_ridge_94Sr, time_isomer_doublegate_bg_random_94Sr);	
 			
+				//fill_spectra(lookup_132Sn[i][j], cube_value, k, time_isomer_doublegate_132Sn, time_isomer_doublegate_all_132Sn, time_isomer_doublegate_bg_132Sn, time_isomer_doublegate_bg_ridge_132Sn, time_isomer_doublegate_bg_random_132Sn);	
+
 			}
 		}
 	}
@@ -412,7 +419,8 @@ int main(int argc, char **argv){
 	/// 	  Write spectra to file	       ///
 	//////////////////////////////////////////
 
-	string filename_out = filename + ".root";
+	//string filename_out = filename + "_final.root";
+	string filename_out = filename + "_6oct2022.root";
 	TFile *outputspectrafile = new TFile(filename_out.c_str(),"RECREATE");
 
 
@@ -553,6 +561,12 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_94Sr->Write();
 	time_isomer_doublegate_bg_ridge_94Sr->Write();
 	time_isomer_doublegate_bg_random_94Sr->Write();
+
+/*	time_isomer_doublegate_132Sn->Write();
+	time_isomer_doublegate_all_132Sn->Write();
+	time_isomer_doublegate_bg_132Sn->Write();
+	time_isomer_doublegate_bg_ridge_132Sn->Write();
+	time_isomer_doublegate_bg_random_132Sn->Write();*/
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();
