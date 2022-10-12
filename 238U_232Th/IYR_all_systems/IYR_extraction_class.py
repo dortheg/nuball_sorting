@@ -180,10 +180,14 @@ class IYR_extraction_class:
             
             plt.title("%s %s Fit 134Te isomer" % (self.CN, self.name) )  
             plt.axis([0,700,-50,1.2*10**(4)])
-            plt.xlabel("Time [ns]", fontsize=14)
-            plt.ylabel("Counts", fontsize=14)
-            plt.legend(fontsize=12)
+            plt.xlabel("Time [ns]")
+            plt.ylabel("Counts")
+            plt.legend()
             plt.grid()
+            
+            #filename = "IYR_fit_" + self.CN + "_" + self.name
+            #plt.savefig(fname=filename)
+            #plt.draw()
             plt.show()
 
 
@@ -347,6 +351,11 @@ class IYR_extraction_class:
                 #print("By-hand standard deviation is %.3f" % std_value[i])
                 break
 
+        # import chime
+        # chime.theme('zelda')
+
+        # chime.success()
+
         if plot == True:    
             plt.plot(IYR_array,IYR_histogram, label="Calculated IYR distribution")
             plt.axvline(x=self.IYR, ymin=0, ymax=max(IYR_histogram), label="IYR center", color="red")
@@ -354,11 +363,13 @@ class IYR_extraction_class:
             plt.axvline(x=self.IYR+self.sigma_IYR, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma_np", color="black")
             plt.axvline(x=self.IYR-self.sigma_IYR_handcalc, ymin=0, ymax=max(IYR_histogram), label="IYR-sigma_handcalc", color="grey")
             plt.axvline(x=self.IYR+self.sigma_IYR_handcalc, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma_handcalc", color="grey")
-            plt.xlabel("IYR", fontsize=14)
-            plt.ylabel("Counts", fontsize=14)
-            plt.legend(fontsize=14)
+            plt.xlabel("IYR")
+            plt.ylabel("Counts")
+            plt.legend()
             plt.title("%s %s Bootstrapping IYR, N= %d , x_lower = %.d" % (self.CN, self.name, N_BOOTSTRAP, self.x_lower))
             plt.grid()
+            #filename = "IYR_distr_" + self.CN + "_" + self.name
+            #plt.savefig(fname=filename)
             plt.show()
 
 

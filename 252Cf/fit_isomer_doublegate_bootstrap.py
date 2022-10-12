@@ -8,7 +8,7 @@ from scipy.stats import chisquare
 from scipy.ndimage import gaussian_filter1d
 import time
 
-BOOTSTRAP = True
+BOOTSTRAP = False
 
 ##########################
 ##     Read in data     ## 
@@ -185,6 +185,8 @@ def sum_two_smeared_exp_gauss(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitu
     + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean-x)/tau_Ge)]),sigma)
     + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)]),sigma) )
 
+
+
 ####################################################
 ## 		             Fit data 		              ## 
 ####################################################
@@ -250,8 +252,7 @@ IYR_double_2 = IYR(prompt=area_double_2_true_prompt, delayed=area_double_2_true_
 
 if BOOTSTRAP==True:
 
-    N_BOOTSTRAP = 1000
-
+    N_BOOTSTRAP = 5000
     print("\n Starting BOOTSTRAPPING... Number of iterations: %.d" % N_BOOTSTRAP)
 
     resampled_y_doublegate_2_134Te = np.zeros(len(y_doublegate_2_134Te))
@@ -323,19 +324,19 @@ print("IYR_double_2:               %.3f +/- %.3f" % (IYR_double_2, sigma_bootstr
 ###  Doublegate_2
 ################
 
-# #true
-# #plt.plot(x_doublegate_2_134Te, y_doublegate_2_134Te, label="doublegate_2_134Te", color="royalblue")
-# #plt.plot(x_doublegate_2_134Te, resampled_y_doublegate_2_134Te, label="resampled doublegate_2_134Te", color="purple")
-# plt.errorbar(x_doublegate_2_134Te, y_doublegate_2_134Te, yerr=unc_y_doublegate_2_134Te, label="doublegate_2_134Te", color="aqua")
-# plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true fit, total", color="k")
-# #plt.plot(x_arr, gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true gaussian", color="green")
-# #plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true smeared exp Ge", color="lime")
-# plt.plot(x_arr, gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6])+smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="sum prompt", color="darkolivegreen")
-# plt.plot(x_arr, smeared_exp_decay(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true smeared exp decay", color="red")
-# plt.title("134Te: Doublegate_2 true spectrum fit")
-# plt.axis([800,2000,0,500])
-# plt.xlabel("Time [ns]", fontsize=14)
-# plt.ylabel("Counts", fontsize=14)
-# plt.legend(fontsize=10)
-# plt.grid()
-# plt.show()
+#true
+#plt.plot(x_doublegate_2_134Te, y_doublegate_2_134Te, label="doublegate_2_134Te", color="royalblue")
+#plt.plot(x_doublegate_2_134Te, resampled_y_doublegate_2_134Te, label="resampled doublegate_2_134Te", color="purple")
+plt.errorbar(x_doublegate_2_134Te, y_doublegate_2_134Te, yerr=unc_y_doublegate_2_134Te, label="doublegate_2_134Te", color="aqua")
+plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true fit, total", color="k")
+#plt.plot(x_arr, gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true gaussian", color="green")
+#plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true smeared exp Ge", color="lime")
+plt.plot(x_arr, gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6])+smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="sum prompt", color="darkolivegreen")
+plt.plot(x_arr, smeared_exp_decay(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true smeared exp decay", color="red")
+plt.title("134Te: Doublegate_2 true spectrum fit")
+plt.axis([800,2000,0,500])
+plt.xlabel("Time [ns]", fontsize=14)
+plt.ylabel("Counts", fontsize=14)
+plt.legend(fontsize=10)
+plt.grid()
+plt.show()
