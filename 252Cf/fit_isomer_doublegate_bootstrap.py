@@ -16,13 +16,6 @@ BOOTSTRAP = False
 
 file = ROOT.TFile.Open("252Cf_11jan2022.root"," READ ")
 
-#######################
-
-#Define lower and upper fit limit
-x_lower = (1000 + 980)//2
-x_upper = (1000 + 1400)//2
-
-
 
 ####################################################
 ###           1279-time gated spectra
@@ -148,43 +141,34 @@ def sigma_data_doublegate_all_bg(data_all, data_bg):
 ##      Define fitting func      ## 
 ###################################
 
-def gauss(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
-    """Gaussian component (prompt production and prompt decay)"""
-    return amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2))
+
+def sum_two_smeared_exp_two_gauss_const_bg(x, mean1=0, mean2=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+    return amplitude_gauss1*np.exp(-(x-mean1)**2/(2*sigma1**2)) \
+    + amplitude_gauss2*np.exp(-(x-mean2)**2/(2*sigma2**2)) \
+    + gaussian_filter1d(np.piecewise(x, [x < mean1, x >= mean1], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean1-x)/tau_Ge)]),sigma1) \
+    + gaussian_filter1d(np.piecewise(x, [x < mean1, x >= mean1], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean1-x)/tau_decay)]),sigma1)  \
+    + const_bg
 
 
-def exp_Ge(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
-	""" Exponential decay """
-	return np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean-x)/tau_Ge)])
+def gauss_1(x, mean1=0, mean2=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+            """Gaussian component (prompt production and prompt decay)"""
+            return amplitude_gauss1*np.exp(-(x-mean1)**2/(2*sigma1**2))
 
+def gauss_2(x, mean1=0, mean2=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+            """Gaussian component (prompt production and prompt decay)"""
+            return amplitude_gauss2*np.exp(-(x-mean2)**2/(2*sigma2**2))
 
-def exp_decay(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+def const_bg(x, mean1=0, mean2=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+            return const_bg + x*0
+
+def smeared_exp_Ge(x, mean1=0, mean2=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
     """ Exponential decay """
-    return np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)])
+    return gaussian_filter1d(np.piecewise(x, [x < mean1, x >= mean1], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean1-x)/tau_Ge)]),sigma1)
 
 
-def smeared_exp_Ge(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
-	""" Exponential decay """
-	return gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean-x)/tau_Ge)]),sigma)
-
-
-def smeared_exp_decay(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
+def smeared_exp_decay(x, mean1=0, mean2=0, sigma1=1.0, amplitude_gauss1=1.0, sigma2=1.0, amplitude_gauss2=1.0, const_bg=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
     """ Exponential decay """
-    return gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)]),sigma)
-
-
-def sum_smeared_exp_gauss_Ge(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
-    """ Sum of exponential decay and gaussian """
-    return ( amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2)) 
-        + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean-x)/tau_Ge)]),sigma) )
-
-
-def sum_two_smeared_exp_gauss(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitude_exp_Ge=1.0, tau_Ge=1.0, amplitude_exp_decay=1.0, tau_decay=1.0):
-    """ Sum of exponential decay and gaussian """
-    return ( amplitude_gauss*np.exp(-(x-mean)**2/(2*sigma**2))
-    + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_Ge*np.exp((mean-x)/tau_Ge)]),sigma)
-    + gaussian_filter1d(np.piecewise(x, [x < mean, x >= mean], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean-x)/tau_decay)]),sigma) )
-
+    return gaussian_filter1d(np.piecewise(x, [x < mean1, x >= mean1], [lambda x:0, lambda x:amplitude_exp_decay*np.exp((mean1-x)/tau_decay)]),sigma1)
 
 
 ####################################################
@@ -196,12 +180,20 @@ def sum_two_smeared_exp_gauss(x, mean=0, sigma=1.0, amplitude_gauss=1.0, amplitu
 ######################
 
 #True
-mean_lower = 950
-mean_upper = 1100
-sigma_lower = 0
-sigma_upper = 40
-amplitude_gauss_lower = 0
-amplitude_gauss_upper = 3000
+mean1_lower = 950
+mean1_upper = 1100
+mean2_lower = 950
+mean2_upper = 1100
+sigma1_lower = 0
+sigma1_upper = 40
+amplitude_gauss1_lower = 0
+amplitude_gauss1_upper = 3000
+sigma2_lower = 0
+sigma2_upper = 40
+amplitude_gauss2_lower = 0
+amplitude_gauss2_upper = 40
+const_bg_lower = 0
+const_bg_upper = 0+0.001
 amplitude_exp_Ge_lower = 0
 amplitude_exp_Ge_upper = 1000
 tau_Ge_lower = 0
@@ -213,18 +205,21 @@ tau_decay_upper = tau_134Te+0.0001#1000
 
 unc_y_doublegate_2_134Te = sigma_data_doublegate_all_bg(data_all=y_doublegate_2_all_134Te, data_bg=y_doublegate_2_bg_134Te)
 
-P_double_2, cov_double_2 = curve_fit(sum_two_smeared_exp_gauss, x_doublegate_2_134Te, y_doublegate_2_134Te, sigma=unc_y_doublegate_2_134Te, bounds=([mean_lower,sigma_lower,amplitude_gauss_lower,amplitude_exp_Ge_lower,tau_Ge_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,amplitude_gauss_upper,amplitude_exp_Ge_upper,tau_Ge_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+P_double_2, cov_double_2 = curve_fit(sum_two_smeared_exp_two_gauss_const_bg, x_doublegate_2_134Te, y_doublegate_2_134Te, sigma=unc_y_doublegate_2_134Te, bounds=([mean1_lower,mean2_lower,sigma1_lower,amplitude_gauss1_lower,sigma2_lower,amplitude_gauss2_lower,const_bg_lower,amplitude_exp_Ge_lower,tau_Ge_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean1_upper,mean1_upper,sigma1_upper,amplitude_gauss1_upper,sigma2_upper,amplitude_gauss2_upper,const_bg_upper,amplitude_exp_Ge_upper,tau_Ge_upper,amplitude_exp_decay_upper,tau_decay_upper]))
 
 print("\n")
 print(" ***** 134Te:  Doublegate_2 true spectrum fit ***** ")
 print("          -- GAUSS + TWO SMEARED EXP FIT --   ")
-print("mean:                     %.2f         [%.d,%.d]" % (P_double_2[0], mean_lower, mean_upper))
-print("sigma:                    %.2f         [%.d,%.d]" % (P_double_2[1], sigma_lower, sigma_upper))
-print("amplitude_gauss:          %.2f         [%.d,%.d]" % (P_double_2[2], amplitude_gauss_lower, amplitude_gauss_upper))
-print("amplitude_exp_Ge:         %.2f         [%.d,%.d]" % (P_double_2[3], amplitude_exp_Ge_lower, amplitude_exp_Ge_upper))
-print("tau_Ge:                   %.2f         [%.d,%.d]" % (P_double_2[4], tau_Ge_lower, tau_Ge_upper))
-print("amplitude_exp_decay:      %.2f         [%.d,%.d]" % (P_double_2[5], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
-print("tau_decay, in half_life:  %.2f         [%.d,%.d]" % (P_double_2[6]*np.log(2), tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
+print("mean1:                     %.2f         [%.d,%.d]" % (P_double_2[0], mean1_lower, mean1_upper))
+print("sigma1:                    %.2f         [%.d,%.d]" % (P_double_2[2], sigma1_lower, sigma1_upper))
+print("amplitude_gauss1:          %.2f         [%.d,%.d]" % (P_double_2[3], amplitude_gauss1_lower, amplitude_gauss1_upper))
+print("sigma2:                    %.2f         [%.d,%.d]" % (P_double_2[4], sigma2_lower, sigma2_upper))
+print("amplitude_gauss2:          %.2f         [%.d,%.d]" % (P_double_2[5], amplitude_gauss2_lower, amplitude_gauss2_upper))
+print("const_bg:                   %.2f         [%.d,%.d]" % (P_double_2[6], const_bg_lower, const_bg_upper))
+print("amplitude_exp_Ge:         %.2f         [%.d,%.d]" % (P_double_2[7], amplitude_exp_Ge_lower, amplitude_exp_Ge_upper))
+print("tau_Ge:                   %.2f         [%.d,%.d]" % (P_double_2[8], tau_Ge_lower, tau_Ge_upper))
+print("amplitude_exp_decay:      %.2f         [%.d,%.d]" % (P_double_2[9], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
+print("tau_decay, in half_life:  %.2f         [%.d,%.d]" % (P_double_2[10]*np.log(2), tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
 print("\n")
 
 
@@ -238,9 +233,11 @@ x_arr = np.linspace(-1000,10000,10000)
 ### Doublegate_2
 ############
 
-area_double_2_true = np.trapz(sum_two_smeared_exp_gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), x_arr)
-area_double_2_true_prompt = np.trapz(gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6])+smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), x_arr)
-area_double_2_true_delayed = np.trapz(smeared_exp_decay(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), x_arr)
+area_double_2_true_prompt = np.trapz( \
+    gauss_1(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]) \
+    +gauss_2(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]) \
+    +smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), x_arr)
+area_double_2_true_delayed = np.trapz(smeared_exp_decay(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), x_arr)
 
 IYR_double_2 = IYR(prompt=area_double_2_true_prompt, delayed=area_double_2_true_delayed)
 
@@ -260,12 +257,12 @@ if BOOTSTRAP==True:
 
     for n in range(N_BOOTSTRAP):
 
-
         y_doublegate_2_134Te_bgvaried = np.zeros(len(y_doublegate_2_134Te))
+
+        #Vary BG withing a normal distribution of sigma = 0.025, then +-2sigma spans a BG-variation of 5%
+        y_doublegate_2_134Te_bgvaried = y_doublegate_2_all_134Te-y_doublegate_2_bg_134Te*np.random.normal(1,0.025)
         
         for i in range (len(y_doublegate_2_134Te_bgvaried)):
-            #Vary BG withing a normal distribution of sigma = 0.0125, then +-2sigma spans a BG-variation of 5%
-            y_doublegate_2_134Te_bgvaried[i] = y_doublegate_2_all_134Te[i]-y_doublegate_2_bg_134Te[i]*np.random.normal(1,0.0125)
             #Vary value of each bin within uncertainty
             resampled_y_doublegate_2_134Te[i] = y_doublegate_2_134Te_bgvaried[i] + np.random.normal(0, unc_y_doublegate_2_134Te[i]) 
 
@@ -273,10 +270,16 @@ if BOOTSTRAP==True:
         #True
         mean_lower = 950
         mean_upper = 1100
-        sigma_lower = 0
-        sigma_upper = 40
-        amplitude_gauss_lower = 0
-        amplitude_gauss_upper = 3000
+        sigma1_lower = 0
+        sigma1_upper = 40
+        amplitude_gauss1_lower = 0
+        amplitude_gauss1_upper = 3000
+        sigma2_lower = 0
+        sigma2_upper = 40
+        amplitude_gauss2_lower = 0
+        amplitude_gauss2_upper = 40
+        const_bg_lower = 0
+        const_bg_upper = 0+0.001
         amplitude_exp_Ge_lower = 0
         amplitude_exp_Ge_upper = 1000
         tau_Ge_lower = 0
@@ -286,39 +289,77 @@ if BOOTSTRAP==True:
         tau_decay_lower = tau_134Te#0
         tau_decay_upper = tau_134Te+0.0001#1000
 
+        try:
+            resampled_P_double_2, resampled_cov_double_2 = curve_fit(sum_two_smeared_exp_two_gauss_const_bg, x_doublegate_2_134Te, resampled_y_doublegate_2_134Te, sigma=unc_y_doublegate_2_134Te, bounds=([mean_lower,sigma1_lower,amplitude_gauss1_lower,sigma2_lower,amplitude_gauss2_lower,const_bg_lower,amplitude_exp_Ge_lower,tau_Ge_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma1_upper,amplitude_gauss1_upper,sigma2_upper,amplitude_gauss2_upper,const_bg_upper,amplitude_exp_Ge_upper,tau_Ge_upper,amplitude_exp_decay_upper,tau_decay_upper]), maxfev=10000)
 
-        resampled_P_double_2, resampled_cov_double_2 = curve_fit(sum_two_smeared_exp_gauss, x_doublegate_2_134Te, resampled_y_doublegate_2_134Te, sigma=unc_y_doublegate_2_134Te, bounds=([mean_lower,sigma_lower,amplitude_gauss_lower,amplitude_exp_Ge_lower,tau_Ge_lower,amplitude_exp_decay_lower,tau_decay_lower],[mean_upper,sigma_upper,amplitude_gauss_upper,amplitude_exp_Ge_upper,tau_Ge_upper,amplitude_exp_decay_upper,tau_decay_upper]))
+            resampled_area_double_2_true_prompt = np.trapz( \
+                gauss_1(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6], resampled_P_double_2[7], resampled_P_double_2[8], resampled_P_double_2[9]) \
+                +gauss_2(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6], resampled_P_double_2[7], resampled_P_double_2[8], resampled_P_double_2[9]) \
+                +smeared_exp_Ge(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6], resampled_P_double_2[7], resampled_P_double_2[8], resampled_P_double_2[9]), x_arr)
+            resampled_area_double_2_true_delayed = np.trapz(smeared_exp_decay(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6], resampled_P_double_2[7], resampled_P_double_2[8], resampled_P_double_2[9]), x_arr)
 
-        # print("\n")
-        # print(" ***** 134Te:  Doublegate_2 true spectrum fit ***** ")
-        # print("          -- GAUSS + TWO SMEARED EXP FIT --   ")
-        # print("mean:                     %.2f         [%.d,%.d]" % (resampled_P_double_2[0], mean_lower, mean_upper))
-        # print("sigma:                    %.2f         [%.d,%.d]" % (resampled_P_double_2[1], sigma_lower, sigma_upper))
-        # print("amplitude_gauss:          %.2f         [%.d,%.d]" % (resampled_P_double_2[2], amplitude_gauss_lower, amplitude_gauss_upper))
-        # print("amplitude_exp_Ge:         %.2f         [%.d,%.d]" % (resampled_P_double_2[3], amplitude_exp_Ge_lower, amplitude_exp_Ge_upper))
-        # print("tau_Ge:                   %.2f         [%.d,%.d]" % (resampled_P_double_2[4], tau_Ge_lower, tau_Ge_upper))
-        # print("amplitude_exp_decay:      %.2f         [%.d,%.d]" % (resampled_P_double_2[5], amplitude_exp_decay_lower, amplitude_exp_decay_upper))
-        # print("tau_decay, in half_life:  %.2f         [%.d,%.d]" % (resampled_P_double_2[6]*np.log(2), tau_decay_lower*np.log(2), tau_decay_upper*np.log(2)))
-        # print("\n")
+            resampled_IYR_array_double_2[n] = IYR(prompt=resampled_area_double_2_true_prompt, delayed=resampled_area_double_2_true_delayed)
 
-
-        resampled_area_double_2_true = np.trapz(sum_two_smeared_exp_gauss(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6]), x_arr)
-        resampled_area_double_2_true_prompt = np.trapz(gauss(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6])+smeared_exp_Ge(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6]), x_arr)
-        resampled_area_double_2_true_delayed = np.trapz(smeared_exp_decay(x_arr, resampled_P_double_2[0], resampled_P_double_2[1], resampled_P_double_2[2], resampled_P_double_2[3], resampled_P_double_2[4], resampled_P_double_2[5], resampled_P_double_2[6]), x_arr)
-
-        resampled_IYR_array_double_2[n] = IYR(prompt=resampled_area_double_2_true_prompt, delayed=resampled_area_double_2_true_delayed)
+        except RuntimeError:
+            resampled_IYR_array_double_2[n] = IYR_double_2
 
         if(n%100==0):
             print("Now finished iteration %.d" % n)
 
 sigma_bootstrap_IYR_double_2 = 0
+sigma_IYR_handcalc = 0 
 
 if BOOTSTRAP==True:
-    sigma_bootstrap_IYR_double_2 = np.std(resampled_IYR_array_double_2) 
+
+    sigma_bootstrap_IYR_double_2 = np.std(resampled_IYR_array_double_2) #Change this 
+
+
+    # Plot distribution of calculated IYRs
+    IYR_binwith = 0.001
+    IYR_min = 0.0
+    IYR_max = 1.0 + 2*IYR_binwith
+    N_IYR_bins = int((IYR_max-IYR_min)//IYR_binwith)
+
+    IYR_array = np.linspace(IYR_min,IYR_max,N_IYR_bins)
+    IYR_histogram = np.zeros(len(IYR_array))
+
+    for i in range(N_BOOTSTRAP):
+        IYR_bin = int(resampled_IYR_array_double_2[i]//IYR_binwith - IYR_min//IYR_binwith)
+        IYR_histogram[IYR_bin] += 1
+
+        # Calculate standard deviation by hand
+        std_value = np.linspace(0,0.5,10000)
+        std_found = False
+        sigma_IYR_handcalc = 0
+
+        for i in range(len(std_value)):
+            within_std = np.where((resampled_IYR_array_double_2 >= IYR_double_2-std_value[i]) & (resampled_IYR_array_double_2 < IYR_double_2+std_value[i]))[0]
+            percentage_covered = len(within_std)/len(resampled_IYR_array_double_2)
+
+            if 0.675 <= percentage_covered < 0.685:
+                std_found = True
+                sigma_IYR_handcalc = std_value[i]
+                #print("By-hand standard deviation is %.3f" % std_value[i])
+                break
+
+    plt.plot(IYR_array,IYR_histogram, label="Calculated IYR distribution")
+    plt.axvline(x=IYR_double_2, ymin=0, ymax=max(IYR_histogram), label="IYR center", color="red")
+    plt.axvline(x=IYR_double_2-sigma_bootstrap_IYR_double_2, ymin=0, ymax=max(IYR_histogram), label="IYR-sigma_np", color="black")
+    plt.axvline(x=IYR_double_2+sigma_bootstrap_IYR_double_2, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma_np", color="black")
+    plt.axvline(x=IYR_double_2-sigma_IYR_handcalc, ymin=0, ymax=max(IYR_histogram), label="IYR-sigma_handcalc", color="grey")
+    plt.axvline(x=IYR_double_2+sigma_IYR_handcalc, ymin=0, ymax=max(IYR_histogram), label="IYR+sigma_handcalc", color="grey")
+    plt.xlabel("IYR")
+    plt.ylabel("Counts")
+    plt.legend()
+    plt.title(" Bootstrapping IYR, N= %d " % N_BOOTSTRAP)
+    plt.grid()
+    plt.show()
 
 
 print(" ***** Isomeric Yield Ratios ****")
 print("IYR_double_2:               %.3f +/- %.3f" % (IYR_double_2, sigma_bootstrap_IYR_double_2))
+print("IYR_double_2:               %.3f +/- %.3f" % (IYR_double_2, sigma_IYR_handcalc))
+
 
 #################
 ###  Doublegate_2
@@ -327,12 +368,16 @@ print("IYR_double_2:               %.3f +/- %.3f" % (IYR_double_2, sigma_bootstr
 #true
 #plt.plot(x_doublegate_2_134Te, y_doublegate_2_134Te, label="doublegate_2_134Te", color="royalblue")
 #plt.plot(x_doublegate_2_134Te, resampled_y_doublegate_2_134Te, label="resampled doublegate_2_134Te", color="purple")
-plt.errorbar(x_doublegate_2_134Te, y_doublegate_2_134Te, yerr=unc_y_doublegate_2_134Te, label="doublegate_2_134Te", color="aqua")
-plt.plot(x_arr, sum_two_smeared_exp_gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true fit, total", color="k")
-#plt.plot(x_arr, gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true gaussian", color="green")
-#plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true smeared exp Ge", color="lime")
-plt.plot(x_arr, gauss(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6])+smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="sum prompt", color="darkolivegreen")
-plt.plot(x_arr, smeared_exp_decay(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6]), label="true smeared exp decay", color="red")
+#plt.errorbar(x_doublegate_2_134Te, y_doublegate_2_134Te, yerr=unc_y_doublegate_2_134Te, label="doublegate_2_134Te", color="aqua")
+plt.errorbar(x_doublegate_2_134Te, y_doublegate_2_134Te, yerr=unc_y_doublegate_2_134Te, label="doublegate_2_134Te", color="aqua", linestyle="None")
+
+plt.plot(x_arr, sum_two_smeared_exp_two_gauss_const_bg(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), label="true fit, total", color="k")
+plt.plot(x_arr, gauss_1(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), label="gauss_1")
+plt.plot(x_arr, gauss_2(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), label="gauss_2")
+plt.plot(x_arr, smeared_exp_Ge(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), label="smeared exp Ge")
+plt.plot(x_arr, smeared_exp_decay(x_arr, P_double_2[0], P_double_2[1], P_double_2[2], P_double_2[3], P_double_2[4], P_double_2[5], P_double_2[6], P_double_2[7], P_double_2[8], P_double_2[9], P_double_2[10]), label="smeared exp decay")
+
+
 plt.title("134Te: Doublegate_2 true spectrum fit")
 plt.axis([800,2000,0,500])
 plt.xlabel("Time [ns]", fontsize=14)
