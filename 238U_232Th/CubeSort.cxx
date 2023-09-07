@@ -57,7 +57,6 @@ short lookup_140Xe[2048][2048] = {{0}};
 short lookup_138Xe[2048][2048] = {{0}};
 short lookup_92Sr[2048][2048] = {{0}};
 short lookup_94Sr[2048][2048] = {{0}};
-//short lookup_132Sn[2048][2048] = {{0}};
 
 
 void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]);
@@ -252,10 +251,6 @@ int main(int argc, char **argv){
 	int gamma_energy_1_94Sr = 1309;
 	int gamma_energy_2_94Sr = 837;
 
-/*	//132Sn, no isomer
-	int gamma_energy_1_132Sn = 4041;
-	int gamma_energy_2_132Sn = 375;*/
-
 	//////////////////////////////////////////
 	/// 		   Lookup table		  	   ///
 	//////////////////////////////////////////
@@ -315,8 +310,6 @@ int main(int argc, char **argv){
 
 	fill_lookuptable(gamma_energy_1_94Sr, gamma_energy_2_94Sr, lookup_94Sr);
 
-	//fill_lookuptable(gamma_energy_1_132Sn, gamma_energy_2_132Sn, lookup_132Sn);
-
 	//Print loopup-table to make sure all elements have right value
 /*	cout << "94Rb" << " " << endl;
 	for(int j=gamma_energy_2_94Rb-10; j<=gamma_energy_2_94Rb+10; j++){
@@ -336,12 +329,13 @@ int main(int argc, char **argv){
 	for (int k=0; k < TBINS; k++){
 		for (int i=0; i < EBINS; i++){
 
-
 			for (int j=0; j < EBINS; j++){
 
 				int cube_value = Cube1->Get(i,j,k);
 
 				cube_sum += cube_value;
+
+				double_gamma->Fill(i, j, cube_value);
 
 				fill_spectra_singlegate(j, lookup_singlegate_3n[i], cube_value, singlegate_3n, singlegate_3n_all, singlegate_3n_bg);
 			
@@ -396,8 +390,6 @@ int main(int argc, char **argv){
 
 				fill_spectra(lookup_94Sr[i][j], cube_value, k, time_isomer_doublegate_94Sr, time_isomer_doublegate_all_94Sr, time_isomer_doublegate_bg_94Sr, time_isomer_doublegate_bg_ridge_94Sr, time_isomer_doublegate_bg_random_94Sr);	
 			
-				//fill_spectra(lookup_132Sn[i][j], cube_value, k, time_isomer_doublegate_132Sn, time_isomer_doublegate_all_132Sn, time_isomer_doublegate_bg_132Sn, time_isomer_doublegate_bg_ridge_132Sn, time_isomer_doublegate_bg_random_132Sn);	
-
 			}
 		}
 	}
@@ -420,7 +412,7 @@ int main(int argc, char **argv){
 	//////////////////////////////////////////
 
 	//string filename_out = filename + "_final.root";
-	string filename_out = filename + "_6oct2022.root";
+	string filename_out = filename + "_7sep2023.root";
 	TFile *outputspectrafile = new TFile(filename_out.c_str(),"RECREATE");
 
 
@@ -562,11 +554,7 @@ int main(int argc, char **argv){
 	time_isomer_doublegate_bg_ridge_94Sr->Write();
 	time_isomer_doublegate_bg_random_94Sr->Write();
 
-/*	time_isomer_doublegate_132Sn->Write();
-	time_isomer_doublegate_all_132Sn->Write();
-	time_isomer_doublegate_bg_132Sn->Write();
-	time_isomer_doublegate_bg_ridge_132Sn->Write();
-	time_isomer_doublegate_bg_random_132Sn->Write();*/
+	double_gamma->Write();
 
 	outputspectrafile->cd();
 	outputspectrafile->Close();
@@ -670,8 +658,6 @@ void fill_lookuptable(int energy_1, int energy_2, short lookup[2048][2048]){
 
 
 
-
-
 void fill_spectra(int lookup_value, int cube_value, int k, TH1D *true_spec, TH1D *all_spec, TH1D *bg_spec, TH1D *bg_ridge_spec, TH1D *bg_random_spec){
 
 	//a b c
@@ -718,6 +704,8 @@ void fill_spectra_singlegate(int energy, int lookup_value, int cube_value, TH1D 
 		bg_spec->Fill(energy, cube_value);
 	}	
 }
+
+
 
 
 //g++ -g -o CubeSort CubeSort.cxx ` root-config --cflags` `root-config --glibs` -lSpectrum

@@ -496,25 +496,9 @@ TH1D *time_isomer_doublegate_bg_random_94Sr = new TH1D("time_isomer_doublegate_b
 time_isomer_doublegate_bg_random_94Sr->GetXaxis()->SetTitle("Time [2 ns]");
 time_isomer_doublegate_bg_random_94Sr->GetYaxis()->SetTitle("Counts");
 
-/*//132Sn doublegate
-TH1D *time_isomer_doublegate_132Sn = new TH1D("time_isomer_doublegate_132Sn","time_isomer_doublegate_132Sn",350,0,350);
-time_isomer_doublegate_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
-time_isomer_doublegate_132Sn->GetYaxis()->SetTitle("Counts");
+//All double, clean ge-gammas
+TH2F *double_gamma = new TH2F("double_gamma","double_gamma",2048,0,2048, 2048, 0, 2048);
+double_gamma->GetXaxis()->SetTitle("Energy [keV]");
+double_gamma->GetYaxis()->SetTitle("Energy [keV]");
+double_gamma->SetOption("colz");
 
-TH1D *time_isomer_doublegate_all_132Sn = new TH1D("time_isomer_doublegate_all_132Sn","time_isomer_doublegate_all_132Sn",350,0,350);
-time_isomer_doublegate_all_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
-time_isomer_doublegate_all_132Sn->GetYaxis()->SetTitle("Counts");
-
-TH1D *time_isomer_doublegate_bg_132Sn = new TH1D("time_isomer_doublegate_bg_132Sn","time_isomer_doublegate_bg_132Sn",350,0,350);
-time_isomer_doublegate_bg_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
-time_isomer_doublegate_bg_132Sn->GetYaxis()->SetTitle("Counts");
-
-TH1D *time_isomer_doublegate_bg_ridge_132Sn = new TH1D("time_isomer_doublegate_bg_ridge_132Sn","time_isomer_doublegate_bg_ridge_132Sn",350,0,350);
-time_isomer_doublegate_bg_ridge_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
-time_isomer_doublegate_bg_ridge_132Sn->GetYaxis()->SetTitle("Counts");
-
-TH1D *time_isomer_doublegate_bg_random_132Sn = new TH1D("time_isomer_doublegate_bg_random_132Sn","time_isomer_doublegate_bg_random_132Sn",350,0,350);
-time_isomer_doublegate_bg_random_132Sn->GetXaxis()->SetTitle("Time [2 ns]");
-time_isomer_doublegate_bg_random_132Sn->GetYaxis()->SetTitle("Counts");
-
-*/
